@@ -1,5 +1,5 @@
 import User from "../models/UserModel";
-import { ApiError } from "../exceptions/ApiError";
+import { ApiError } from "../exceptions/apiError";
 import { comparePassword } from "../utils/PasswordUtil";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -27,7 +27,7 @@ export const userLogin = async (email: string, password: string): Promise<any> =
 
     if (!process.env.JWT_SECRET) throw new ApiError("JWT Secret is not defined", 403)
 
-    const activeToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1d",
     });
     const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -44,11 +44,11 @@ export const userLogin = async (email: string, password: string): Promise<any> =
         throw new ApiError("Invalid User ID", 400)
     }
 
-    // await User.createOrUpdateAuthToken(userId, activeToken, refreshToken);
+    await User.createOrUpdateAuthToken(userId, accessToken, refreshToken);
 
     return {
         userID: user.id,
-        username: user.username,
-        active_token: activeToken,
+        username: user.name,
+        active_token: accessToken,
     }
 }

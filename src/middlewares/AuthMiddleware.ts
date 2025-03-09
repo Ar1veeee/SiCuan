@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import dotenv from "dotenv";
+import dotenv from "dotenv-safe";
 dotenv.config();
 
 declare module "express-serve-static-core" {

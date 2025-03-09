@@ -6,7 +6,7 @@ import { apiResponse } from "../utils/ApiResponseUtil";
 import { userRegister, userLogin } from "../services/AuthService";
 import User from "../models/UserModel";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import dotenv from "dotenv";
+import dotenv from "dotenv-safe";
 dotenv.config();
 
 // User Registration
@@ -95,21 +95,40 @@ export const refreshToken = async (
         if (!userId) return apiResponse.badRequest(res, "Invalid User ID")
 
         const authRecord = await User.findAuthByUserId(userId);
-        if (!authRecord || authRecord.refresh_token !== refresh_token) {
+        if (!authRecord || authRecord.refreshToken !== refresh_token) {
             return apiResponse.badRequest(res, "Invalid Refresh Token")
         }
 
-        const activeToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        const newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
+
+        const newRefreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+
+        await User.refreshToken(refresh_token, newAccessToken);
+
+        if (newRefreshToken !== refresh_token) {
+            await User.createOrUpdateAuthToken(userId, newAccessToken, newRefreshToken);                        
+            res.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', 
+                maxAge: 7 * 24 * 60 * 60 * 1000 
+            });
+        }
+
         return apiResponse.success(res, {
             loginResult: {
                 userID: user.id,
-                username: user.username,
-                active_token: activeToken,
+                username: user.name,
+                access_token: newAccessToken,
             },
         }, "Token Updated");
     } catch (error: any) {
+        if (error.name === 'TokenExpiredError') {
+            return apiResponse.badRequest(res, "Refresh Token Expired");
+        }
         return apiResponse.internalServerError(res, error.message)
     }
 };

@@ -7,6 +7,18 @@ CREATE TABLE users (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE auth (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    access_token VARCHAR(255) UNIQUE,
+    refresh_token VARCHAR(255) UNIQUE,
+    device_info VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 -- RAW MATERIALS (Bahan Baku)
 CREATE TABLE raw_materials (
   id INT AUTO_INCREMENT PRIMARY KEY,
