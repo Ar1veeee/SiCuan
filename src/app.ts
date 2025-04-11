@@ -1,5 +1,6 @@
 import express from "express"
 import AuthRoutes from "./routes/AuthRoute"
+import MenuRoutes from "./routes/MenuRoute"
 import morgan from "morgan"
 import cookieParser from "cookie-parser"
 import helmet from "helmet"
@@ -66,5 +67,6 @@ app.use(compression())
 app.use(express.json())
 
 app.use("/auth", authLimitter, AuthRoutes)
+app.use("/menu", MenuRoutes)
 
 export default app

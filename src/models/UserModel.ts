@@ -2,7 +2,6 @@
 
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../utils/PasswordUtil";
-import { create } from "domain";
 const prisma = new PrismaClient()
 
 const User = {

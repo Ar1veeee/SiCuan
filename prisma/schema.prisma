@@ -20,6 +20,7 @@ model User {
   password   String   @db.VarChar(255)
   createdAt  DateTime @default(now())
   Auth       Auth?
+  menus Menu[]
 }
 
 model Auth {
@@ -32,4 +33,14 @@ model Auth {
   expiresAt    DateTime?
   isActive     Boolean  @default(true)
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Menu {
+  id         Int     @id @default(autoincrement())
+  userId     Int     
+  name_menu  String
+  jumlah_hpp Int?
+
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([id, userId])
 }
