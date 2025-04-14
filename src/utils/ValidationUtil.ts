@@ -51,7 +51,7 @@ export const validateMenuOwnership = async (userId: number, menuId: number) => {
         throw new ApiError("Menu ID tidak valid", 400)
     }
 
-    const menu = await Menu.validateMenuByIdAndUserId(menuId, userId)
+    const menu = await Menu.validateMenuByIdAndUserId(userId, menuId)
     if (!menu) {
         throw new ApiError("Menu tidak dapat ditemukan", 400)
     }

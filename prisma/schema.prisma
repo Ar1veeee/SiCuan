@@ -38,9 +38,8 @@ model Auth {
 model Menu {
   id         Int     @id @default(autoincrement())
   userId     Int     
-  name_menu  String
+  nama_menu  String?
   jumlah_hpp Int?
 
   user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([id, userId])
 }
