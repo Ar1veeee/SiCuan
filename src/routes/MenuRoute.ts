@@ -1,6 +1,9 @@
 import { Router } from "express";
 const router = Router();
 import { createMenu, deleteMenu, Menus, updateMenu } from "../controllers/MenuController";
+import verifyToken from "../middlewares/AuthMiddleware";
+
+router.use(verifyToken)
 
 router.get("/:user_id", Menus);
 router.post("/:user_id", createMenu);
