@@ -40,10 +40,9 @@ export const register = async (
     }
 
     try {
-        const message = await userRegister(username, email, confirmPassword, nama_usaha)
-        return apiResponse.created(res, message)
+        const register = await userRegister(username, email, confirmPassword, nama_usaha)
+        return apiResponse.created(res, register)
     } catch (error: any) {
-        console.log(error)
         return apiResponse.internalServerError(res, error.message)
     }
 };
