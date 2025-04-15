@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import dotenv from "dotenv-safe";
+import { apiResponse } from "../utils/ApiResponseUtil"; // pastikan path benar
+
 dotenv.config();
 
 declare module "express-serve-static-core" {
@@ -12,17 +14,16 @@ declare module "express-serve-static-core" {
 // Token middleware
 const verifyToken = (
   req: Request, 
-  res:Response, 
+  res: Response, 
   next: NextFunction
-): void => {
+) => {
   try {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
-      res.status(401).json({ message: "No Authorization Header" });
-      return
+      apiResponse.unauthorized(res, "Authorization header tidak ditemukan");
+      return;
     }
 
-    // Split the header and take the last token (in case of multiple)
     const tokenParts = authHeader.split(",");
     const lastTokenPart = tokenParts[tokenParts.length - 1].trim();
     const token = lastTokenPart.replace(/^Bearer\s+/i, '');
@@ -30,22 +31,20 @@ const verifyToken = (
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (typeof decoded === "string") {
-      res.status(403).json({ message: "Invalid token format" });
-      return
+      apiResponse.forbidden(res, "Format token tidak valid");
+      return;
     }
 
     req.user = decoded;
-
     next();
   } catch (error: any) {
-    console.error("Token Verification Error:", error.message);
-    res.status(403).json({
-      message: "Token Verification Failed",
-      errorType: error.name,
-      errorDetails: error.message,
+    apiResponse.error(res, "Token tidak valid", 403, {
+      type: error.name,
+      detail: error.message,
     });
-    return
+    return;
   }
 };
+
 
 export default verifyToken;
