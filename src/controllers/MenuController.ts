@@ -23,7 +23,7 @@ export const createMenu = async (req: Request, res: Response): Promise<any> => {
     try {
         const userId = Number(user_id);
         const addMenu = await addUserMenu(userId, nama_menu);
-        return apiResponse.success(res, addMenu)
+        return apiResponse.created(res, addMenu)
     } catch (error: any) {
         return apiResponse.internalServerError(res, error.message)
     }

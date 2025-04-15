@@ -7,7 +7,7 @@ export const addUserMenu = async (userId: number, name_menu: string): Promise<an
 
     const existingMenu = await Menu.existingMenu(userId, name_menu);
     if (existingMenu) {
-        throw new ApiError("Menu sudah ada", 400)
+        throw new ApiError("Menu sudah dipakai", 400)
     }
 
     await Menu.addMenu(userId, name_menu);
@@ -20,9 +20,9 @@ export const updateUserMenu = async (userId: number, menuId: number, nama_menu: 
 
     const updated = await Menu.updateUserMenu(userId, menuId, nama_menu);
     if (!updated) {
-        throw new ApiError("Update Menu Gagal", 400)
+        throw new ApiError("Menu Gagal Diperbarui", 400)
     }
-    return "Update Menu Berhasil"
+    return "Menu Berhasil Diperbarui"
 }
 
 export const deleteUserMenu = async (userId: number, menuId: number,): Promise<any> => {
