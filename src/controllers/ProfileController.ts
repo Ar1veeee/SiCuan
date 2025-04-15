@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { passwordValidation } from "../utils/ValidationUtil";
+import { passwordValidation } from "../validators/UserValidator";
 import { apiResponse } from "../utils/ApiResponseUtil";
 import { updateUserPassword, getUserProfile } from "../services/ProfileService";
 

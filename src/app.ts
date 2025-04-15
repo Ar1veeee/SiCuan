@@ -1,6 +1,11 @@
-import express from "express"
+// import controller
 import AuthRoutes from "./routes/AuthRoute"
 import MenuRoutes from "./routes/MenuRoute"
+import HppRoutes from "./routes/HppRoute"
+import ProfileRoutes from "./routes/ProfileRoute"
+
+// import middlewares
+import express from "express"
 import morgan from "morgan"
 import cookieParser from "cookie-parser"
 import helmet from "helmet"
@@ -67,6 +72,8 @@ app.use(compression())
 app.use(express.json())
 
 app.use("/auth", authLimitter, AuthRoutes)
+app.use("/profile", ProfileRoutes)
 app.use("/menu", MenuRoutes)
+app.use("/resep", HppRoutes)
 
 export default app

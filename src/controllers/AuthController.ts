@@ -1,7 +1,7 @@
 "use strict";
 
 import { Request, Response } from "express";
-import { passwordValidation, emailValidation } from "../utils/ValidationUtil";
+import { passwordValidation, emailValidation } from "../validators/UserValidator";
 import { apiResponse } from "../utils/ApiResponseUtil";
 import { userRegister, userLogin } from "../services/AuthService";
 import User from "../models/UserModel";

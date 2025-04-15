@@ -1,16 +1,17 @@
 import Menu from "../models/MenuModel";
 import { ApiError } from "../exceptions/apiError";
-import { validateMenuOwnership, validateUserExists } from "../utils/ValidationUtil";
+import { validateUserExists } from "../validators/UserValidator";
+import { validateMenuOwnership } from "../validators/MenuValidator";
 
-export const addUserMenu = async (userId: number, name_menu: string): Promise<any> => {
+export const addUserMenu = async (userId: number, nama_menu: string): Promise<any> => {
     await validateUserExists(userId);
 
-    const existingMenu = await Menu.existingMenu(userId, name_menu);
+    const existingMenu = await Menu.existingMenu(userId, nama_menu);
     if (existingMenu) {
         throw new ApiError("Menu sudah dipakai", 400)
     }
 
-    await Menu.addMenu(userId, name_menu);
+    await Menu.addMenu(userId, nama_menu);
     return "Menu Berhasil Ditambahkan";
 }
 
