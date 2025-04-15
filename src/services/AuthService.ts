@@ -4,13 +4,13 @@ import { comparePassword } from "../utils/PasswordUtil";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 
-export const userRegister = async (username: string, email: string, password: string): Promise<string> => {
+export const userRegister = async (username: string, email: string, password: string, nama_usaha: string): Promise<string> => {
     const existingUser = await User.findUserByEmail(email);
     if (existingUser) {
         throw new ApiError("Email Already Exists", 400)
     }
 
-    await User.createUser(username, email, password);
+    await User.createUser(username, email, password, nama_usaha);
     return "Registration Successfully"
 }
 

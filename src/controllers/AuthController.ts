@@ -16,7 +16,7 @@ export const register = async (
     req: Request,
     res: Response
 ): Promise<any> => {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password, confirmPassword, nama_usaha } = req.body;
 
     if (!passwordValidation.isValidPassword(password)) {
         return apiResponse.badRequest(
@@ -40,7 +40,7 @@ export const register = async (
     }
 
     try {
-        const message = await userRegister(username, email, confirmPassword)
+        const message = await userRegister(username, email, confirmPassword, nama_usaha)
         return apiResponse.created(res, message)
     } catch (error: any) {
         console.log(error)

@@ -5,21 +5,22 @@ import { hashPassword } from "../utils/PasswordUtil";
 const prisma = new PrismaClient()
 
 const User = {
-    createUser: async (name: string, email: string, password: string) => {
+    createUser: async (name: string, email: string, password: string, nama_usaha: string) => {
         const hashedPassword = await hashPassword(password)
         return await prisma.user.create({
             data: {
                 name,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                nama_usaha
             }
         })
     },
     updateOldPassword: async (userId: number, password: string) => {
-        const hashedPassword = await hashPassword(password)
+        const newHashedPassword = await hashPassword(password)
         return await prisma.user.update({
             where: { id: userId },
-            data: { password: hashedPassword }
+            data: { password: newHashedPassword }
         })
     },
     findUserByEmail: async (email: string) => {
