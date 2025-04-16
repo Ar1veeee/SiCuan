@@ -20,15 +20,8 @@ const Menu = {
             where: { userId, nama_menu }
         })
     },
+    
     findMenuByIdAndUserId: async (userId: number, menuId: number) => {
-        return await prisma.menu.findMany({
-            where: {
-                userId,
-                id: menuId
-            }
-        })
-    },
-    validateMenuByIdAndUserId: async (userId: number, menuId: number) => {
         return await prisma.menu.findFirst({
             where: {
                 userId,
@@ -36,6 +29,7 @@ const Menu = {
             }
         })
     },
+    
     updateUserMenu: async (userId: number, menuId: number, nama_menu: string) => {
         return await prisma.menu.update({
             where: {

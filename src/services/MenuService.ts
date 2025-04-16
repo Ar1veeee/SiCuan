@@ -26,7 +26,7 @@ export const updateUserMenu = async (userId: number, menuId: number, nama_menu: 
     return "Menu Berhasil Diperbarui"
 }
 
-export const deleteUserMenu = async (userId: number, menuId: number,): Promise<any> => {
+export const deleteUserMenu = async (userId: number, menuId: number): Promise<any> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
 
