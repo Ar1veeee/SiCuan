@@ -7,7 +7,7 @@ export const addUserResep = async (
   userId: number,
   menuId: number,
   bahan: {
-      nama: string,
+      nama_bahan: string,
       harga_beli: number,
       jumlah: number,
       satuan: string,
@@ -17,13 +17,13 @@ export const addUserResep = async (
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
-  const existing = await Hpp.existingResep(menuId, bahan.nama);
+  const existing = await Hpp.existingResep(menuId, bahan.nama_bahan);
   if (existing) {
       throw new ApiError("Resep sudah ada", 400);
   }
 
   await Hpp.createBahanWithMenuLink({
-    nama: bahan.nama,
+    nama: bahan.nama_bahan,
     harga_beli: bahan.harga_beli,
     jumlah: bahan.jumlah,
     satuan: bahan.satuan,
