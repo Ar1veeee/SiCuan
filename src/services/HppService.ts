@@ -17,19 +17,21 @@ export const addUserResep = async (
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
-  const existingBahan = await Hpp.existingResep(menuId, bahan.nama);
-  if (existingBahan) {
+  const existing = await Hpp.existingResep(menuId, bahan.nama);
+  if (existing) {
       throw new ApiError("Resep sudah ada", 400);
   }
 
-  await Hpp.createResep({
-      nama: bahan.nama,
-      harga_beli: bahan.harga_beli,
-      jumlah: bahan.jumlah,
-      satuan: bahan.satuan,
-      menuId,
-      jumlah_digunakan: bahan.jumlah_digunakan,
+  await Hpp.createBahanWithMenuLink({
+    nama: bahan.nama,
+    harga_beli: bahan.harga_beli,
+    jumlah: bahan.jumlah,
+    satuan: bahan.satuan,
+    menuId,
+    jumlah_digunakan: bahan.jumlah_digunakan,
   });
+
+  await Hpp.updateTotalHPP(menuId);
 
   return "Resep Berhasil Ditambahkan";
 };
