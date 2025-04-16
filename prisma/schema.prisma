@@ -18,6 +18,7 @@ model User {
   name       String   @db.VarChar(100)
   email      String   @unique @db.VarChar(100)
   password   String   @db.VarChar(255)
+  nama_usaha   String   @db.VarChar(255)
   createdAt  DateTime @default(now())
   Auth       Auth?
   menus Menu[]
@@ -38,8 +39,38 @@ model Auth {
 model Menu {
   id         Int     @id @default(autoincrement())
   userId     Int     
-  nama_menu  String?
+  nama_menu  String
   jumlah_hpp Int?
 
   user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bahanList   MenuBahan[]
+}
+
+// Model untuk bahan baku
+model Bahan {
+  id          Int           @id @default(autoincrement())
+  nama        String
+  harga_beli  Float
+  jumlah      Float         // jumlah yang dibeli
+  satuan      String
+  biaya       Float         // biaya per satuan
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // Relasi ke MenuBahan
+  menuBahan   MenuBahan[]
+}
+
+// Model junction untuk relasi many-to-many antara Menu dan Bahan
+model MenuBahan {
+  id          Int      @id @default(autoincrement())
+  menuId      Int
+  bahanId     Int
+  jumlah      Int?    // jumlah bahan yang digunakan dalam menu
+  
+  // Relasi
+  menu        Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  bahan       Bahan    @relation(fields: [bahanId], references: [id], onDelete: Restrict)
+
+  @@unique([menuId, bahanId])
 }
