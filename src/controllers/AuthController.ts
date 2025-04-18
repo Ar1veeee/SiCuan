@@ -40,8 +40,8 @@ export const register = async (
     }
 
     try {
-        const register = await userRegister(username, email, confirmPassword, nama_usaha)
-        return apiResponse.created(res, register)
+        const userData = await userRegister(username, email, confirmPassword, nama_usaha)
+        return apiResponse.created(res, userData)
     } catch (error: any) {
         return apiResponse.internalServerError(res, error.message)
     }
@@ -116,7 +116,7 @@ export const refreshToken = async (
                 maxAge: 7 * 24 * 60 * 60 * 1000 
             });
         }
-
+        
         return apiResponse.success(res, {
             loginResult: {
                 userID: user.id,
