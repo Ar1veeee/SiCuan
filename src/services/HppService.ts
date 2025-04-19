@@ -13,7 +13,7 @@ export const addUserResep = async (
     satuan: string,
     jumlah_digunakan: number
   }
-): Promise<any> => {
+): Promise<object> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
@@ -33,16 +33,16 @@ export const addUserResep = async (
 
   await Hpp.updateTotalHPP(menuId);
 
-  return "Resep Berhasil Ditambahkan";
+  return { message: "Resep Berhasil Ditambahkan" }
 };
 
-export const deleteUserMenuResep = async (userId: number, menuId: number, bahanId: number): Promise<any> => {
+export const deleteUserMenuResep = async (userId: number, menuId: number, bahanId: number): Promise<object> => {
   await validateUserExists(userId);
   const deleted = await Hpp.deleteMenuResep(userId, menuId, bahanId)
   if (!deleted) {
     throw new ApiError("Bahan gagal dihapus", 400)
   }
-  return "Bahan Berhasil Dihapus"
+  return { message: "Bahan Berhasil Dihapus" }
 }
 
 export const updateUserMenuResep = async (userId: number, menuId: number, bahanId: number, bahan: {
@@ -51,7 +51,7 @@ export const updateUserMenuResep = async (userId: number, menuId: number, bahanI
   jumlah: number,
   satuan: string,
   jumlah_digunakan: number
-}): Promise<any> => {
+}): Promise<object> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
@@ -70,5 +70,5 @@ export const updateUserMenuResep = async (userId: number, menuId: number, bahanI
 
   await Hpp.updateTotalHPP(menuId);
 
-  return "Resep Berhasil Diperbarui";
+  return { message: "Resep Berhasil Diperbarui" }
 }

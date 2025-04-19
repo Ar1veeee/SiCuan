@@ -12,7 +12,6 @@ export const createResep = async (req: Request, res: Response): Promise<any> => 
             res,
             "Data yang dibutuhkan tidak dapat ditemukan"
         )
-        
     }
 
     try {
