@@ -3,7 +3,7 @@ import { ApiError } from "../exceptions/apiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 
-export const createMenuForUser = async (userId: number, nama_menu: string): Promise<any> => {
+export const createMenuForUser = async (userId: number, nama_menu: string): Promise<object> => {
     await validateUserExists(userId);
 
     const existingMenu = await MenuModel.existingMenu(userId, nama_menu);
@@ -12,10 +12,10 @@ export const createMenuForUser = async (userId: number, nama_menu: string): Prom
     }
 
     await MenuModel.addMenu(userId, nama_menu);
-    return "Menu Berhasil Ditambahkan";
+    return { message: "Menu Berhasil Ditambahkan" }
 }
 
-export const updateMenuForUser = async (userId: number, menuId: number, nama_menu: string): Promise<any> => {
+export const updateMenuForUser = async (userId: number, menuId: number, nama_menu: string): Promise<object> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
 
@@ -23,10 +23,10 @@ export const updateMenuForUser = async (userId: number, menuId: number, nama_men
     if (!updated) {
         throw new ApiError("Menu Gagal Diperbarui", 400)
     }
-    return "Menu Berhasil Diperbarui"
+    return { message: "Menu Berhasil Diperbarui" }
 }
 
-export const deleteMenuForUser = async (userId: number, menuId: number): Promise<any> => {
+export const deleteMenuForUser = async (userId: number, menuId: number): Promise<object> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
 
@@ -34,5 +34,5 @@ export const deleteMenuForUser = async (userId: number, menuId: number): Promise
     if (!deleted) {
         throw new ApiError("Menu Gagal Dihapus", 400)
     }
-    return "Menu Berhasil Dihapus"
+    return { message: "Menu Berhasil Dihapus" }
 }
