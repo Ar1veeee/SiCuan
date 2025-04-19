@@ -61,8 +61,8 @@ export const updateMenu = async (req: Request, res: Response): Promise<any> => {
     }
 }
 
-export const deleteMenu = async (req:Request, res: Response): Promise<any> => {
-    const {user_id, menu_id} = req.params;
+export const deleteMenu = async (req: Request, res: Response): Promise<any> => {
+    const { user_id, menu_id } = req.params;
     if (!user_id || !menu_id) {
         return apiResponse.badRequest(
             res,
