@@ -4,7 +4,7 @@ import { updatePassword, userProfile } from "../controllers/ProfileController";
 import verifyToken from "../middlewares/AuthMiddleware";
 import verifyUserAccess from "../middlewares/VerifyUserAccess";
 import { validate } from "../middlewares/Validate";
-import { rePasswordSchema } from "../validators/UserValidator";
+import { updatePasswordSchema } from "../validators/UserValidator";
 
 router.use(verifyToken)
 
@@ -12,6 +12,6 @@ router.use(verifyToken)
 router.get("/:user_id/", verifyUserAccess, userProfile)
 
 // Memperbarui password berdasarkan user_id
-router.patch("/:user_id/", validate(rePasswordSchema), verifyUserAccess, updatePassword)
+router.patch("/:user_id/", validate(updatePasswordSchema), verifyUserAccess, updatePassword)
 
 export default router;

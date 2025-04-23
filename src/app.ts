@@ -25,7 +25,7 @@ const limitter = rateLimit({
 
 const authLimitter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 10
+    max: 50
 })
 
 app.use(limitter)

@@ -57,7 +57,7 @@ export const loginSchema = z.object({
     password: z.string().nonempty('Password wajib diisi')
 })
 
-export const rePasswordSchema = z.object({
+export const updatePasswordSchema = z.object({
     newPassword: z.string().nonempty('Password wajib diisi'),
     confirmPassword: z.string().nonempty('Confirm Password wajib diisi')
 })

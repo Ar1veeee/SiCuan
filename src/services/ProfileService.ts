@@ -5,7 +5,7 @@ export const updateUserPassword = async (user_id: number, newPassword: string): 
     if (isNaN(user_id)) {
         throw new ApiError("ID User tidak valid", 400)
     }
-    const updated = await UserModel.updateOldPassword(user_id, newPassword)
+    const updated = await UserModel.updatePassword(user_id, newPassword)
     if (!updated) {
         throw new ApiError("Password Gagal Diperbarui", 400)
     }
