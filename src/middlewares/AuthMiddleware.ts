@@ -1,7 +1,9 @@
+"use strict";
+
 import { Request, Response, NextFunction } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import dotenv from "dotenv-safe";
-import { apiResponse } from "../utils/ApiResponseUtil"; // pastikan path benar
+import { apiResponse } from "../utils/ApiResponseUtil";
 
 dotenv.config();
 

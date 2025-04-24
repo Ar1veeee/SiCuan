@@ -1,3 +1,5 @@
+"use strict";
+
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
 import { apiResponse } from "../utils/ApiResponseUtil";

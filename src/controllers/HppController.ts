@@ -1,3 +1,5 @@
+"use strict";
+
 import { Request, Response } from "express";
 import { apiResponse } from "../utils/ApiResponseUtil";
 import { addUserResep, deleteUserMenuResep, updateUserMenuResep } from "../services/HppService";

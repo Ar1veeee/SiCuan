@@ -1,3 +1,5 @@
+"use strict";
+
 import Hpp from "../models/HppModel";
 import { ApiError } from "../exceptions/apiError";
 import { validateUserExists } from "../validators/UserValidator";

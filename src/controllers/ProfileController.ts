@@ -1,3 +1,5 @@
+"use strict";
+
 import { Request, Response } from "express";
 import { apiResponse } from "../utils/ApiResponseUtil";
 import { updateUserPassword, getUserProfile } from "../services/ProfileService";

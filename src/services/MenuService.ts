@@ -1,3 +1,5 @@
+"use strict";
+
 import MenuModel from "../models/MenuModel";
 import { ApiError } from "../exceptions/apiError";
 import { validateUserExists } from "../validators/UserValidator";

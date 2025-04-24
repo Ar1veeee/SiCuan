@@ -1,3 +1,5 @@
+"use strict";
+
 import UserModel from "../models/UserModel";
 import { ApiError } from "../exceptions/apiError";
 
