@@ -2,3 +2,4 @@
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/register\",\"status\":\"201\",\"responseTime\":\"166.298\"}","timestamp":"2025-05-17T17:41:50.543Z"}
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"200\",\"responseTime\":\"162.645\"}","timestamp":"2025-05-17T17:42:27.415Z"}
 
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"200\",\"responseTime\":\"241.901\"}","timestamp":"2025-05-17T17:55:10.604Z"}
