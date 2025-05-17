@@ -1,4 +1,4 @@
-import Menu from "../models/MenuModel";
+import Menu from "../models/menu.model";
 import { ApiError } from "../exceptions/apiError";
 import {z} from "zod"
 

@@ -1,9 +1,11 @@
-"use strict";
-
-import UserModel from "../models/UserModel";
+import UserModel from "../models/user.model";
 import { ApiError } from "../exceptions/apiError";
 
-export const updateUserPassword = async (user_id: number, newPassword: string): Promise<object> => {
+interface ProfileResponse {
+    message: string;
+}
+
+export const updatePasswordService = async (user_id: number, newPassword: string): Promise<ProfileResponse> => {
     if (isNaN(user_id)) {
         throw new ApiError("ID User tidak valid", 400)
     }
@@ -14,7 +16,7 @@ export const updateUserPassword = async (user_id: number, newPassword: string): 
     return { message: "Password Berhasil Diperbarui" }
 }
 
-export const getUserProfile = async (user_id: number) => {
+export const userProfileService = async (user_id: number) => {
     if (isNaN(user_id)) {
         throw new ApiError("ID User Tidak Valid", 400)
     }

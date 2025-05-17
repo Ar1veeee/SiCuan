@@ -1,8 +1,10 @@
 // import controller
-import AuthRoutes from "./routes/AuthRoute"
-import MenuRoutes from "./routes/MenuRoute"
-import HppRoutes from "./routes/HppRoute"
-import ProfileRoutes from "./routes/ProfileRoute"
+import AuthRoutes from "./routes/auth.route"
+import MenuRoutes from "./routes/menu.route"
+import HppRoutes from "./routes/hpp.route"
+import ProfileRoutes from "./routes/profile.route"
+import StockRoutes from "./routes/stock.route"
+import TestRoutes from "./routes/test.route"
 
 // import middlewares
 import express from "express"
@@ -75,5 +77,7 @@ app.use("/auth", authLimitter, AuthRoutes)
 app.use("/profile", ProfileRoutes)
 app.use("/menu", MenuRoutes)
 app.use("/resep", HppRoutes)
+app.use("/stock", StockRoutes)
+app.use("/test", TestRoutes)
 
 export default app

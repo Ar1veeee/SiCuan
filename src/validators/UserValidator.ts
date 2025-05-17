@@ -1,4 +1,4 @@
-import User from "../models/UserModel";
+import User from "../models/user.model";
 import { ApiError } from "../exceptions/apiError";
 import { z } from "zod"
 

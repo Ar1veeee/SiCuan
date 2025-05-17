@@ -1,11 +1,13 @@
-"use strict";
-
-import Hpp from "../models/HppModel";
+import HppModel from "../models/hpp.model";
 import { ApiError } from "../exceptions/apiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 
-export const addUserResep = async (
+interface ResepResponse {
+  message: string;
+}
+
+export const createRecipeService = async (
   userId: number,
   menuId: number,
   bahan: {
@@ -15,49 +17,49 @@ export const addUserResep = async (
     satuan: string,
     jumlah_digunakan: number
   }
-): Promise<object> => {
+): Promise<ResepResponse> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
-  const existing = await Hpp.existingResep(menuId, bahan.nama_bahan);
+  const existing = await HppModel.existingResep(menuId, bahan.nama_bahan);
   if (existing) {
     throw new ApiError("Resep sudah ada", 400);
   }
-
-  await Hpp.createBahanWithMenuLink({
+  
+  await HppModel.createBahanWithMenuLink({
     nama: bahan.nama_bahan,
     harga_beli: bahan.harga_beli,
     jumlah: bahan.jumlah,
     satuan: bahan.satuan,
     menuId,
     jumlah_digunakan: bahan.jumlah_digunakan,
+    userId, // Pass the userId to the model function
   });
 
-  await Hpp.updateTotalHPP(menuId);
-
+  await HppModel.updateTotalHPP(menuId);
   return { message: "Resep Berhasil Ditambahkan" }
 };
 
-export const deleteUserMenuResep = async (userId: number, menuId: number, bahanId: number): Promise<object> => {
+export const deleteRecipeService = async (userId: number, menuId: number, bahanId: number): Promise<ResepResponse> => {
   await validateUserExists(userId);
-  const deleted = await Hpp.deleteMenuResep(userId, menuId, bahanId)
+  const deleted = await HppModel.deleteMenuResep(userId, menuId, bahanId)
   if (!deleted) {
     throw new ApiError("Bahan gagal dihapus", 400)
   }
   return { message: "Bahan Berhasil Dihapus" }
 }
 
-export const updateUserMenuResep = async (userId: number, menuId: number, bahanId: number, bahan: {
+export const updateRecipeService = async (userId: number, menuId: number, bahanId: number, bahan: {
   nama_bahan: string,
   harga_beli: number,
   jumlah: number,
   satuan: string,
   jumlah_digunakan: number
-}): Promise<object> => {
+}): Promise<ResepResponse> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
-  const updated = await Hpp.updateMenuResep(userId, menuId, bahanId, {
+  const updated = await HppModel.updateMenuResep(userId, menuId, bahanId, {
     nama: bahan.nama_bahan,
     harga_beli: bahan.harga_beli,
     jumlah: bahan.jumlah,
@@ -70,7 +72,7 @@ export const updateUserMenuResep = async (userId: number, menuId: number, bahanI
     throw new ApiError("Resep Gagal Diperbarui", 400)
   }
 
-  await Hpp.updateTotalHPP(menuId);
+  await HppModel.updateTotalHPP(menuId);
 
   return { message: "Resep Berhasil Diperbarui" }
 }
