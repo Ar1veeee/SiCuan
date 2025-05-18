@@ -1,5 +1,5 @@
 import HppModel from "../models/hpp.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 

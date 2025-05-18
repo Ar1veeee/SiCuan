@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "./emailTemplate.util";
 import dotenv from "dotenv";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 dotenv.config();
 
 export const sendEmail = async (to: string, subject: string, otp: string):Promise<object> => {

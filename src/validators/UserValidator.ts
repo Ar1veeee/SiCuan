@@ -1,5 +1,5 @@
 import User from "../models/user.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { z } from "zod"
 
 export const passwordValidation = {

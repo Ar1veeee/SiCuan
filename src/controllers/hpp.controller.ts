@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { apiResponse } from "../utils/apiResponse.util";
 import { createRecipeService, deleteRecipeService, updateRecipeService } from "../services/HppService";
 import Hpp from "../models/hpp.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 
 // Controller untuk menambah resep
 export const createResep = async (req: Request, res: Response): Promise<void> => {

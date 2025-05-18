@@ -6,7 +6,7 @@ import {
     updateMenuService
 } from "../services/MenuService";
 import MenuModel from "../models/menu.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 
 // Controller untuk menambah menu
 export const createMenu = async (req: Request, res: Response): Promise<void> => {

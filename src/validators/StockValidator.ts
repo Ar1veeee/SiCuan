@@ -1,5 +1,5 @@
 import Stock from "../models/stock.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import {z} from "zod";
 
 export const validateStockOwnership = async (userId: number, stockId: number) => {

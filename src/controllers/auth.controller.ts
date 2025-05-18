@@ -7,7 +7,7 @@ import User from "../models/user.model";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv-safe";
 import { validatePassowrd } from "../validators/PasswordValidator";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 dotenv.config();
 
 // Controller untuk mendaftar pengguna baru

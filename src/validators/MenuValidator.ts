@@ -1,5 +1,5 @@
 import Menu from "../models/menu.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import {z} from "zod"
 
 export const validateMenuOwnership = async (userId: number, menuId: number) => {

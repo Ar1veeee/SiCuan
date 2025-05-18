@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 import { calculateHpp } from "../utils/hppCalculate.util";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 
 const Hpp = {
     createBahanWithMenuLink: async (data: {

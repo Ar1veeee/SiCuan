@@ -1,6 +1,6 @@
 // services/stockService.ts
 import StockModel from "../models/stock.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateStockOwnership } from "../validators/StockValidator";
 import { StockData, StockRequest, StockResponse, JenisTransaksi } from "../types/stock.type";

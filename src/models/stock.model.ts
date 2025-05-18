@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { StockData, StockRequest, JenisTransaksi } from "../types/stock.type";
 
 const prisma = new PrismaClient();

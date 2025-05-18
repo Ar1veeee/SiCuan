@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { apiResponse } from "../utils/apiResponse.util";
 import { updatePasswordService, userProfileService } from "../services/ProfileService";
 import { validatePassowrd } from "../validators/PasswordValidator";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 
 // Controller untuk memperbarui password pengguna
 export const updatePassword = async (req: Request, res: Response): Promise<void> => {

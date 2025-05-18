@@ -1,5 +1,5 @@
 import PasswordResetModel from "../models/passwordReset.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { z } from "zod"
 
 export const validateOtp = async (otp: string) => {

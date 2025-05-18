@@ -1,6 +1,6 @@
 import UserModel from "../models/user.model";
 import PasswordResetModel from "../models/passwordReset.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 import { comparePassword } from "../utils/password.util";
 import { generateOtp } from "../utils/generateOtp.util";
 import { sendEmail } from "../utils/sendEmail.util";

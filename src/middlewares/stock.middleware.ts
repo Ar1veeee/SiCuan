@@ -3,7 +3,7 @@ import { apiResponse } from '../utils/apiResponse.util';
 import StockModel from '../models/stock.model';
 import { validateUserExists } from '../validators/UserValidator';
 import { validateStockOwnership } from '../validators/StockValidator';
-import { ApiError } from '../exceptions/apiError';
+import { ApiError } from '../exceptions/ApiError';
 import { JenisTransaksi, StockData } from '../types/stock.type'; // Import the types
 
 export const validateUserId = (req: Request, res: Response, next: NextFunction): void => {

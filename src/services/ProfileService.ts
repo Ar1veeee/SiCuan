@@ -1,5 +1,5 @@
 import UserModel from "../models/user.model";
-import { ApiError } from "../exceptions/apiError";
+import { ApiError } from "../exceptions/ApiError";
 
 interface ProfileResponse {
     message: string;
