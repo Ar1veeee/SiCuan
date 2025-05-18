@@ -1,4 +1,3 @@
-// services/stockService.ts
 import StockModel from "../models/stock.model";
 import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
