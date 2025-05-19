@@ -2,59 +2,145 @@ import MenuModel from "../models/menu.model";
 import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { MenuData, MenuResponse } from "../types/menu.type";
+import redisService from "./RedisService";
 
-interface MenuResponse {
-    message: string;
-}
+const CACHE_EXPIRY = 3600;
+const MENU_CACHE_KEY = (userId: number) => `menus:user:${userId}`;
 
-export const createMenuService = async (userId: number, nama_menu: string): Promise<MenuResponse> => {
+/**
+ * Service untuk membuat menu baru
+ */
+export const createMenuService = async (
+    userId: number,
+    nama_menu: string
+): Promise<MenuResponse> => {
     await validateUserExists(userId);
 
     const existingMenu = await MenuModel.findExistingMenu(userId, nama_menu);
     if (existingMenu) {
-        throw new ApiError("Menu sudah dipakai", 400)
+        throw new ApiError("Menu sudah dipakai", 400);
     }
 
-    try {
-        await MenuModel.addMenu(userId, nama_menu);
-        return { message: "Menu Berhasil Ditambahkan" }
-    } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError) {
-            throw new ApiError("Gagal menyimpan data menu", 500);
-        }
-        throw error;
-    }
-}
+    await MenuModel.createMenu(userId, nama_menu);
 
-export const updateMenuService = async (userId: number, menuId: number, nama_menu: string): Promise<MenuResponse> => {
+    await redisService.del(MENU_CACHE_KEY(userId));
+
+    return {
+        message: "Menu berhasil ditambahkan",
+    };
+};
+
+/**
+ * Service untuk mendapatkan semua menu berdasarkan userId
+ */
+export const getMenusService = async (userId: number): Promise<MenuData[]> => {
+    await validateUserExists(userId);
+
+    const cachedMenus = await redisService.get(MENU_CACHE_KEY(userId));
+
+    if (cachedMenus) {
+        console.log("Cache hit for user menus");
+        const parsedData = JSON.parse(cachedMenus);
+
+        parsedData.forEach((menu: any) => {
+            if (menu.createdAt) {
+                menu.createdAt = new Date(menu.createdAt);
+            }
+            if (menu.updatedAt) {
+                menu.updatedAt = new Date(menu.updatedAt);
+            }
+        });
+
+        return parsedData;
+    }
+
+    console.log("Cache miss for user menus");
+
+    const menus = await MenuModel.findMenusByUserId(userId);
+
+    await redisService.set(
+        MENU_CACHE_KEY(userId),
+        JSON.stringify(menus),
+        CACHE_EXPIRY
+    );
+
+    return menus;
+};
+
+/**
+ * Service untuk mendapatkan detail menu spesifik
+ */
+export const getMenuDetailService = async (
+    userId: number,
+    menuId: number,
+): Promise<MenuData> => {
+    await validateUserExists(userId);
+
+    console.log("Cache miss for menu detail");
+
+    const menuDetail = await MenuModel.findMenuByIdAndUserId(userId, menuId);
+
+    if (!menuDetail) {
+        throw new ApiError("Menu tidak ditemukan", 404);
+    }
+
+    const menuDetailWithFormatted = {
+        ...menuDetail,
+        createdAtFormatted: menuDetail.createdAt
+            ? new Date(menuDetail.createdAt).toLocaleDateString("id-ID", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            })
+            : undefined,
+        updatedAtFormatted: menuDetail.updatedAt
+            ? new Date(menuDetail.updatedAt).toLocaleDateString("id-ID", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            })
+            : undefined
+    };
+
+    return menuDetailWithFormatted;
+};
+
+/**
+ * Service untuk mengupdate menu
+ */
+export const updateMenuService = async (
+    userId: number,
+    menuId: number,
+    nama_menu: string
+): Promise<MenuResponse> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
 
+    await MenuModel.updateMenu(userId, menuId, nama_menu);
 
-    try {
-        await MenuModel.updateUserMenu(userId, menuId, nama_menu);
-        return { message: "Menu Berhasil Diperbarui" }
-    } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError) {
-            throw new ApiError("Gagal memperbarui data menu", 500);
-        }
-        throw error;
-    }
-}
+    await redisService.del(MENU_CACHE_KEY(userId));
 
-export const deleteMenuService = async (userId: number, menuId: number): Promise<MenuResponse> => {
+    return {
+        message: "Menu berhasil diperbarui",
+    };
+};
+
+/**
+ * Service untuk menghapus menu
+ */
+export const deleteMenuService = async (
+    userId: number,
+    menuId: number
+): Promise<MenuResponse> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
 
-    try {
-        await MenuModel.deleteUserMenu(userId, menuId)
-        return { message: "Menu Berhasil Dihapus" }
-    } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError) {
-            throw new ApiError("Gagal menghapus data menu", 500);
-        }
-        throw error;
-    }
-    
-}
+    await MenuModel.deleteMenu(menuId);
+
+    await redisService.del(MENU_CACHE_KEY(userId));
+
+    return {
+        message: "Menu berhasil dihapus",
+    };
+};

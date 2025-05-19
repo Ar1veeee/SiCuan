@@ -3,6 +3,10 @@ import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateStockOwnership } from "../validators/StockValidator";
 import { StockData, StockRequest, StockResponse, JenisTransaksi } from "../types/stock.type";
+import redisService from "../services/RedisService";
+
+const CACHE_EXPIRY = 3600;
+const STOCK_CACHE_KEY = (userId: number) => `stocks:user:${userId}`;
 
 /**
  * Service untuk membuat transaksi stok baru
@@ -22,25 +26,35 @@ export const createStockService = async (
         throw new ApiError("Stok dengan nama tersebut sudah tersedia", 400);
     }
 
-    const createdStock = await StockModel.createStockTransaction(userId, data);
+    await StockModel.createStockTransaction(userId, data);
+
+    await redisService.del(STOCK_CACHE_KEY(userId));
 
     return {
         message: "Stok berhasil ditambahkan",
-        data: createdStock
     };
 };
 
 /**
  * Service untuk mendapatkan semua transaksi stok berdasarkan userId
+ * Menggunakan Redis untuk caching
  */
 export const getStocksService = async (userId: number): Promise<StockData[]> => {
     await validateUserExists(userId);
 
+    const cachedStocks = await redisService.get(STOCK_CACHE_KEY(userId));
+
+    if (cachedStocks) {
+        console.log("Cache hit for user stocks");
+        return JSON.parse(cachedStocks);
+    }
+
+    console.log("Cache miss for user stocks");
     const stocks = await StockModel.findStockTransactionByUserId(userId);
 
-    return stocks.map(stock => ({
+    const formattedStocks = stocks.map(stock => ({
         ...stock,
-        tanggal: stock.tanggal ? new Date(stock.tanggal).toLocaleDateString("id-ID", {
+        tanggalFormatted: stock.tanggal ? new Date(stock.tanggal).toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -48,6 +62,43 @@ export const getStocksService = async (userId: number): Promise<StockData[]> => 
             minute: "2-digit",
         }) : undefined
     })) as StockData[];
+
+    await redisService.set(
+        STOCK_CACHE_KEY(userId),
+        JSON.stringify(formattedStocks),
+        CACHE_EXPIRY
+    );
+
+    return formattedStocks;
+};
+
+/**
+ * Service untuk mendapatkan detail stok spesifik
+ */
+export const getStockDetailService = async (
+    userId: number,
+    stockId: number
+): Promise<StockData> => {
+    await validateUserExists(userId);
+    
+    const stockDetail = await StockModel.findStockTransactionByIdAndUserId(userId, stockId);
+    
+    if (!stockDetail) {
+        throw new ApiError("Stok tidak ditemukan", 404);
+    }
+    
+    const formattedStockDetail = {
+        ...stockDetail,
+        tanggalFormatted: stockDetail.tanggal ? new Date(stockDetail.tanggal).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        }) : undefined
+    };
+    
+    return formattedStockDetail;
 };
 
 /**
@@ -91,9 +142,10 @@ export const updateStockService = async (
 
     const updatedStock = await StockModel.updateStockTransaction(stockId, updatedData);
 
+    await redisService.del(STOCK_CACHE_KEY(userId));
+
     return {
         message: "Stok berhasil diperbarui",
-        data: updatedStock
     };
 };
 
@@ -110,9 +162,10 @@ export const deleteStockService = async (
     try {
         const deletedStock = await StockModel.deleteStockTransaction(stockId);
 
+        await redisService.del(STOCK_CACHE_KEY(userId));
+
         return {
             message: "Stok berhasil dihapus",
-            data: deletedStock
         };
     } catch (error) {
         throw new ApiError("Gagal menghapus stok", 400);

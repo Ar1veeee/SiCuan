@@ -1,6 +1,5 @@
 import { Response } from 'express';
 
-// Tipe untuk struktur respons
 interface ApiResponse<T> {
   success: boolean;
   message?: string;

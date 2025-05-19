@@ -6,28 +6,6 @@ import { validateStockOwnership } from '../validators/StockValidator';
 import { ApiError } from '../exceptions/ApiError';
 import { JenisTransaksi, StockData } from '../types/stock.type'; // Import the types
 
-export const validateUserId = (req: Request, res: Response, next: NextFunction): void => {
-    const { user_id } = req.params;
-
-    if (!user_id) {
-        apiResponse.badRequest(res, "User ID diperlukan");
-        return;
-    }
-
-    try {
-        const userId = parseInt(user_id, 10);
-        if (isNaN(userId)) {
-            apiResponse.badRequest(res, "User ID harus berupa angka");
-            return;
-        }
-
-        req.userId = userId;
-        next();
-    } catch (error) {
-        apiResponse.badRequest(res, "Format User ID tidak valid");
-    }
-};
-
 export const validateStockId = (req: Request, res: Response, next: NextFunction): void => {
     const { stock_id } = req.params;
 

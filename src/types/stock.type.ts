@@ -12,6 +12,7 @@ export interface StockData {
     jenis_transaksi: JenisTransaksi;
     keterangan: string;
     tanggal?: Date;
+    tanggalFormatted?: string;
 }
 
 export interface StockRequest {

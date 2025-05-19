@@ -1,34 +1,45 @@
 import UserModel from "../models/user.model";
 import { ApiError } from "../exceptions/ApiError";
+import { ProfileResponse, UserProfile } from "../types/profile.type";
 
-interface ProfileResponse {
-    message: string;
-}
-
-export const updatePasswordService = async (user_id: number, newPassword: string): Promise<ProfileResponse> => {
-    if (isNaN(user_id)) {
-        throw new ApiError("ID User tidak valid", 400)
+/**
+ * Service untuk memperbarui password pengguna
+ */
+export const updatePasswordService = async (
+    userId: number,
+    newPassword: string
+): Promise<ProfileResponse> => {
+    if (isNaN(userId)) {
+        throw new ApiError("ID User tidak valid", 400);
     }
-    const updated = await UserModel.updatePassword(user_id, newPassword)
+
+    const updated = await UserModel.updatePassword(userId, newPassword);
     if (!updated) {
-        throw new ApiError("Password Gagal Diperbarui", 400)
-    }
-    return { message: "Password Berhasil Diperbarui" }
-}
-
-export const userProfileService = async (user_id: number) => {
-    if (isNaN(user_id)) {
-        throw new ApiError("ID User Tidak Valid", 400)
+        throw new ApiError("Password gagal diperbarui", 400);
     }
 
-    const user = await UserModel.findUserById(user_id);
+    return {
+        message: "Password berhasil diperbarui"
+    };
+};
+
+/**
+ * Service untuk mendapatkan profil pengguna
+ */
+export const userProfileService = async (userId: number): Promise<UserProfile> => {
+    if (isNaN(userId)) {
+        throw new ApiError("ID User tidak valid", 400);
+    }
+
+    const user = await UserModel.findUserById(userId);
     if (!user) {
-        throw new ApiError("User Tidak Ditemukan", 404)
+        throw new ApiError("User tidak ditemukan", 404);
     }
+
     return {
         userId: user.id,
         username: user.name,
         email: user.email,
         nama_usaha: user.nama_usaha
-    }
-}
+    };
+};

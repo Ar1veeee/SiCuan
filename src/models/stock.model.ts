@@ -1,10 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { ApiError } from "../exceptions/ApiError";
 import { StockData, StockRequest, JenisTransaksi } from "../types/stock.type";
 
 const prisma = new PrismaClient();
 
-// Type adapter function to convert Prisma result to StockData
 const toDomainModel = (prismaStock: any): StockData => {
     return {
         id: prismaStock.id,
@@ -33,6 +31,32 @@ const StockModel = {
                 jenis_transaksi: data.jenis_transaksi,
                 keterangan: data.keterangan,
             },
+        });
+        return toDomainModel(result);
+    },
+
+    /**
+     * Memperbarui transaksi stok
+     */
+    updateStockTransaction: async (
+        stockId: number,
+        data: Partial<StockRequest>
+    ): Promise<StockData> => {
+        const result = await prisma.stockTransaction.update({
+            where: { id: stockId },
+            data
+        });
+        return toDomainModel(result);
+    },
+
+    /**
+     * Menghapus transaksi stok
+     */
+    deleteStockTransaction: async (
+        stockId: number
+    ): Promise<StockData> => {
+        const result = await prisma.stockTransaction.delete({
+            where: { id: stockId }
         });
         return toDomainModel(result);
     },
@@ -75,32 +99,6 @@ const StockModel = {
         });
         return result ? toDomainModel(result) : null;
     },
-
-    /**
-     * Memperbarui transaksi stok
-     */
-    updateStockTransaction: async (
-        stockId: number,
-        data: Partial<StockRequest>
-    ): Promise<StockData> => {
-        const result = await prisma.stockTransaction.update({
-            where: { id: stockId },
-            data
-        });
-        return toDomainModel(result);
-    },
-
-    /**
-     * Menghapus transaksi stok
-     */
-    deleteStockTransaction: async (
-        stockId: number
-    ): Promise<StockData> => {
-        const result = await prisma.stockTransaction.delete({
-            where: { id: stockId }
-        });
-        return toDomainModel(result);
-    }
 };
 
 export default StockModel;

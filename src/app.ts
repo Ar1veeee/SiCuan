@@ -15,7 +15,9 @@ import compression from "compression"
 import rateLimit from "express-rate-limit"
 import hpp from "hpp"
 import xss from "xss"
-import logger from "./config/Logger"
+import logger from "./config/logger.config";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpecs from './config/swagger.config';
 
 const app = express()
 const morganFormat = ":method :url :status :response-time ms";
@@ -72,6 +74,8 @@ app.use(
 );
 app.use(compression())
 app.use(express.json())
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
 
 app.use("/auth", authLimitter, AuthRoutes)
 app.use("/profile", ProfileRoutes)
