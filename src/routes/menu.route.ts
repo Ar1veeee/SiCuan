@@ -1,4 +1,3 @@
-// src/routes/menu.route.ts (dengan dokumentasi Swagger)
 import { Router } from "express";
 const router = Router();
 import { 

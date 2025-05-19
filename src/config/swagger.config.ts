@@ -1,4 +1,3 @@
-// src/config/swagger.config.ts
 import swaggerJsdoc from 'swagger-jsdoc';
 
 const options: swaggerJsdoc.Options = {
@@ -19,7 +18,7 @@ const options: swaggerJsdoc.Options = {
         description: 'Development Server',
       },
       {
-        url: 'https://api.sicuan.com',
+        url: 'https://sicuan-service.up.railway.app',
         description: 'Production Server',
       },
     ],
