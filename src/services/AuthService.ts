@@ -71,7 +71,7 @@ export const loginService = async (
             username: user.name,
             access_token: accessToken,
         },
-        refreshToken: refreshToken // Will be removed from response in controller
+        refreshToken: refreshToken 
     };
 };
 
