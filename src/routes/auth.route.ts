@@ -157,6 +157,52 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *                       example: johndoe
  *       400:
  *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               passwordMismatch:
+ *                 summary: Password tidak cocok
+ *                 value:
+ *                   success: false
+ *                   message: Password dan Confirm Password harus sama.
+ *               passwordTooShort:
+ *                 summary: Password terlalu pendek
+ *                 value:
+ *                   success: false
+ *                   message: Password harus setidaknya 8 karakter.
+ *               passwordNoUppercase:
+ *                 summary: Password tanpa huruf besar
+ *                 value:
+ *                   success: false
+ *                   message: Password harus diawali dengan huruf besar.
+ *               passwordNoNumber:
+ *                 summary: Password tanpa angka
+ *                 value:
+ *                   success: false
+ *                   message: Password mengandung setidaknya satu angka.
+ *               emailInvalid:
+ *                 summary: Format email tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: Format Email tidak valid
+ *               emailExists:
+ *                 summary: Email sudah terdaftar
+ *                 value:
+ *                   success: false
+ *                   message: Email sudah terdaftar
+ *               requiredFields:
+ *                 summary: Field wajib tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: Email wajib diisi
  *       409:
  *         description: Email atau username sudah terdaftar
  *       500:
@@ -209,8 +255,42 @@ router.post(
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       400:
  *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               invalidPassword:
+ *                 summary: Password salah
+ *                 value:
+ *                   success: false
+ *                   message: Password salah
+ *               requiredFields:
+ *                 summary: Field wajib tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: Email wajib diisi
  *       401:
  *         description: Email atau password salah
+ *       404:
+ *         description: Pengguna tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Pengguna tidak ditemukan
  *       500:
  *         description: Server error
  */
@@ -278,7 +358,28 @@ router.post(
  *                   type: string
  *                   example: Kode OTP telah dikirim ke email Anda
  *       400:
- *         description: Email tidak valid
+ *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               requiredEmail:
+ *                 summary: Email tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: Email wajib diisi
+ *               invalidEmail:
+ *                 summary: Format email tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: Format Email tidak valid
  *       404:
  *         description: Email tidak terdaftar
  *       500:
@@ -318,8 +419,27 @@ router.post(
  *                   example: Kode OTP valid
  *       400:
  *         description: OTP tidak valid
- *       401:
- *         description: OTP salah
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               requiredOtp:
+ *                 summary: OTP tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: OTP wajib diisi
+ *               invalidOtp:
+ *                 summary: OTP tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: OTP tidak valid atau sudah kadaluwarsa
  *       500:
  *         description: Server error
  */
@@ -357,8 +477,57 @@ router.post(
  *                   example: Password berhasil diubah
  *       400:
  *         description: Data tidak valid
- *       401:
- *         description: OTP tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               requiredOtp:
+ *                 summary: OTP tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: OTP wajib diisi
+ *               invalidOtp:
+ *                 summary: OTP tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: OTP tidak valid atau sudah kadaluwarsa
+ *               requiredPassword:
+ *                 summary: Password tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: Password wajib diisi
+ *               requiredConfirmPassword:
+ *                 summary: Konfirmasi password tidak diisi
+ *                 value:
+ *                   success: false
+ *                   message: Confirm Password wajib diisi
+ *               passwordMismatch:
+ *                 summary: Password tidak cocok
+ *                 value:
+ *                   success: false
+ *                   message: Konfirmasi password tidak cocok
+ *               passwordTooShort:
+ *                 summary: Password terlalu pendek
+ *                 value:
+ *                   success: false
+ *                   message: Password harus setidaknya 8 karakter.
+ *               passwordNoUppercase:
+ *                 summary: Password tanpa huruf besar
+ *                 value:
+ *                   success: false
+ *                   message: Password harus diawali dengan huruf besar.
+ *               passwordNoNumber:
+ *                 summary: Password tanpa angka
+ *                 value:
+ *                   success: false
+ *                   message: Password mengandung setidaknya satu angka.
  *       500:
  *         description: Server error
  */
