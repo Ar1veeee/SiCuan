@@ -2,24 +2,30 @@
 
 ## Description
 
-**SiCuan** is an app designed to help MSMEs manage their finances. With features such as login, dashboard, COGS, selling price, auto stock, sales, and margin, this app aims to make daily financial management easier for small and medium business owners.
+**SiCuan** is the REST API backend for the SiCuan application, a platform designed to help restaurants and culinary businesses manage their menus, recipes, and inventory stock. Built with Express.js and TypeScript, this API provides a robust foundation for restaurant management operations.
 
 ---
 
 ## Key Features
 
-- **Transaction Record**: Add income or expenses with customizable categories.
-- **Transaction History**: View a complete list of past transactions.
-- **Stock Management**: Manage product stock with an automatic feature to update stock quantities based on transactions..
-- **Recipe Management**: Set and manage recipes for products, including ingredients used and calculations, for easy production and cost management.
+- **Authentication**: Secure user registration, login, and password reset functionality.
+- **Menu Management**: Create, read, update, and delete menu items.
+- **Recipe/COGS Management**: Track ingredients, calculate production costs, and manage recipes.
+- **Stock Management**: Monitor stock levels, record stock movements, and manage inventory.
+- **Profile Management**: View and update user profiles, change passwords securely.
 
 ---
 
 ## Technologies Used
 
-- **Backend**: Node.js with Express
-- **Database**: MySQL
-- **Authentication**: JWT & Accounts
+- **Framework**: Express.js with TypeScript
+- **Database**: MySQL with Prisma ORM
+- **Authentication**: JWT (JSON Web Token)
+- **Caching**: Redis
+- **Email** Service: Nodemailer with Mailjet
+- **Documentation**: Swagger/OpenAPI
+- **Security**: Helmet, HPP, XSS Protection, Rate Limiting
+- **Logging**: Winston, Morgan
 
 ---
 
@@ -27,15 +33,17 @@
 
 ### Prerequisites
 
-1. Make sure you have **Node.js** (v14 or newer) and **npm/yarn** installed on your computer.
-2. A configured database.
+1. Node.js (v18.x or newer)
+2. npm (v9.x or newer)
+3. MySQL
+4. Redis (optional, for caching)
 
 ### Installation Steps
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/username/SiCuan.git
-   cd money-tracker
+   git clone https://github.com/username/backend-sicuan.git
+   cd backend-sicuan
    ```
 2. Install dependencies:
    ```bash
@@ -44,130 +52,70 @@
    yarn install
    ```
 3. Configure the `.env` file:
-   - Copy the `.env.example` to `.env`.
-   - Fill in the environment variable values such as database URL, API keys, etc.
-4. Run the application:
    ```bash
-   npm start
-   # or
-   yarn start
+   cp .env.example .env
+   ```
+
+4. Setup the database:
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
+
+5. Run the application:
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Production mode
+   npm run build
+   npm run prod
    ```
 
 ---
 
 ## API Documentation
-
-## Authentication
-
-### Register
-
-- **Endpoint**: `/auth/register`
-- **Method**: `POST`
-- **Request Body**:
-  ```json
-  {
-    "username": "string",
-    "email": "string",
-    "password": "string",
-    "confirmPassword": "string"
-  }
-  ```
-- **Password Requirements**:
-  - Minimum 8 characters
-  - At least one uppercase letter
-  - At least one number
-  - At least one special character
-- **Success Response**:
-  ```json
-  {
-    "success": true,
-    "message": "Resource created successfully",
-    "data": "Registration Successfully"
-  }
-  ```
-- **Error Response**:
-  ```json
-  {
-    "success": false,
-    "message": "Password and Confirm Password must be the same.",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Email already exists",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Invalid email format",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Password must be at least 8 characters.",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Password must begin with an uppercase letter.",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Password must contain at least one number.",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "Password must contain at least one special character.",    
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "",    
-  }
+  ```bash
+  http://localhost:5000/api-docs
   ```
 
-### Login
+---
 
-- **Endpoint**: `/auth/login`
-- **Method**: `POST`
-- **Request Body**:
-  ```json
-  {
-    "email": "string",
-    "password": "string"
-  }
+## Project Structure
+
+  ```bash
+  backend-sicuan/
+  ├── src/                    # Source code
+  │   ├── config/             # Application configuration
+  │   ├── controllers/        # API controllers
+  │   ├── exceptions/         # Custom error definitions
+  │   ├── middlewares/        # Express middlewares
+  │   ├── models/             # Data models (Prisma)
+  │   ├── routes/             # API route definitions
+  │   ├── services/           # Business logic and integrations
+  │   ├── types/              # TypeScript type definitions
+  │   ├── utils/              # Utility functions
+  │   ├── validators/         # Input validation
+  │   ├── app.ts              # Express application
+  │   └── server.ts           # Application entry point
+  ├── prisma/                 # Prisma ORM configuration
+  ├── logs/                   # Application logs
+  ├── .env                    # Environment variables
+  ├── .env.example            # Example environment variables
+  ├── package.json            # Node.js dependencies
+  └── tsconfig.json           # TypeScript configuration
   ```
-- **Success Response**:
-  ```json
-  {
-    "success": true,
-    "message": "Success",
-    "data": {
-        "userID": userId,
-        "username": "username",
-        "active_token": "expected_token"
-    }
-  }
-  ```
-- **Error Response**:
-  ```json
-  {
-    "success": false,
-    "message": "Invalid Password"
-  }
-  ```
-  ```json
-  {
-    "success": false,
-    "message": "User Not Found"
-  }
-  ```
+
+---
+
+## Security Features
+This API implements various security features:
+- Helmet for HTTP security headers
+- Rate limiting to prevent brute force attacks
+- XSS protection
+- HPP protection
+- Input validation with Zod
+- JWT for authentication
+
+## Author
+Aliefarifin
