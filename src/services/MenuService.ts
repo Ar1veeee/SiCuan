@@ -3,10 +3,6 @@ import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 import { MenuData, MenuResponse } from "../types/menu.type";
-import redisService from "./RedisService";
-
-const CACHE_EXPIRY = 3600;
-const MENU_CACHE_KEY = (userId: number) => `menus:user:${userId}`;
 
 /**
  * Service untuk membuat menu baru
@@ -24,8 +20,6 @@ export const createMenuService = async (
 
     await MenuModel.createMenu(userId, nama_menu);
 
-    await redisService.del(MENU_CACHE_KEY(userId));
-
     return {
         message: "Menu berhasil ditambahkan",
     };
@@ -37,33 +31,7 @@ export const createMenuService = async (
 export const getMenusService = async (userId: number): Promise<MenuData[]> => {
     await validateUserExists(userId);
 
-    const cachedMenus = await redisService.get(MENU_CACHE_KEY(userId));
-
-    if (cachedMenus) {
-        console.log("Cache hit for user menus");
-        const parsedData = JSON.parse(cachedMenus);
-
-        parsedData.forEach((menu: any) => {
-            if (menu.createdAt) {
-                menu.createdAt = new Date(menu.createdAt);
-            }
-            if (menu.updatedAt) {
-                menu.updatedAt = new Date(menu.updatedAt);
-            }
-        });
-
-        return parsedData;
-    }
-
-    console.log("Cache miss for user menus");
-
     const menus = await MenuModel.findMenusByUserId(userId);
-
-    await redisService.set(
-        MENU_CACHE_KEY(userId),
-        JSON.stringify(menus),
-        CACHE_EXPIRY
-    );
 
     return menus;
 };
@@ -119,8 +87,6 @@ export const updateMenuService = async (
 
     await MenuModel.updateMenu(userId, menuId, nama_menu);
 
-    await redisService.del(MENU_CACHE_KEY(userId));
-
     return {
         message: "Menu berhasil diperbarui",
     };
@@ -137,8 +103,6 @@ export const deleteMenuService = async (
     await validateMenuOwnership(userId, menuId);
 
     await MenuModel.deleteMenu(menuId);
-
-    await redisService.del(MENU_CACHE_KEY(userId));
 
     return {
         message: "Menu berhasil dihapus",

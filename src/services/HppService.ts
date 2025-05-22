@@ -3,10 +3,7 @@ import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 import { BahanRequest, HppResponse } from "../types/hpp.type";
-import redisService from "./RedisService";
 
-const CACHE_EXPIRY = 3600;
-const RESEP_CACHE_KEY = (userId: number) => `menus:user:${userId}`;
 /**
  * Service untuk menambahkan resep baru ke menu
  */
@@ -35,8 +32,6 @@ export const createRecipeService = async (
 
   await HppModel.updateTotalHPP(menuId);
 
-  await redisService.del(RESEP_CACHE_KEY(userId));
-
   return {
     message: "Resep berhasil ditambahkan"
   };
@@ -52,31 +47,8 @@ export const getRecipesService = async (
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
 
-  const cachedRecipes = await redisService.get(RESEP_CACHE_KEY(userId));
-  if (cachedRecipes) {
-    console.log("Cache hit for user recipes");
-    const parsedData = JSON.parse(cachedRecipes);
-    parsedData.forEach((recipe: any) => {
-      if (recipe.createdAt) {
-        recipe.createdAt = new Date(recipe.createdAt);
-      }
-      if (recipe.updatedAt) {
-        recipe.updatedAt = new Date(recipe.updatedAt);
-      }
-    });
-    return parsedData;
-  }
-
-  console.log("Cache miss for user recipes");
-
   const recipes = await HppModel.findResepByUserIdAndMenuId(userId, menuId);
 
-  await redisService.set(
-    RESEP_CACHE_KEY(userId),
-    JSON.stringify(recipes),
-    CACHE_EXPIRY
-  );
-  
   return recipes;
 };
 
@@ -107,8 +79,6 @@ export const updateRecipeService = async (
 
   await HppModel.updateTotalHPP(menuId);
 
-  await redisService.del(RESEP_CACHE_KEY(userId));
-
   return {
     message: "Resep berhasil diperbarui"
   };
@@ -129,8 +99,6 @@ export const deleteRecipeService = async (
   if (!deleted) {
     throw new ApiError("Bahan gagal dihapus", 400);
   }
-
-  await redisService.del(RESEP_CACHE_KEY(userId));
 
   return {
     message: "Bahan berhasil dihapus"
