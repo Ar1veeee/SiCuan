@@ -69,7 +69,7 @@ const sendEmail = async (to, subject, otp) => {
             throw new Error("Mailjet credentials missing from environment variables");
         }
         
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
             host: 'in-v3.mailjet.com',
             port: 587,
             secure: false,
