@@ -8,3 +8,6 @@
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"200\",\"responseTime\":\"235.581\"}","timestamp":"2025-05-21T11:47:48.205Z"}
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stock/10\",\"status\":\"404\",\"responseTime\":\"16.688\"}","timestamp":"2025-05-21T11:47:59.510Z"}
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stock/\",\"status\":\"-\",\"responseTime\":\"-\"}","timestamp":"2025-05-21T11:48:53.275Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/test/api\",\"status\":\"200\",\"responseTime\":\"3.175\"}","timestamp":"2025-05-22T05:02:09.813Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/favicon.ico\",\"status\":\"404\",\"responseTime\":\"2.065\"}","timestamp":"2025-05-22T05:02:11.197Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/test/api\",\"status\":\"304\",\"responseTime\":\"0.854\"}","timestamp":"2025-05-22T05:02:15.124Z"}

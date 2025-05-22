@@ -68,7 +68,8 @@ gcloud run deploy sicuan-api \
   --source . \
   --region $REGION \
   --allow-unauthenticated \
-  --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID,EMAIL_TOPIC_NAME=$TOPIC_NAME \
+  --port 5000 \
+  --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID,EMAIL_TOPIC_NAME=$TOPIC_NAME,PORT=5000 \
   --memory 1Gi \
   --cpu 1 \
   --max-instances 10
