@@ -20,6 +20,9 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger.config';
 
 const app = express()
+
+app.set('trust proxy', true)
+
 const morganFormat = ":method :url :status :response-time ms";
 
 const limitter = rateLimit({
