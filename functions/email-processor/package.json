@@ -1,0 +1,23 @@
+{
+    "name": "email-processor",
+    "version": "1.0.0",
+    "description": "Cloud Function to process email queue from Pub/Sub",
+    "main": "index.js",
+    "engines": {
+      "node": "18"
+    },
+    "dependencies": {
+      "nodemailer": "^6.9.0"
+    },
+    "scripts": {
+      "start": "node index.js"
+    },
+    "keywords": [
+      "cloud-functions",
+      "pubsub",
+      "email",
+      "nodejs"
+    ],
+    "author": "Your Name",
+    "license": "MIT"
+  }

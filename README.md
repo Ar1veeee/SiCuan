@@ -21,7 +21,6 @@
 - **Framework**: Express.js with TypeScript
 - **Database**: MySQL with Prisma ORM
 - **Authentication**: JWT (JSON Web Token)
-- **Caching**: Redis
 - **Email** Service: Nodemailer with Mailjet
 - **Documentation**: Swagger/OpenAPI
 - **Security**: Helmet, HPP, XSS Protection, Rate Limiting
@@ -36,7 +35,6 @@
 1. Node.js (v18.x or newer)
 2. npm (v9.x or newer)
 3. MySQL
-4. Redis (optional, for caching)
 
 ### Installation Steps
 

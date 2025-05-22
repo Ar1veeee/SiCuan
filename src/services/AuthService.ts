@@ -3,7 +3,7 @@ import PasswordResetModel from "../models/passwordReset.model";
 import { ApiError } from "../exceptions/ApiError";
 import { comparePassword } from "../utils/password.util";
 import { generateOtp } from "../utils/generateOtp.util";
-import { sendEmail } from "../utils/sendEmail.util";
+import PubSubService from "./PubSubService";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { validateOtp } from "../validators/ResetPasswordValidator";
 import { AuthResponse, LoginResponse } from "../types/auth.type";
@@ -113,7 +113,6 @@ export const refreshTokenService = async (
 
     await UserModel.refreshToken(refreshTokenValue, newAccessToken);
 
-    // Only update refresh token if it's different
     if (newRefreshToken !== refreshTokenValue) {
         await UserModel.createOrUpdateAuthToken(userId, newAccessToken, newRefreshToken);
 
@@ -137,7 +136,7 @@ export const refreshTokenService = async (
 };
 
 /**
- * Service untuk mengirim OTP
+ * Service untuk mengirim OTP (Updated with Pub/Sub)
  */
 export const sendOtpService = async (email: string): Promise<AuthResponse> => {
     const user = await UserModel.findUserByEmail(email);
@@ -149,7 +148,19 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     await PasswordResetModel.create({ userId: user.id, otp, expiresAt });
-    await sendEmail(email, 'Verifikasi OTP', otp);
+    
+    try {
+        await PubSubService.publishEmailMessage({
+            to: email,
+            subject: 'Verifikasi OTP',
+            otp: otp,
+            type: 'otp'
+        });
+        
+        console.log(`OTP email message published for ${email}`);
+    } catch (error) {
+        console.error('Failed to publish email message:', error);
+    }
 
     return {
         message: 'Kode OTP telah dikirim ke email Anda'
