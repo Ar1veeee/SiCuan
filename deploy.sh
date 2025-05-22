@@ -5,10 +5,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' 
 
-PROJECT_ID="your-project-id"
+PROJECT_ID="sicuan-boyz4"
 REGION="asia-southeast2"
 TOPIC_NAME="email-notifications"
 FUNCTION_NAME="processEmailQueue"
+SERVICE_NAME="sicuan-api"
 
 echo -e "${GREEN}🚀 Starting deployment process for SiCuan Backend${NC}"
 
@@ -60,29 +61,55 @@ fi
 
 cd ../..
 
-echo -e "${YELLOW}🐳 Building and deploying Cloud Run service...${NC}"
+echo -e "${YELLOW}🐳 Building Cloud Run service...${NC}"
 
 npm run build
 
-gcloud run deploy sicuan-api \
-  --source . \
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME .
+
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✅ Container image built successfully${NC}"
+else
+    echo -e "${RED}❌ Container build failed${NC}"
+    exit 1
+fi
+
+echo -e "${YELLOW}🚀 Deploying Cloud Run service...${NC}"
+
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --platform managed \
   --region $REGION \
   --allow-unauthenticated \
-  --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID,EMAIL_TOPIC_NAME=$TOPIC_NAME \
-  --memory 1Gi \
-  --cpu 1 \
-  --max-instances 10
+  --memory 2GiB \
+  --cpu 2 \
+  --max-instances 5 \
+  --timeout 300
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Cloud Run service deployed successfully${NC}"
+    
+    # Get the service URL
+    SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --region=$REGION --format="value(status.url)")
+    echo -e "${GREEN}🌐 Service URL: $SERVICE_URL${NC}"
 else
     echo -e "${RED}❌ Cloud Run deployment failed${NC}"
     exit 1
 fi
 
 echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
+echo -e "${YELLOW}📝 Service Information:${NC}"
+echo "• Cloud Function: $FUNCTION_NAME"
+echo "• Cloud Run Service: $SERVICE_NAME"
+echo "• Service URL: $SERVICE_URL"
+echo "• Region: $REGION"
+echo ""
 echo -e "${YELLOW}📝 Next steps:${NC}"
-echo "1. Update your frontend to use the new Cloud Run URL"
-echo "2. Test the OTP functionality"
-echo "3. Monitor logs using: gcloud functions logs tail $FUNCTION_NAME"
-echo "4. Monitor Cloud Run logs using: gcloud run services logs tail sicuan-api"
+echo "1. Update your frontend to use: $SERVICE_URL"
+echo "2. Test the API endpoints"
+echo "3. Test the OTP functionality"
+echo ""
+echo -e "${YELLOW}📊 Monitoring:${NC}"
+echo "• Function logs: gcloud functions logs tail $FUNCTION_NAME"
+echo "• Cloud Run logs: gcloud run services logs tail $SERVICE_NAME --region=$REGION"
+echo "• View in console: https://console.cloud.google.com/run/detail/$REGION/$SERVICE_NAME"
