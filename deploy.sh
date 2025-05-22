@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' 
 
-# Configuration
 PROJECT_ID="your-project-id"
 REGION="asia-southeast2"
 TOPIC_NAME="email-notifications"
@@ -14,7 +12,6 @@ FUNCTION_NAME="processEmailQueue"
 
 echo -e "${GREEN}🚀 Starting deployment process for SiCuan Backend${NC}"
 
-# Check if required environment variables are set
 if [ -z "$MAILJET_API_KEY" ] || [ -z "$MAILJET_SECRET_KEY" ] || [ -z "$MAILJET_SENDER" ]; then
     echo -e "${RED}❌ Error: MAILJET_API_KEY, MAILJET_SECRET_KEY, and MAILJET_SENDER must be set${NC}"
     echo "Please set them using:"
@@ -24,18 +21,15 @@ if [ -z "$MAILJET_API_KEY" ] || [ -z "$MAILJET_SECRET_KEY" ] || [ -z "$MAILJET_S
     exit 1
 fi
 
-# Set project
 echo -e "${YELLOW}📋 Setting Google Cloud project...${NC}"
 gcloud config set project $PROJECT_ID
 
-# Enable required APIs
 echo -e "${YELLOW}🔧 Enabling required APIs...${NC}"
 gcloud services enable pubsub.googleapis.com
 gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable run.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
 
-# Create Pub/Sub topic
 echo -e "${YELLOW}📬 Creating Pub/Sub topic...${NC}"
 if gcloud pubsub topics describe $TOPIC_NAME > /dev/null 2>&1; then
     echo -e "${GREEN}✅ Topic $TOPIC_NAME already exists${NC}"
@@ -44,7 +38,6 @@ else
     echo -e "${GREEN}✅ Topic $TOPIC_NAME created${NC}"
 fi
 
-# Deploy Cloud Function
 echo -e "${YELLOW}☁️ Deploying Cloud Function...${NC}"
 cd functions/email-processor
 
@@ -65,16 +58,12 @@ else
     exit 1
 fi
 
-# Go back to root directory
 cd ../..
 
-# Build and deploy Cloud Run service
 echo -e "${YELLOW}🐳 Building and deploying Cloud Run service...${NC}"
 
-# Build the application
 npm run build
 
-# Deploy to Cloud Run
 gcloud run deploy sicuan-api \
   --source . \
   --region $REGION \
