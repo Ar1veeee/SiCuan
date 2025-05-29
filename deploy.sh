@@ -61,11 +61,9 @@ fi
 
 cd ../..
 
-echo -e "${YELLOW}🐳 Building Cloud Run service...${NC}"
+echo -e "${YELLOW}🐳 Building Docker Image with custom Dockerfile...${NC}"
 
-npm run build
-
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME .
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME --file Dockerfile .
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Container image built successfully${NC}"
@@ -89,7 +87,6 @@ gcloud run deploy $SERVICE_NAME \
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Cloud Run service deployed successfully${NC}"
     
-    # Get the service URL
     SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --region=$REGION --format="value(status.url)")
     echo -e "${GREEN}🌐 Service URL: $SERVICE_URL${NC}"
 else
