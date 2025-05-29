@@ -4,7 +4,6 @@ import MenuRoutes from "./routes/menu.route"
 import HppRoutes from "./routes/hpp.route"
 import ProfileRoutes from "./routes/profile.route"
 import StockRoutes from "./routes/stock.route"
-import TestRoutes from "./routes/test.route"
 
 // import middlewares
 import express from "express"
@@ -20,9 +19,6 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger.config';
 
 const app = express()
-
-app.set('trust proxy', true)
-
 const morganFormat = ":method :url :status :response-time ms";
 
 const limitter = rateLimit({
@@ -85,6 +81,5 @@ app.use("/profile", ProfileRoutes)
 app.use("/menu", MenuRoutes)
 app.use("/resep", HppRoutes)
 app.use("/stock", StockRoutes)
-app.use("/test", TestRoutes)
 
 export default app
