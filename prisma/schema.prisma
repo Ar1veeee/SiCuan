@@ -10,7 +10,7 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         String      @id @db.Char(26)
   name       String   @db.VarChar(100)
   email      String   @unique @db.VarChar(100)
   password   String   @db.VarChar(255)
@@ -23,8 +23,8 @@ model User {
 }
 
 model Auth {
-  id           Int      @id @default(autoincrement())
-  userId       Int      @unique
+  id           String      @id @db.Char(26)
+  userId       String      @unique
   accessToken  String?  @unique @db.VarChar(255)
   refreshToken String?  @unique @db.VarChar(255)
   deviceInfo   String?  @db.VarChar(255)
@@ -35,8 +35,8 @@ model Auth {
 }
 
 model Menu {
-  id         Int     @id @default(autoincrement())
-  userId     Int     
+  id         String     @id @db.Char(26)
+  userId     String     
   nama_menu  String
   jumlah_hpp Int?
 
@@ -46,7 +46,7 @@ model Menu {
 
 // Simplified Bahan (Stock) model
 model Bahan {
-  id          Int           @id @default(autoincrement())
+  id          String           @id @db.Char(26)
   nama        String        @unique  // Adding unique constraint to prevent duplicates
   jumlah      Float         // jumlah stok tersedia
   createdAt   DateTime      @default(now())
@@ -57,9 +57,9 @@ model Bahan {
 }
 
 model MenuBahan {
-  id          Int      @id @default(autoincrement())
-  menuId      Int
-  bahanId     Int
+  id          String      @id @db.Char(26)
+  menuId      String
+  bahanId     String
   jumlah      Int?     // jumlah bahan yang digunakan dalam menu
   harga_beli  Float?   // Moving pricing info to the relationship since it's not in Bahan anymore
   satuan      String?  // Moving unit info to the relationship since it's not in Bahan anymore
@@ -74,8 +74,8 @@ model MenuBahan {
 
 // Simplified StockTransaction model
 model StockTransaction {
-  id              Int       @id @default(autoincrement())
-  userId          Int       // User who made the transaction (keeping for audit purposes)
+  id              String       @id @db.Char(26)
+  userId          String       // User who made the transaction (keeping for audit purposes)
   nama            String       // Ingredient reference
   jumlah          Float     // Amount changed (positive or negative)
   jenis_transaksi String    // 'masuk', 'keluar', 'penyesuaian'
@@ -87,8 +87,8 @@ model StockTransaction {
 }
 
 model PasswordReset {
-  id        Int      @id @default(autoincrement())
-  userId    Int
+  id        String      @id @db.Char(26)
+  userId    String
   otp       String   @db.VarChar(10)
   used      Boolean  @default(false)
   expiresAt DateTime
