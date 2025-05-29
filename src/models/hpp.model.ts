@@ -2,16 +2,17 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 import { calculateHpp } from "../utils/hppCalculate.util";
 import { ApiError } from "../exceptions/ApiError";
+import { ulid } from "ulid";
 
 const Hpp = {
     createBahanWithMenuLink: async (data: {
+        userId: string;
+        menuId: string;
         nama: string;
         harga_beli: number;
         jumlah: number;
         satuan: string;
-        menuId: number;
         jumlah_digunakan: number;
-        userId: number;
     }) => {
         const biaya = calculateHpp(data.harga_beli, data.jumlah, data.jumlah_digunakan);
 
@@ -22,6 +23,7 @@ const Hpp = {
         if (!bahan) {
             bahan = await prisma.bahan.create({
                 data: {
+                    id: ulid(),
                     nama: data.nama,
                     jumlah: data.jumlah,
                 },
@@ -36,6 +38,7 @@ const Hpp = {
 
         await prisma.menuBahan.create({
             data: {
+                id: ulid(),
                 menuId: data.menuId,
                 bahanId: bahan.id,
                 jumlah: data.jumlah_digunakan,
@@ -54,6 +57,7 @@ const Hpp = {
         if (!existingStockTransaction && data.userId) {
             await prisma.stockTransaction.create({
                 data: {
+                    id: ulid(),
                     userId: data.userId,
                     nama: data.nama,
                     jumlah: 0,
@@ -66,13 +70,13 @@ const Hpp = {
         return bahan;
     },
 
-    updateTotalHPP: async (menuId: number) => {
+    updateTotalHPP: async (menuId: string) => {
         const totalBiayaHpp = await prisma.menuBahan.findMany({
             where: { menuId },
             include: { bahan: true },
         });
 
-        const jumlahHpp = totalBiayaHpp.reduce((acc, item) => acc + (item.biaya ?? 0), 0);
+        const jumlahHpp = totalBiayaHpp.reduce((acc: number, item: typeof totalBiayaHpp[0]) => acc + (item.biaya ?? 0), 0);
 
         await prisma.menu.update({
             where: { id: menuId },
@@ -80,7 +84,7 @@ const Hpp = {
         });
     },
 
-    findResepByUserIdAndMenuId: async (userId: number, menuId: number) => {
+    findResepByUserIdAndMenuId: async (userId: string, menuId: string) => {
         return await prisma.bahan.findMany({
             where: {
                 menuBahan: {
@@ -105,7 +109,7 @@ const Hpp = {
         })
     },
 
-    existingResep: async (menuId: number, nama_bahan: string) => {
+    existingResep: async (menuId: string, nama_bahan: string) => {
         return await prisma.menuBahan.findFirst({
             where: {
                 menuId,
@@ -119,7 +123,7 @@ const Hpp = {
         })
     },
 
-    deleteMenuResep: async (userId: number, menuId: number, bahanId: number) => {
+    deleteMenuResep: async (userId: string, menuId: string, bahanId: string) => {
         const menuBahan = await prisma.menuBahan.findFirst({
             where: {
                 menuId,
@@ -165,12 +169,12 @@ const Hpp = {
         return true
     },
 
-    updateMenuResep: async (userId: number, menuId: number, bahanId: number, data: {
+    updateMenuResep: async (userId: string, menuId: string, bahanId: string, data: {
         nama: string;
         harga_beli: number;
         jumlah: number;
         satuan: string;
-        menuId: number;
+        menuId: string;
         jumlah_digunakan: number;
     }) => {
         const menuBahan = await prisma.menuBahan.findFirst({

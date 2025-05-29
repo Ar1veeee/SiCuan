@@ -5,6 +5,7 @@ import { validateUserExists } from '../validators/UserValidator';
 import { validateStockOwnership } from '../validators/StockValidator';
 import { ApiError } from '../exceptions/ApiError';
 import { JenisTransaksi, StockData } from '../types/stock.type'; // Import the types
+import { isValidULID } from '../validators/IdValidator';
 
 export const validateStockId = (req: Request, res: Response, next: NextFunction): void => {
     const { stock_id } = req.params;
@@ -14,24 +15,24 @@ export const validateStockId = (req: Request, res: Response, next: NextFunction)
         return;
     }
 
-    try {
-        const stockId = parseInt(stock_id, 10);
-        if (isNaN(stockId)) {
-            apiResponse.badRequest(res, "Stock ID harus berupa angka");
-            return;
-        }
-
-        req.stockId = stockId;
-        next();
-    } catch (error) {
-        apiResponse.badRequest(res, "Format Stock ID tidak valid");
+    if (!isValidULID(stock_id)) {
+        apiResponse.badRequest(res, "Format Menu ID tidak valid");
+        return;
     }
+
+    req.stockId = stock_id;
+    next();
 };
 
 export const verifyStockOwnership = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.userId || !req.stockId) {
-            apiResponse.badRequest(res, "User ID dan Stock ID diperlukan");
+        if (!req.userId) {
+            apiResponse.badRequest(res, "User ID diperlukan");
+            return;
+        }
+
+        if (!req.stockId) {
+            apiResponse.badRequest(res, "Stock ID diperlukan");
             return;
         }
 
@@ -66,9 +67,6 @@ export const verifyStockOwnership = async (req: Request, res: Response, next: Ne
  * Handler error global untuk controller stock
  */
 export const handleStockError = (error: unknown, res: Response): void => {
-    // Untuk production, gunakan logger yang proper seperti Winston atau Pino
-    console.error("[Stock Error]:", error);
-
     if (error instanceof ApiError) {
         apiResponse.error(res, error.message, error.statusCode);
     } else {

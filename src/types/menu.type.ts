@@ -3,8 +3,8 @@ export interface MenuRequest {
 }
 
 export interface MenuData {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     nama_menu: string;  
     jumlah_hpp?: number | null;
     createdAt?: Date;
@@ -21,8 +21,8 @@ export interface MenuResponse {
 declare global {
     namespace Express {
         interface Request {
-            userId?: number;
-            menuId?: number;
+            userId?: string;
+            menuId?: string;
             menuData?: MenuData;
         }
     }

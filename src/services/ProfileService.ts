@@ -6,13 +6,9 @@ import { ProfileResponse, UserProfile } from "../types/profile.type";
  * Service untuk memperbarui password pengguna
  */
 export const updatePasswordService = async (
-    userId: number,
+    userId: string,
     newPassword: string
 ): Promise<ProfileResponse> => {
-    if (isNaN(userId)) {
-        throw new ApiError("ID User tidak valid", 400);
-    }
-
     const updated = await UserModel.updatePassword(userId, newPassword);
     if (!updated) {
         throw new ApiError("Password gagal diperbarui", 400);
@@ -26,11 +22,7 @@ export const updatePasswordService = async (
 /**
  * Service untuk mendapatkan profil pengguna
  */
-export const userProfileService = async (userId: number): Promise<UserProfile> => {
-    if (isNaN(userId)) {
-        throw new ApiError("ID User tidak valid", 400);
-    }
-
+export const userProfileService = async (userId: string): Promise<UserProfile> => {
     const user = await UserModel.findUserById(userId);
     if (!user) {
         throw new ApiError("User tidak ditemukan", 404);

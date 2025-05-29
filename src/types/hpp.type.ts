@@ -7,7 +7,7 @@ export interface BahanRequest {
 }
 
 export interface BahanData extends BahanRequest {
-  id: number;
+  id: string;
   biaya?: number;
 }
 
@@ -17,9 +17,9 @@ export interface HppResponse {
 }
 
 export interface MenuHppData {
-  id: number;
-  menuId: number;
-  bahanId: number;
+  id: string;
+  menuId: string;
+  bahanId: string;
   jumlah: number;
   harga_beli: number;
   satuan: string;
@@ -29,9 +29,9 @@ export interface MenuHppData {
 declare global {
     namespace Express {
         interface Request {
-            userId?: number;
-            menuId?: number;
-            bahanId?: number;
+            userId?: string;
+            menuId?: string;
+            bahanId?: string;
             BahanData?: BahanData;
         }
     }

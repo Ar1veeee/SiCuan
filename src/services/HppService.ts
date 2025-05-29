@@ -8,8 +8,8 @@ import { BahanRequest, HppResponse } from "../types/hpp.type";
  * Service untuk menambahkan resep baru ke menu
  */
 export const createRecipeService = async (
-  userId: number,
-  menuId: number,
+  userId: string,
+  menuId: string,
   bahan: BahanRequest
 ): Promise<HppResponse> => {
   await validateUserExists(userId);
@@ -41,8 +41,8 @@ export const createRecipeService = async (
  * Service untuk mendapatkan resep berdasarkan userId dan menuId
  */
 export const getRecipesService = async (
-  userId: number,
-  menuId: number
+  userId: string,
+  menuId: string
 ): Promise<any[]> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);
@@ -56,9 +56,9 @@ export const getRecipesService = async (
  * Service untuk mengupdate resep dalam menu
  */
 export const updateRecipeService = async (
-  userId: number,
-  menuId: number,
-  bahanId: number,
+  userId: string,
+  menuId: string,
+  bahanId: string,
   bahan: BahanRequest
 ): Promise<HppResponse> => {
   await validateUserExists(userId);
@@ -88,9 +88,9 @@ export const updateRecipeService = async (
  * Service untuk menghapus resep dari menu
  */
 export const deleteRecipeService = async (
-  userId: number,
-  menuId: number,
-  bahanId: number
+  userId: string,
+  menuId: string,
+  bahanId: string
 ): Promise<HppResponse> => {
   await validateUserExists(userId);
   await validateMenuOwnership(userId, menuId);

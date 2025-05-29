@@ -5,14 +5,13 @@ export enum JenisTransaksi {
 }
 
 export interface StockData {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     nama: string;
     jumlah: number;
     jenis_transaksi: JenisTransaksi;
     keterangan: string;
-    tanggal?: Date;
-    tanggalFormatted?: string;
+    tanggal?: string;
 }
 
 export interface StockRequest {
@@ -30,8 +29,8 @@ export interface StockResponse {
 declare global {
     namespace Express {
         interface Request {
-            userId?: number;
-            stockId?: number;
+            userId?: string;
+            stockId?: string;
             stockData?: StockData;
         }
     }

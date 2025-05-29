@@ -4,7 +4,7 @@ import { apiResponse } from "../utils/apiResponse.util";
 // Middleware untuk memverifikasi akses user
 const verifyUserAccess = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const paramId = parseInt(req.params.user_id)
-    const tokenUserId = (req.user?.id as number) ?? null;
+    const tokenUserId = (req.user?.id) ?? null;
 
     if (!paramId || !tokenUserId) {
         apiResponse.unauthorized(res, "User ID tidak valid")

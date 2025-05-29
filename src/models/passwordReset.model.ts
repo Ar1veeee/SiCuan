@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import { ulid } from "ulid";
 const prisma = new PrismaClient()
 
 const PasswordReset = {
-  create: async ({ userId, otp, expiresAt }: { userId: number; otp: string; expiresAt: Date }) => {
+  create: async ({ userId, otp, expiresAt }: { userId: string; otp: string; expiresAt: Date }) => {
     return prisma.passwordReset.create({
       data: {
+        id: ulid(),
         userId,
         otp,
         expiresAt,

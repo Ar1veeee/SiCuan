@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { apiResponse } from '../utils/apiResponse.util';
 import { ApiError } from '../exceptions/ApiError';
 import MenuModel from '../models/menu.model';
+import { isValidULID } from '../validators/IdValidator';
 
 /**
  * Middleware untuk validasi Menu ID
@@ -14,18 +15,13 @@ export const validateMenuId = (req: Request, res: Response, next: NextFunction):
         return;
     }
 
-    try {
-        const menuId = parseInt(menu_id, 10);
-        if (isNaN(menuId)) {
-            apiResponse.badRequest(res, "Menu ID harus berupa angka");
-            return;
-        }
-
-        req.menuId = menuId;
-        next();
-    } catch (error) {
+    if (!isValidULID(menu_id)) {
         apiResponse.badRequest(res, "Format Menu ID tidak valid");
+        return;
     }
+
+    req.menuId = menu_id;
+    next();
 };
 
 /**

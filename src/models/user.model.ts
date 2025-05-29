@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../utils/password.util";
+import { ulid } from "ulid";
 const prisma = new PrismaClient()
 
 const User = {
@@ -7,6 +8,7 @@ const User = {
         const hashedPassword = await hashPassword(password)
         return await prisma.user.create({
             data: {
+                id: ulid(),
                 name,
                 email,
                 password: hashedPassword,
@@ -15,7 +17,7 @@ const User = {
         })
     },
 
-    updatePassword: async (userId: number, password: string) => {
+    updatePassword: async (userId: string, password: string) => {
         const newHashedPassword = await hashPassword(password)
         return await prisma.user.update({
             where: { id: userId },
@@ -29,26 +31,31 @@ const User = {
         })
     },
 
-    findUserById: async (userId: number) => {
+    findUserById: async (userId: string) => {
         return await prisma.user.findUnique({
             where: { id: userId }
         })
     },
 
-    createOrUpdateAuthToken: async (userId: number, accessToken: string, refreshToken: string) => {
+    createOrUpdateAuthToken: async (userId: string, accessToken: string, refreshToken: string) => {
+        const userExists = await prisma.user.findUnique({ where: { id: userId } });
+
+        if (!userExists) {
+            throw new Error("Gagal membuat Auth: userId tidak ditemukan.");
+        }
         return await prisma.auth.upsert({
             where: { userId },
             update: { accessToken, refreshToken },
-            create: { userId, accessToken, refreshToken }
+            create: { id: ulid(), userId, accessToken, refreshToken }
         })
     },
 
-    findAuthByUserId: async (userId: number) => {
+    findAuthByUserId: async (userId: string) => {
         return await prisma.auth.findUnique({
             where: { userId }
         })
     },
-    
+
     refreshToken: async (refreshToken: string, newAccessToken: string) => {
         return await prisma.auth.updateMany({
             where: { refreshToken },

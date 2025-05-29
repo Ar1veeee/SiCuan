@@ -8,7 +8,7 @@ import { StockData, StockRequest, StockResponse, JenisTransaksi } from "../types
  * Service untuk membuat transaksi stok baru
  */
 export const createStockService = async (
-    userId: number,
+    userId: string,
     data: StockRequest
 ): Promise<StockResponse> => {
     await validateUserExists(userId);
@@ -32,14 +32,14 @@ export const createStockService = async (
 /**
  * Service untuk mendapatkan semua transaksi stok berdasarkan userId
  */
-export const getStocksService = async (userId: number): Promise<StockData[]> => {
+export const getStocksService = async (userId: string): Promise<StockData[]> => {
     await validateUserExists(userId);
 
     const stocks = await StockModel.findStockTransactionByUserId(userId);
 
     const formattedStocks = stocks.map(stock => ({
         ...stock,
-        tanggalFormatted: stock.tanggal ? new Date(stock.tanggal).toLocaleDateString("id-ID", {
+        tanggal: stock.tanggal ? new Date(stock.tanggal).toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -55,8 +55,8 @@ export const getStocksService = async (userId: number): Promise<StockData[]> => 
  * Service untuk mendapatkan detail stok spesifik
  */
 export const getStockDetailService = async (
-    userId: number,
-    stockId: number
+    userId: string,
+    stockId: string
 ): Promise<StockData> => {
     await validateUserExists(userId);
 
@@ -68,7 +68,7 @@ export const getStockDetailService = async (
 
     const formattedStockDetail = {
         ...stockDetail,
-        tanggalFormatted: stockDetail.tanggal ? new Date(stockDetail.tanggal).toLocaleDateString("id-ID", {
+        tanggal: stockDetail.tanggal ? new Date(stockDetail.tanggal).toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -85,8 +85,8 @@ export const getStockDetailService = async (
  * Mengimplementasikan logika bisnis untuk perhitungan stok
  */
 export const updateStockService = async (
-    userId: number,
-    stockId: number,
+    userId: string,
+    stockId: string,
     data: Partial<StockRequest>
 ): Promise<StockResponse> => {
     await validateUserExists(userId);
@@ -130,8 +130,8 @@ export const updateStockService = async (
  * Service untuk menghapus transaksi stok
  */
 export const deleteStockService = async (
-    userId: number,
-    stockId: number
+    userId: string,
+    stockId: string
 ): Promise<StockResponse> => {
     await validateUserExists(userId);
     await validateStockOwnership(userId, stockId);

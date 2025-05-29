@@ -4,7 +4,7 @@ import { z } from "zod"
 
 export const passwordValidation = {
     isValidPassword: (password: string): boolean => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;\"'<>,.?/-]).{8,}$/;
         return passwordRegex.test(password.trim());
     },
     isPasswordMatch: (password: string, confirmPassword: string): boolean => {
@@ -14,6 +14,7 @@ export const passwordValidation = {
         if (password.length < 8) return "Password harus setidaknya 8 karakter.";
         if (!/^[A-Z]/.test(password)) return "Password harus diawali dengan huruf besar.";
         if (!/\d/.test(password)) return "Password mengandung setidaknya satu angka.";
+        if (!/[!@#$%^&*()_+={}\[\]|\\:;\"'<>,.?/-]/.test(password)) return "Password harus mengandung setidaknya satu karakter khusus.";
         if (!passwordValidation.isPasswordMatch(password, confirmPassword)) return "Password dan Confirm Password harus sama."
         return "Password valid.";
     }
@@ -30,10 +31,7 @@ export const emailValidation = {
     }
 }
 
-export const validateUserExists = async (userId: number) => {
-    if (isNaN(userId)) {
-        throw new ApiError("User ID tidak valid", 400)
-    }
+export const validateUserExists = async (userId: string) => {
 
     const user = await User.findUserById(userId)
     if (!user) {

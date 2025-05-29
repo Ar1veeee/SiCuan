@@ -3,6 +3,7 @@ import { apiResponse } from '../utils/apiResponse.util';
 import { validateUserExists } from '../validators/UserValidator';
 import { validateMenuOwnership } from '../validators/MenuValidator';
 import { ApiError } from '../exceptions/ApiError';
+import { isValidULID } from '../validators/IdValidator';
 
 export const validateMenuId = (req: Request, res: Response, next: NextFunction): void => {
     const { menu_id } = req.params;
@@ -12,18 +13,12 @@ export const validateMenuId = (req: Request, res: Response, next: NextFunction):
         return;
     }
 
-    try {
-        const menuId = parseInt(menu_id, 10);
-        if (isNaN(menuId)) {
-            apiResponse.badRequest(res, "Menu ID harus berupa angka");
-            return;
-        }
-
-        req.menuId = menuId;
-        next();
-    } catch (error) {
+    if (!isValidULID(menu_id)) {
         apiResponse.badRequest(res, "Format Menu ID tidak valid");
+        return;
     }
+    req.menuId = menu_id;
+    next();
 };
 
 export const validateBahanId = (req: Request, res: Response, next: NextFunction): void => {
@@ -34,24 +29,23 @@ export const validateBahanId = (req: Request, res: Response, next: NextFunction)
         return;
     }
 
-    try {
-        const bahanId = parseInt(bahan_id, 10);
-        if (isNaN(bahanId)) {
-            apiResponse.badRequest(res, "Bahan ID harus berupa angka");
-            return;
-        }
-
-        req.bahanId = bahanId;
-        next();
-    } catch (error) {
-        apiResponse.badRequest(res, "Format Bahan ID tidak valid");
+    if (!isValidULID(bahan_id)) {
+        apiResponse.badRequest(res, "Format Menu ID tidak valid");
+        return;
     }
+
+    req.bahanId = bahan_id;
+    next();
 };
 
 export const verifyHppOwnership = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.userId || !req.menuId) {
-            apiResponse.badRequest(res, "User ID dan Menu ID diperlukan");
+        if (!req.userId) {
+            apiResponse.badRequest(res, "User ID diperlukan");
+            return;
+        }
+        if (!req.menuId) {
+            apiResponse.badRequest(res, "Menu ID diperlukan");
             return;
         }
 

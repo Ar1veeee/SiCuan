@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { MenuData } from "../types/menu.type";
+import { ulid } from "ulid";
 const prisma = new PrismaClient()
 
 const toDomainModel = (prismaMenu: any): MenuData => {
@@ -17,9 +18,10 @@ const MenuModel = {
     /**
      * Membuat menu baru
      */
-    createMenu: async (userId: number, nama_menu: string): Promise<MenuData> => {
+    createMenu: async (userId: string, nama_menu: string): Promise<MenuData> => {
         const result = await prisma.menu.create({
             data: {
+                id: ulid(),
                 userId,
                 nama_menu
             }
@@ -30,7 +32,7 @@ const MenuModel = {
     /**
      * Memperbarui menu berdasarkan userId dan menuId
      */
-    updateMenu: async (userId: number, menuId: number, nama_menu: string): Promise<MenuData> => {
+    updateMenu: async (userId: string, menuId: string, nama_menu: string): Promise<MenuData> => {
         const result = await prisma.menu.update({
             where: {
                 id: menuId,
@@ -46,7 +48,7 @@ const MenuModel = {
     /**
      * Menghapus menu berdasarkan menuId
      */
-    deleteMenu: async (menuId: number): Promise<MenuData> => {
+    deleteMenu: async (menuId: string): Promise<MenuData> => {
         const result = await prisma.menu.delete({
             where: {
                 id: menuId
@@ -58,9 +60,10 @@ const MenuModel = {
     /**
      * Mencari semua menu berdasarkan userId
      */
-    findMenusByUserId: async (userId: number): Promise<MenuData[]> => {
+    findMenusByUserId: async (userId: string): Promise<MenuData[]> => {
         const results = await prisma.menu.findMany({
-            where: { userId }
+            where: { userId },
+            orderBy: { id: 'asc' }
         });
         return results.map(toDomainModel);
     },
@@ -68,7 +71,7 @@ const MenuModel = {
     /**
      * Mencari menu berdasarkan nama dan userId
      */
-    findExistingMenu: async (userId: number, nama_menu: string): Promise<MenuData | null> => {
+    findExistingMenu: async (userId: string, nama_menu: string): Promise<MenuData | null> => {
         const result = await prisma.menu.findFirst({
             where: { userId, nama_menu }
         });
@@ -78,7 +81,7 @@ const MenuModel = {
     /**
      * Mencari menu berdasarkan menuId
      */
-    findMenuById: async (menuId: number): Promise<MenuData | null> => {
+    findMenuById: async (menuId: string): Promise<MenuData | null> => {
         const result = await prisma.menu.findUnique({
             where: { id: menuId }
         });
@@ -88,7 +91,7 @@ const MenuModel = {
     /**
      * Mencari menu berdasarkan menuId dan userId
      */
-    findMenuByIdAndUserId: async (userId: number, menuId: number): Promise<MenuData | null> => {
+    findMenuByIdAndUserId: async (userId: string, menuId: string): Promise<MenuData | null> => {
         const result = await prisma.menu.findFirst({
             where: {
                 userId,

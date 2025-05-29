@@ -34,7 +34,7 @@ export interface AuthResponse {
 
 export interface LoginResponse extends AuthResponse {
     data: {
-        userID: number | string;
+        userID: string | string;
         username: string;
         access_token: string;
     };
@@ -44,7 +44,7 @@ declare global {
     namespace Express {
         interface Request {
             user?: JwtPayload;
-            userId?: number;  
+            userId?: string;  
         }
     }
 }

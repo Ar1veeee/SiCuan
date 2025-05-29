@@ -57,7 +57,7 @@ export const loginService = async (
         expiresIn: "7d",
     });
 
-    const userId = typeof user.id === "string" ? Number(user.id) : user.id;
+    const userId = user.id;
     if (!userId) {
         throw new ApiError("ID user tidak valid", 500);
     }
@@ -96,7 +96,7 @@ export const refreshTokenService = async (
         throw new ApiError("Pengguna tidak ditemukan", 404);
     }
 
-    const userId = typeof user.id === "string" ? Number(user.id) : user.id;
+    const userId = typeof user.id;
 
     const authRecord = await UserModel.findAuthByUserId(userId);
     if (!authRecord || authRecord.refreshToken !== refreshTokenValue) {
@@ -145,7 +145,7 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
     }
 
     const otp = generateOtp();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await PasswordResetModel.create({ userId: user.id, otp, expiresAt });
     

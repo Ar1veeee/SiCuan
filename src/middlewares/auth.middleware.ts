@@ -33,7 +33,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
     req.user = decoded;
 
     if (decoded.id !== undefined) {
-      req.userId = typeof decoded.id === 'string' ? parseInt(decoded.id) : decoded.id;
+      req.userId = decoded.id;
       next();
     } else {
       apiResponse.forbidden(res, "Token tidak berisi informasi ID pengguna");

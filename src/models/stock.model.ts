@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { StockData, StockRequest, JenisTransaksi } from "../types/stock.type";
+import { ulid } from "ulid";
 
 const prisma = new PrismaClient();
 
@@ -20,11 +21,12 @@ const StockModel = {
      * Membuat transaksi stok baru
      */
     createStockTransaction: async (
-        userId: number,
+        userId: string,
         data: StockRequest
     ): Promise<StockData> => {
         const result = await prisma.stockTransaction.create({
             data: {
+                id: ulid(),
                 userId,
                 nama: data.nama,
                 jumlah: data.jumlah,
@@ -39,7 +41,7 @@ const StockModel = {
      * Memperbarui transaksi stok
      */
     updateStockTransaction: async (
-        stockId: number,
+        stockId: string,
         data: Partial<StockRequest>
     ): Promise<StockData> => {
         const result = await prisma.stockTransaction.update({
@@ -53,7 +55,7 @@ const StockModel = {
      * Menghapus transaksi stok
      */
     deleteStockTransaction: async (
-        stockId: number
+        stockId: string
     ): Promise<StockData> => {
         const result = await prisma.stockTransaction.delete({
             where: { id: stockId }
@@ -64,7 +66,7 @@ const StockModel = {
     /**
      * Mencari semua transaksi stok berdasarkan userId
      */
-    findStockTransactionByUserId: async (userId: number): Promise<StockData[]> => {
+    findStockTransactionByUserId: async (userId: string): Promise<StockData[]> => {
         const results = await prisma.stockTransaction.findMany({
             where: { userId }
         });
@@ -75,8 +77,8 @@ const StockModel = {
      * Mencari transaksi stok berdasarkan id dan userId
      */
     findStockTransactionByIdAndUserId: async (
-        userId: number,
-        stockTransactionId: number
+        userId: string,
+        stockTransactionId: string
     ): Promise<StockData | null> => {
         const result = await prisma.stockTransaction.findFirst({
             where: {
@@ -91,7 +93,7 @@ const StockModel = {
      * Mencari transaksi stok berdasarkan nama dan userId
      */
     findExistingStockTransaction: async (
-        userId: number,
+        userId: string,
         nama: string
     ): Promise<StockData | null> => {
         const result = await prisma.stockTransaction.findFirst({

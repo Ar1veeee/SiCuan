@@ -4,7 +4,7 @@ export interface UpdatePasswordRequest {
 }
 
 export interface UserProfile {
-    userId: number;
+    userId: string;
     username: string;
     email: string;
     nama_usaha: string;

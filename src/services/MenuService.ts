@@ -3,12 +3,13 @@ import { ApiError } from "../exceptions/ApiError";
 import { validateUserExists } from "../validators/UserValidator";
 import { validateMenuOwnership } from "../validators/MenuValidator";
 import { MenuData, MenuResponse } from "../types/menu.type";
+import { isValidULID } from "../validators/IdValidator";
 
 /**
  * Service untuk membuat menu baru
  */
 export const createMenuService = async (
-    userId: number,
+    userId: string,
     nama_menu: string
 ): Promise<MenuResponse> => {
     await validateUserExists(userId);
@@ -28,7 +29,7 @@ export const createMenuService = async (
 /**
  * Service untuk mendapatkan semua menu berdasarkan userId
  */
-export const getMenusService = async (userId: number): Promise<MenuData[]> => {
+export const getMenusService = async (userId: string): Promise<MenuData[]> => {
     await validateUserExists(userId);
 
     const menus = await MenuModel.findMenusByUserId(userId);
@@ -40,12 +41,14 @@ export const getMenusService = async (userId: number): Promise<MenuData[]> => {
  * Service untuk mendapatkan detail menu spesifik
  */
 export const getMenuDetailService = async (
-    userId: number,
-    menuId: number,
+    userId: string,
+    menuId: string,
 ): Promise<MenuData> => {
     await validateUserExists(userId);
 
-    console.log("Cache miss for menu detail");
+    if (!isValidULID(menuId)) {
+        throw new ApiError("Format ID menu tidak valid", 400);
+    }
 
     const menuDetail = await MenuModel.findMenuByIdAndUserId(userId, menuId);
 
@@ -78,12 +81,16 @@ export const getMenuDetailService = async (
  * Service untuk mengupdate menu
  */
 export const updateMenuService = async (
-    userId: number,
-    menuId: number,
+    userId: string,
+    menuId: string,
     nama_menu: string
 ): Promise<MenuResponse> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
+
+    if (!isValidULID(menuId)) {
+        throw new ApiError("Format ID menu tidak valid", 400);
+    }
 
     await MenuModel.updateMenu(userId, menuId, nama_menu);
 
@@ -96,11 +103,15 @@ export const updateMenuService = async (
  * Service untuk menghapus menu
  */
 export const deleteMenuService = async (
-    userId: number,
-    menuId: number
+    userId: string,
+    menuId: string
 ): Promise<MenuResponse> => {
     await validateUserExists(userId);
     await validateMenuOwnership(userId, menuId);
+
+    if (!isValidULID(menuId)) {
+        throw new ApiError("Format ID menu tidak valid", 400);
+    }
 
     await MenuModel.deleteMenu(menuId);
 
