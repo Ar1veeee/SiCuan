@@ -1,41 +1,48 @@
 # ===== BUILD STAGE =====
-FROM node:18-alpine AS builder
-
+FROM oven/bun:1 AS builder
 WORKDIR /app
 
-COPY package*.json ./
-COPY tsconfig.json ./
+# Copy package files
+COPY package.json bun.lock ./
+RUN bun install
 
-RUN npm ci
-
-COPY prisma ./prisma
+# Copy source code
 COPY src ./src
+COPY prisma ./prisma
+COPY tsconfig.json ./
+COPY .env.production ./ 
 
-RUN npx prisma generate
-RUN npm run build
-RUN rm -rf src
+# Generate Prisma
+RUN bunx prisma generate
+
+# Build project
+RUN bun run build
 
 # ===== PRODUCTION STAGE =====
-FROM node:18-alpine AS runner
-
+FROM oven/bun:1-slim AS runner
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y openssl
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 --ingroup nodejs sicuan
 
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+# Copy package files
+COPY package.json bun.lock ./
+RUN bun install --production
 
-COPY --from=builder /app/build ./build
+# Copy yang dibutuhkan untuk production
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/.env.production ./.env.production 
 
 RUN chown -R sicuan:nodejs /app && chmod 755 /app
-
 USER sicuan
 
-ENV PORT=8080
-ENV NODE_ENV=production
-EXPOSE 8080
+RUN export NODE_ENV=production
 
-CMD ["npm", "run", "start"]
+ENV PORT=8080
+
+EXPOSE 8080
+CMD ["bun", "run", "start"]

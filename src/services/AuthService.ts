@@ -96,7 +96,7 @@ export const refreshTokenService = async (
         throw new ApiError("Pengguna tidak ditemukan", 404);
     }
 
-    const userId = typeof user.id;
+    const userId = user.id;
 
     const authRecord = await UserModel.findAuthByUserId(userId);
     if (!authRecord || authRecord.refreshToken !== refreshTokenValue) {

@@ -63,7 +63,7 @@ cd ../..
 
 echo -e "${YELLOW}🐳 Building Docker Image with custom Dockerfile...${NC}"
 
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME --file Dockerfile .
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME .
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Container image built successfully${NC}"
@@ -79,8 +79,8 @@ gcloud run deploy $SERVICE_NAME \
   --platform managed \
   --region $REGION \
   --allow-unauthenticated \
-  --memory 2GiB \
-  --cpu 2 \
+  --memory 2G \
+  --cpu 1 \
   --max-instances 5 \
   --timeout 300
 

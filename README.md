@@ -180,7 +180,7 @@
    EMAIL_TOPIC_NAME="email-notifications"
    
    # Server
-   PORT=5000
+   PORT=8080
    NODE_ENV=development
    ```
 
@@ -233,7 +233,7 @@
 
 ### **Local Development**
 ```bash
-http://localhost:5000/api-docs
+http://localhost:8080/api-docs
 ```
 
 ### **Production**
@@ -320,7 +320,7 @@ GOOGLE_CLOUD_PROJECT=your-gcp-project-id
 EMAIL_TOPIC_NAME=email-notifications
 
 # Server Configuration
-PORT=5000
+PORT=8080
 NODE_ENV=production
 ```
 

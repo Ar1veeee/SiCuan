@@ -1,13 +1,17 @@
+# Dependency directory (akan di-install ulang dalam image)
 node_modules
-build
-npm-debug.log
-.git
-.gitignore
-.env
-*.log
-*.sqlite
-*.sqlite3
-coverage
+bun.lockb
+
+# Build artifacts
 dist
-out
+*.log
+
+# System files
+.DS_Store
 .vscode
+.idea
+
+# Test files
+__tests__/
+coverage/
+functions
