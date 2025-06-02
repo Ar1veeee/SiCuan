@@ -61,16 +61,13 @@ import { bahanSchema } from "../validators/HppValidator";
  *         id:
  *           type: string
  *           description: ID resep (ULID)
- *         menuId:
+ *         userId:
  *           type: string
- *           description: ID menu (ULID)
- *         bahanId:
- *           type: string
- *           description: ID bahan (ULID)
+ *           description: ID user (ULID)
  *         nama_bahan:
  *           type: string
  *           description: Nama bahan
- *         jumlah_digunakan:
+ *         jumlah:
  *           type: number
  *           description: Jumlah bahan yang digunakan per porsi
  *         harga_beli:
@@ -79,19 +76,9 @@ import { bahanSchema } from "../validators/HppValidator";
  *         satuan:
  *           type: string
  *           description: Satuan bahan
- *         biaya:
+ *         minimum_stock:
  *           type: number
- *           description: Total biaya untuk resep (jumlah_digunakan * harga_beli)
- *         bahan:
- *           type: object
- *           properties:
- *             nama_bahan:
- *               type: string
- *             jumlah:
- *               type: number
- *               description: Stok tersedia
- *             minimum_stock:
- *               type: number
+ *           description: Stock minimum untuk alert
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -100,21 +87,24 @@ import { bahanSchema } from "../validators/HppValidator";
  *           type: string
  *           format: date-time
  *           description: Tanggal pembaruan terakhir
+ *         menuBahan:
+ *           type: array
+ *           properties:
+ *             jumlah:
+ *               type: number
+ *               description: Stok tersedia
  *       example:
  *         id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
- *         menuId: 01JWQ4W8NNKQ7YNDCVNHP3CRA2
- *         bahanId: 01JWQ4W8NNKQ7YNDCVNHP3CRA3
+ *         userId: 01JWQ4W8NNKQ7YNDCVNHP3CRA2
  *         nama_bahan: Beras
  *         jumlah_digunakan: 0.2
  *         harga_beli: 15000
  *         satuan: kg
- *         biaya: 3000
- *         bahan:
- *           nama_bahan: Beras
- *           jumlah: 5
- *           minimum_stock: 1
+ *         minimum_stock: 1
  *         createdAt: 2023-07-20T10:30:00Z
  *         updatedAt: 2023-07-20T10:30:00Z
+ *         menuBahan:
+ *           jumlah: 5
  *     
  *     ErrorResponse:
  *       type: object
@@ -131,7 +121,6 @@ import { bahanSchema } from "../validators/HppValidator";
  */
 
 router.use(verifyToken);
-
 /**
  * @swagger
  * /resep/{menu_id}:
@@ -160,30 +149,68 @@ router.use(verifyToken);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Resep berhasil diambil
+ *                   example: Success
  *                 data:
  *                   type: object
  *                   properties:
  *                     recipes:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/RecipeResponse'
- *                     total_hpp:
- *                       type: number
- *                       description: Total harga pokok produksi
- *                       example: 25000
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             description: ID bahan (ULID)
+ *                           userId:
+ *                             type: string
+ *                             description: ID user (ULID)
+ *                           nama_bahan:
+ *                             type: string
+ *                             description: Nama bahan
+ *                           jumlah:
+ *                             type: number
+ *                             description: Jumlah stok bahan yang dibeli
+ *                           harga_beli:
+ *                             type: number
+ *                             description: Harga beli per satuan
+ *                           satuan:
+ *                             type: string
+ *                             description: Satuan bahan
+ *                           minimum_stock:
+ *                             type: number
+ *                             description: Stock minimum untuk alert
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                             description: Tanggal pembuatan
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             description: Tanggal pembaruan terakhir
+ *                           menuBahan:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 jumlah:
+ *                                   type: number
+ *                                   description: Jumlah bahan yang digunakan dalam resep
  *               example:
  *                 success: true
- *                 message: Resep berhasil diambil
+ *                 message: Success
  *                 data:
  *                   recipes:
- *                     - id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
- *                       menuId: 01JWQ4W8NNKQ7YNDCVNHP3CRA2
- *                       bahanId: 01JWQ4W8NNKQ7YNDCVNHP3CRA3
- *                       nama_bahan: Beras
- *                       jumlah_digunakan: 0.2
- *                       biaya: 3000
- *                   total_hpp: 25000
+ *                     - id: 01JWR2R8PX5423TSEZ4AYX2Z0V
+ *                       userId: 01JWR1RQRVABYV4PRFCDRPRSCF
+ *                       nama_bahan: Cup
+ *                       jumlah: 30
+ *                       harga_beli: 25000
+ *                       satuan: pcs
+ *                       minimum_stock: 0
+ *                       createdAt: 2025-06-02T10:24:48.350Z
+ *                       updatedAt: 2025-06-02T10:24:48.350Z
+ *                       menuBahan:
+ *                         - jumlah: 1
  *       401:
  *         description: Tidak terautentikasi
  *         content:
@@ -268,12 +295,12 @@ router.get(
  *                   properties:
  *                     message:
  *                       type: string
- *                       example: Menu berhasil ditambahkan
+ *                       example: Bahan berhasil ditambahkan
  *               example:
  *                 success: true
  *                 message: Resource created successfully
  *                 data:
- *                   message: Menu berhasil ditambahkan
+ *                   message: Bahan berhasil ditambahkan
  *       400:
  *         description: Data tidak valid
  *         content:
@@ -287,10 +314,10 @@ router.get(
  *                   success: false
  *                   message: Validation error
  *               recipeExists:
- *                 summary: Resep sudah ada
+ *                 summary: Bahan sudah ada
  *                 value:
  *                   success: false
- *                   message: Resep sudah ada
+ *                   message: Bahan sudah ada
  *       401:
  *         description: Tidak terautentikasi
  *         content:
@@ -310,14 +337,14 @@ router.get(
  *               success: false
  *               message: Forbidden access
  *       404:
- *         description: Menu tidak ditemukan
+ *         description: Bahan tidak ditemukan
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             example:
  *               success: false
- *               message: Menu tidak ditemukan
+ *               message: Bahan tidak ditemukan
  *       500:
  *         description: Server error
  *         content:
@@ -376,10 +403,18 @@ router.post(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Resep berhasil diperbarui
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Bahan berhasil diperbarui
  *               example:
  *                 success: true
- *                 message: Resep berhasil diperbarui
+ *                 message: Success
+ *                 data:
+ *                  message: Bahan berhasil diperbarui
  *       400:
  *         description: Data tidak valid
  *         content:
@@ -477,10 +512,18 @@ router.put(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Bahan berhasil dihapus
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Bahan berhasil dihapus
  *               example:
  *                 success: true
- *                 message: Bahan berhasil dihapus
+ *                 message: Success
+ *                 data:
+ *                  message: Bahan berhasil dihapus
  *       400:
  *         description: Gagal menghapus bahan
  *         content:

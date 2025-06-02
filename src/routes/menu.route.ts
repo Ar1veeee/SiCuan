@@ -98,6 +98,9 @@ router.use(verifyToken);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Success
  *                 data:
  *                   type: object
  *                   properties:
@@ -152,6 +155,9 @@ router.get("/", getMenus);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Success
  *                 data:
  *                   type: object
  *                   properties:
@@ -299,9 +305,13 @@ router.post("/", validate(menuSchema), createMenu);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Menu berhasil diperbarui
+ *                   example: Success
  *                 data:
- *                   $ref: '#/components/schemas/MenuResponse'
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Menu berhasil diperbarui
  *       400:
  *         description: Data tidak valid
  *         content:
@@ -384,9 +394,13 @@ router.patch(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Menu berhasil dihapus
+ *                   example: Success
  *                 data:
- *                   $ref: '#/components/schemas/MenuResponse'
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Menu berhasil dihapus
  *       401:
  *         description: Tidak terautentikasi
  *         content:

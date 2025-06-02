@@ -66,13 +66,11 @@ export const loginService = async (
     await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken, undefined, expiresAt);
 
     return {
-        message: "Login berhasil",
-        data: {
+            message: "Login berhasil",
             userID: user.id,
             username: user.name,
             access_token: accessToken,
-            expiresAt: expiresAt.toISOString()
-        },
+            expiresAt: expiresAt.toISOString(),
         refreshToken: refreshToken 
     };
 };

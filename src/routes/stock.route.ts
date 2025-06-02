@@ -96,7 +96,6 @@ import { stockSchema } from "../validators/StockValidator";
  *         - message
  */
 
-// Semua rute memerlukan autentikasi
 router.use(verifyToken);
 
 /**
@@ -284,10 +283,18 @@ router.get("/:stock_id", validateStockId, getStockDetail);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Stok berhasil diperbarui
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Stok berhasil diperbarui
  *               example:
  *                 success: true
- *                 message: Stok berhasil diperbarui
+ *                 message: Success
+ *                 data:
+ *                  message: Stok berhasil diperbarui
  *       400:
  *         description: Data tidak valid atau jumlah stok tidak cukup
  *         content:
@@ -378,10 +385,18 @@ router.patch(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Stok berhasil dihapus
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Stok berhasil dihapus
  *               example:
  *                 success: true
- *                 message: Stok berhasil dihapus
+ *                 message: Success
+ *                 data:
+ *                  message: Stok berhasil dihapus
  *       400:
  *         description: Gagal menghapus stok
  *         content:

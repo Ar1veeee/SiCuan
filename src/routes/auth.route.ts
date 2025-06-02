@@ -24,19 +24,19 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *     UserRegister:
  *       type: object
  *       required:
- *         - username
  *         - email
+ *         - username
  *         - password
  *         - confirmPassword
  *         - nama_usaha
  *       properties:
- *         username:
- *           type: string
- *           description: Username pengguna
  *         email:
  *           type: string
  *           format: email
  *           description: Email pengguna
+ *         username:
+ *           type: string
+ *           description: Username pengguna
  *         password:
  *           type: string
  *           format: password
@@ -49,8 +49,8 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *           type: string
  *           description: Nama usaha pengguna
  *       example:
- *         username: johndoe
  *         email: john@example.com
+ *         username: johndoe
  *         password: Password123!
  *         confirmPassword: Password123!
  *         nama_usaha: John's Restaurant
@@ -262,10 +262,13 @@ router.post(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Login berhasil
+ *                   example: Success
  *                 data:
  *                   type: object
  *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Login berhasil
  *                     userID:
  *                       type: string
  *                       description: ID pengguna (ULID format)
@@ -282,8 +285,9 @@ router.post(
  *                       example: 2024-01-27T10:30:00.000Z
  *               example:
  *                 success: true
- *                 message: Login berhasil
+ *                 message: Success
  *                 data:
+ *                   message: Login berhasil
  *                   userID: 01JWQ4VJ6GN4A16CGPMGMJHJDD
  *                   username: johndoe
  *                   access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...

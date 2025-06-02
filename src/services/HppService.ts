@@ -17,7 +17,7 @@ export const createRecipeService = async (
 
   const existing = await HppModel.existingResep(menuId, bahan.nama_bahan);
   if (existing) {
-    throw new ApiError("Resep sudah ada", 400);
+    throw new ApiError("Bahan sudah ada", 400);
   }
 
   await HppModel.createBahanWithMenuLink({
@@ -34,7 +34,7 @@ export const createRecipeService = async (
   await HppModel.updateTotalHPP(menuId);
 
   return {
-    message: "Resep berhasil ditambahkan"
+    message: "Bahan berhasil ditambahkan"
   };
 };
 
@@ -82,7 +82,7 @@ export const updateRecipeService = async (
   await HppModel.updateTotalHPP(menuId);
 
   return {
-    message: "Resep berhasil diperbarui"
+    message: "Bahan berhasil diperbarui"
   };
 };
 

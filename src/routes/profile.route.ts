@@ -92,12 +92,12 @@ router.use(verifyToken);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Profil berhasil diambil
+ *                   example: Success
  *                 data:
  *                   $ref: '#/components/schemas/UserProfile'
  *               example:
  *                 success: true
- *                 message: Profil berhasil diambil
+ *                 message: Success
  *                 data:
  *                   userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
  *                   username: johndoe

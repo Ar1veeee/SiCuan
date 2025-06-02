@@ -33,12 +33,10 @@ export interface AuthResponse {
 }
 
 export interface LoginResponse extends AuthResponse {
-    data: {
         userID: string | string;
         username: string;
         access_token: string;
         expiresAt?: string;
-    };
 }
 
 declare global {
