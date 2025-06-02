@@ -1,7 +1,6 @@
 import { Router } from "express";
 const router = Router();
 import { 
-    createStock, 
     getStocks, 
     getStockDetail,
     updateStock,
@@ -22,13 +21,10 @@ import { stockSchema } from "../validators/StockValidator";
  *     StockRequest:
  *       type: object
  *       required:
- *         - nama
  *         - jumlah
  *         - jenis_transaksi
+ *         - keterangan
  *       properties:
- *         nama:
- *           type: string
- *           description: Nama stok/bahan
  *         jumlah:
  *           type: number
  *           description: Jumlah stok
@@ -40,23 +36,25 @@ import { stockSchema } from "../validators/StockValidator";
  *           type: string
  *           description: Keterangan tambahan
  *       example:
- *         nama: Beras
  *         jumlah: 10
  *         jenis_transaksi: Masuk
  *         keterangan: Restok beras
  *     
- *     StockResponse:
+ *     StockData:
  *       type: object
  *       properties:
  *         id:
- *           type: number
- *           description: ID transaksi stok
- *         userId:
- *           type: number
- *           description: ID pengguna pemilik stok
- *         nama:
  *           type: string
- *           description: Nama stok/bahan
+ *           description: ID transaksi stok (ULID)
+ *         userId:
+ *           type: string
+ *           description: ID pengguna pemilik stok (ULID)
+ *         bahanId:
+ *           type: string
+ *           description: ID bahan (ULID)
+ *         nama_bahan:
+ *           type: string
+ *           description: Nama bahan
  *         jumlah:
  *           type: number
  *           description: Jumlah stok
@@ -67,22 +65,35 @@ import { stockSchema } from "../validators/StockValidator";
  *         keterangan:
  *           type: string
  *           description: Keterangan tambahan
- *         tanggal:
+ *         createdAt:
  *           type: string
- *           format: date-time
- *           description: Tanggal transaksi
- *         tanggalFormatted:
+ *           description: Tanggal pembuatan (formatted)
+ *         updatedAt:
  *           type: string
- *           description: Tanggal transaksi yang diformat
+ *           description: Tanggal pembaruan (formatted)
  *       example:
- *         id: 1
- *         userId: 1
- *         nama: Beras
+ *         id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
+ *         userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *         bahanId: 01JWQ4W8NNKQ7YNDCVNHP3CRA3
+ *         nama_bahan: Beras
  *         jumlah: 10
  *         jenis_transaksi: Masuk
  *         keterangan: Restok beras
- *         tanggal: 2023-07-20T10:30:00Z
- *         tanggalFormatted: 20 Juli 2023, 10:30
+ *         createdAt: 20 Juli 2023, 10:30
+ *         updatedAt: 20 Juli 2023, 10:30
+ *     
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         message:
+ *           type: string
+ *           description: Pesan error
+ *       required:
+ *         - success
+ *         - message
  */
 
 // Semua rute memerlukan autentikasi
@@ -107,17 +118,48 @@ router.use(verifyToken);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Daftar stok berhasil diambil
  *                 data:
  *                   type: object
  *                   properties:
  *                     stocks:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/StockResponse'
+ *                         $ref: '#/components/schemas/StockData'
+ *               example:
+ *                 success: true
+ *                 message: Daftar stok berhasil diambil
+ *                 data:
+ *                   stocks:
+ *                     - id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
+ *                       userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                       bahanId: 01JWQ4W8NNKQ7YNDCVNHP3CRA3
+ *                       nama_bahan: Beras
+ *                       jumlah: 10
+ *                       jenis_transaksi: Masuk
+ *                       keterangan: Restok beras
+ *                       createdAt: 20 Juli 2023, 10:30
+ *                       updatedAt: 20 Juli 2023, 12:30
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.get("/", getStocks);
 
@@ -134,8 +176,8 @@ router.get("/", getStocks);
  *         name: stock_id
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID transaksi stok
+ *           type: string
+ *         description: ID transaksi stok (ULID format)
  *     responses:
  *       200:
  *         description: Detail stok berhasil diambil
@@ -147,60 +189,66 @@ router.get("/", getStocks);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Detail stok berhasil diambil
  *                 data:
  *                   type: object
  *                   properties:
  *                     stock:
- *                       $ref: '#/components/schemas/StockResponse'
+ *                       $ref: '#/components/schemas/StockData'
+ *               example:
+ *                 success: true
+ *                 message: Detail stok berhasil diambil
+ *                 data:
+ *                   stock:
+ *                     id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
+ *                     userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                     bahanId: 01JWQ4W8NNKQ7YNDCVNHP3CRA3
+ *                     nama_bahan: Beras
+ *                     jumlah: 10
+ *                     jenis_transaksi: Masuk
+ *                     keterangan: Restok beras
+ *                     createdAt: 20 Juli 2023, 10:30
+ *                     updatedAt: 20 Juli 2023, 12:30
  *       401:
  *         description: Tidak terautentikasi
- *       403:
- *         description: Tidak memiliki akses
- *       404:
- *         description: Stok tidak ditemukan
- *       500:
- *         description: Server error
- */
-router.get("/:stock_id", validateStockId, getStockDetail);
-
-/**
- * @swagger
- * /stock:
- *   post:
- *     summary: Menambah transaksi stok baru
- *     tags: [Stock]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/StockRequest'
- *     responses:
- *       201:
- *         description: Stok berhasil ditambahkan
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Stok berhasil ditambahkan
- *                 data:
- *                   $ref: '#/components/schemas/StockResponse'
- *       400:
- *         description: Data tidak valid
- *       401:
- *         description: Tidak terautentikasi
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
+ *       403:
+ *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
+ *       404:
+ *         description: Stok tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Stok tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
-router.post("/", validate(stockSchema), createStock);
+router.get("/:stock_id", validateStockId, getStockDetail);
 
 /**
  * @swagger
@@ -215,8 +263,8 @@ router.post("/", validate(stockSchema), createStock);
  *         name: stock_id
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID transaksi stok
+ *           type: string
+ *         description: ID transaksi stok (ULID format)
  *     requestBody:
  *       required: true
  *       content:
@@ -237,18 +285,62 @@ router.post("/", validate(stockSchema), createStock);
  *                 message:
  *                   type: string
  *                   example: Stok berhasil diperbarui
- *                 data:
- *                   $ref: '#/components/schemas/StockResponse'
+ *               example:
+ *                 success: true
+ *                 message: Stok berhasil diperbarui
  *       400:
  *         description: Data tidak valid atau jumlah stok tidak cukup
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               validationError:
+ *                 summary: Data tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: Validation error
+ *               insufficientStock:
+ *                 summary: Stok tidak cukup
+ *                 value:
+ *                   success: false
+ *                   message: Jumlah tidak cukup. Stok Beras saat ini adalah 5
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
  *       403:
  *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
  *       404:
  *         description: Stok tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Stok tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.patch(
     "/:stock_id", 
@@ -271,8 +363,8 @@ router.patch(
  *         name: stock_id
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID transaksi stok
+ *           type: string
+ *         description: ID transaksi stok (ULID format)
  *     responses:
  *       200:
  *         description: Stok berhasil dihapus
@@ -287,16 +379,54 @@ router.patch(
  *                 message:
  *                   type: string
  *                   example: Stok berhasil dihapus
- *                 data:
- *                   $ref: '#/components/schemas/StockResponse'
+ *               example:
+ *                 success: true
+ *                 message: Stok berhasil dihapus
+ *       400:
+ *         description: Gagal menghapus stok
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Gagal menghapus stok
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
  *       403:
  *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
  *       404:
  *         description: Stok tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Stok tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.delete(
     "/:stock_id",

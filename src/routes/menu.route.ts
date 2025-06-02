@@ -1,16 +1,16 @@
 import { Router } from "express";
 const router = Router();
-import { 
-    createMenu, 
-    getMenus, 
+import {
+    createMenu,
+    getMenus,
     getMenuDetail,
     updateMenu,
-    deleteMenu, 
+    deleteMenu,
 } from "../controllers/menu.controller";
 import verifyToken from "../middlewares/auth.middleware";
-import { 
-    validateMenuId, 
-    verifyMenuOwnership 
+import {
+    validateMenuId,
+    verifyMenuOwnership
 } from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
 import { menuSchema } from "../validators/MenuValidator";
@@ -28,21 +28,21 @@ import { menuSchema } from "../validators/MenuValidator";
  *           type: string
  *           description: Nama menu
  *       example:
- *         nama_menu: Nasi Goreng
+ *         nama_menu: Es Teh
  *     
  *     MenuResponse:
  *       type: object
  *       properties:
  *         id:
- *           type: number
+ *           type: string
  *           description: ID menu
  *         userId:
- *           type: number
+ *           type: string
  *           description: ID pengguna pemilik menu
  *         nama_menu:
  *           type: string
  *           description: Nama menu
- *         jumlah_hpp:
+ *         hpp:
  *           type: number
  *           nullable: true
  *           description: Harga pokok produksi
@@ -55,12 +55,25 @@ import { menuSchema } from "../validators/MenuValidator";
  *           format: date-time
  *           description: Tanggal pembaruan terakhir
  *       example:
- *         id: 1
- *         userId: 1
- *         nama_menu: Nasi Goreng
- *         jumlah_hpp: 15000
+ *         id: 01JWQ4W8NNKQ7YNDCVNHP3CRA1
+ *         userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *         nama_menu: Es Teh
+ *         hpp: 2000
  *         createdAt: 2023-07-20T10:30:00Z
  *         updatedAt: 2023-07-20T10:30:00Z
+ *     
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         message:
+ *           type: string
+ *           description: Pesan error
+ *       required:
+ *         - success
+ *         - message
  */
 
 // Semua rute memerlukan autentikasi
@@ -94,8 +107,22 @@ router.use(verifyToken);
  *                         $ref: '#/components/schemas/MenuResponse'
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Authorization header tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.get("/", getMenus);
 
@@ -112,7 +139,7 @@ router.get("/", getMenus);
  *         name: menu_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: ID menu
  *     responses:
  *       200:
@@ -132,12 +159,40 @@ router.get("/", getMenus);
  *                       $ref: '#/components/schemas/MenuResponse'
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Authorization header tidak ditemukan
  *       403:
  *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
  *       404:
  *         description: Menu tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Menu tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.get("/:menu_id", validateMenuId, getMenuDetail);
 
@@ -168,15 +223,45 @@ router.get("/:menu_id", validateMenuId, getMenuDetail);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Menu berhasil ditambahkan
+ *                   example: Resource created successfully
  *                 data:
- *                   $ref: '#/components/schemas/MenuResponse'
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Menu berhasil ditambahkan
+ *               example:
+ *                 success: true
+ *                 message: Resource created successfully
+ *                 data:
+ *                   message: Menu berhasil ditambahkan
  *       400:
  *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Validation error
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Authorization header tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post("/", validate(menuSchema), createMenu);
 
@@ -193,7 +278,7 @@ router.post("/", validate(menuSchema), createMenu);
  *         name: menu_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: ID menu
  *     requestBody:
  *       required: true
@@ -219,17 +304,52 @@ router.post("/", validate(menuSchema), createMenu);
  *                   $ref: '#/components/schemas/MenuResponse'
  *       400:
  *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Validation error
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Authorization header tidak ditemukan
  *       403:
  *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
  *       404:
  *         description: Menu tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Menu tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.patch(
-    "/:menu_id", 
+    "/:menu_id",
     validate(menuSchema),
     validateMenuId,
     verifyMenuOwnership,
@@ -249,7 +369,7 @@ router.patch(
  *         name: menu_id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: ID menu
  *     responses:
  *       200:
@@ -269,12 +389,49 @@ router.patch(
  *                   $ref: '#/components/schemas/MenuResponse'
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Authorization header tidak ditemukan
  *       403:
  *         description: Tidak memiliki akses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Forbidden access
  *       404:
  *         description: Menu tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Menu tidak ditemukan
+ *       422:
+ *         description: Menu sudah dipakai
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Menu sudah dipakai
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.delete(
     "/:menu_id",

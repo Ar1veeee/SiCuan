@@ -18,7 +18,7 @@ const options: swaggerJsdoc.Options = {
         description: 'Development Server',
       },
       {
-        url: 'https://sicuan-service.up.railway.app',
+        url: 'https://sicuan-api-678045816602.asia-southeast2.run.app',
         description: 'Production Server',
       },
     ],

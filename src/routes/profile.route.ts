@@ -18,9 +18,9 @@ import { updatePasswordSchema } from "../validators/UserValidator";
  *     UserProfile:
  *       type: object
  *       properties:
- *         id:
- *           type: number
- *           description: ID pengguna
+ *         userId:
+ *           type: string
+ *           description: ID pengguna (ULID format)
  *         username:
  *           type: string
  *           description: Username pengguna
@@ -31,28 +31,18 @@ import { updatePasswordSchema } from "../validators/UserValidator";
  *         nama_usaha:
  *           type: string
  *           description: Nama usaha pengguna
- *         created_at:
- *           type: string
- *           format: date-time
- *           description: Tanggal pembuatan akun
  *       example:
- *         id: 1
+ *         userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
  *         username: johndoe
  *         email: john@example.com
  *         nama_usaha: John's Restaurant
- *         created_at: 2023-07-20T10:30:00Z
  *     
  *     UpdatePassword:
  *       type: object
  *       required:
- *         - currentPassword
  *         - newPassword
  *         - confirmPassword
  *       properties:
- *         currentPassword:
- *           type: string
- *           format: password
- *           description: Password saat ini
  *         newPassword:
  *           type: string
  *           format: password
@@ -62,9 +52,21 @@ import { updatePasswordSchema } from "../validators/UserValidator";
  *           format: password
  *           description: Konfirmasi password baru
  *       example:
- *         currentPassword: CurrentPass123!
  *         newPassword: NewPassword123!
  *         confirmPassword: NewPassword123!
+ *     
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         message:
+ *           type: string
+ *           description: Pesan error
+ *       required:
+ *         - success
+ *         - message
  */
 
 router.use(verifyToken);
@@ -88,14 +90,46 @@ router.use(verifyToken);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Profil berhasil diambil
  *                 data:
  *                   $ref: '#/components/schemas/UserProfile'
+ *               example:
+ *                 success: true
+ *                 message: Profil berhasil diambil
+ *                 data:
+ *                   userId: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                   username: johndoe
+ *                   email: john@example.com
+ *                   nama_usaha: John's Restaurant
  *       401:
  *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
  *       404:
  *         description: Profil tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: User tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.get("/", userProfile);
 
@@ -127,12 +161,64 @@ router.get("/", userProfile);
  *                 message:
  *                   type: string
  *                   example: Password berhasil diperbarui
+ *               example:
+ *                 success: true
+ *                 message: Password berhasil diperbarui
  *       400:
  *         description: Data tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               validationError:
+ *                 summary: Data tidak valid
+ *                 value:
+ *                   success: false
+ *                   message: Validation error
+ *               passwordMismatch:
+ *                 summary: Password tidak cocok
+ *                 value:
+ *                   success: false
+ *                   message: Password dan Confirm Password harus sama
+ *               passwordTooShort:
+ *                 summary: Password terlalu pendek
+ *                 value:
+ *                   success: false
+ *                   message: Password harus setidaknya 8 karakter
+ *               passwordNoUppercase:
+ *                 summary: Password tanpa huruf besar
+ *                 value:
+ *                   success: false
+ *                   message: Password harus diawali dengan huruf besar
+ *               passwordNoNumber:
+ *                 summary: Password tanpa angka
+ *                 value:
+ *                   success: false
+ *                   message: Password mengandung setidaknya satu angka
+ *               updateFailed:
+ *                 summary: Gagal memperbarui
+ *                 value:
+ *                   success: false
+ *                   message: Password gagal diperbarui
  *       401:
- *         description: Tidak terautentikasi atau password saat ini salah
+ *         description: Tidak terautentikasi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Unauthorized
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.patch(
     "/password",

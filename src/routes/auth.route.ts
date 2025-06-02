@@ -118,6 +118,35 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *         otp: "123456"
  *         newPassword: NewPassword123!
  *         confirmPassword: NewPassword123!
+ *     
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         message:
+ *           type: string
+ *           description: Pesan error
+ *       required:
+ *         - success
+ *         - message
+ *     
+ *     AuthSuccessResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *           description: Pesan sukses
+ *         data:
+ *           type: object
+ *           description: Data response
+ *       required:
+ *         - success
+ *         - message
  */
 
 /**
@@ -146,27 +175,15 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *                 message:
  *                   type: string
  *                   example: Pendaftaran berhasil
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: number
- *                       example: 1
- *                     username:
- *                       type: string
- *                       example: johndoe
+ *               example:
+ *                 success: true
+ *                 message: Pendaftaran berhasil
  *       400:
  *         description: Data tidak valid
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               passwordMismatch:
  *                 summary: Password tidak cocok
@@ -203,10 +220,15 @@ import { validateRegistrationData } from "../middlewares/auth.middleware";
  *                 value:
  *                   success: false
  *                   message: Email wajib diisi
- *       409:
- *         description: Email atau username sudah terdaftar
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/register",
@@ -245,26 +267,33 @@ router.post(
  *                   type: object
  *                   properties:
  *                     userID:
- *                       type: number
- *                       example: 1
+ *                       type: string
+ *                       description: ID pengguna (ULID format)
+ *                       example: 01JWQ4VJ6GN4A16CGPMGMJHJDD
  *                     username:
  *                       type: string
  *                       example: johndoe
  *                     access_token:
  *                       type: string
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                     expiresAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2024-01-27T10:30:00.000Z
+ *               example:
+ *                 success: true
+ *                 message: Login berhasil
+ *                 data:
+ *                   userID: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                   username: johndoe
+ *                   access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                   expiresAt: 2024-01-27T10:30:00.000Z
  *       400:
  *         description: Data tidak valid
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               invalidPassword:
  *                 summary: Password salah
@@ -276,23 +305,24 @@ router.post(
  *                 value:
  *                   success: false
  *                   message: Email wajib diisi
- *       401:
- *         description: Email atau password salah
  *       404:
  *         description: Pengguna tidak ditemukan
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Pengguna tidak ditemukan
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Pengguna tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/login",
@@ -317,14 +347,70 @@ router.post(
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Token berhasil diperbarui
  *                 data:
  *                   type: object
  *                   properties:
+ *                     userID:
+ *                       type: string
+ *                       description: ID pengguna (ULID format)
+ *                       example: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                     username:
+ *                       type: string
+ *                       example: johndoe
  *                     access_token:
  *                       type: string
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                     expiresAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2024-01-27T10:30:00.000Z
+ *               example:
+ *                 success: true
+ *                 message: Token berhasil diperbarui
+ *                 data:
+ *                   userID: 01JWQ4VJ6GN4A16CGPMGMJHJDD
+ *                   username: johndoe
+ *                   access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                   expiresAt: 2024-01-27T10:30:00.000Z
+ *       400:
+ *         description: Token tidak valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Token tidak valid atau kedaluwarsa
  *       401:
- *         description: Token tidak valid atau kedaluwarsa
+ *         description: Token kedaluwarsa
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Token sudah kedaluwarsa
+ *       404:
+ *         description: Pengguna tidak ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Pengguna tidak ditemukan
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/refresh-token",
@@ -357,18 +443,15 @@ router.post(
  *                 message:
  *                   type: string
  *                   example: Kode OTP telah dikirim ke email Anda
+ *               example:
+ *                 success: true
+ *                 message: Kode OTP telah dikirim ke email Anda
  *       400:
  *         description: Data tidak valid
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               requiredEmail:
  *                 summary: Email tidak diisi
@@ -382,8 +465,22 @@ router.post(
  *                   message: Format Email tidak valid
  *       404:
  *         description: Email tidak terdaftar
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Email tidak ditemukan
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/forget-password",
@@ -416,19 +513,16 @@ router.post(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Kode OTP valid
+ *                   example: OTP valid
+ *               example:
+ *                 success: true
+ *                 message: OTP valid
  *       400:
  *         description: OTP tidak valid
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               requiredOtp:
  *                 summary: OTP tidak diisi
@@ -442,6 +536,13 @@ router.post(
  *                   message: OTP tidak valid atau sudah kadaluwarsa
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/verify-otp",
@@ -474,19 +575,16 @@ router.post(
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Password berhasil diubah
+ *                   example: Password berhasil diperbarui
+ *               example:
+ *                 success: true
+ *                 message: Password berhasil diperbarui
  *       400:
  *         description: Data tidak valid
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               requiredOtp:
  *                 summary: OTP tidak diisi
@@ -530,6 +628,13 @@ router.post(
  *                   message: Password mengandung setidaknya satu angka.
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: Internal server error
  */
 router.post(
     "/reset-password",
