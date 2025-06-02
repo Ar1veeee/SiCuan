@@ -4,6 +4,7 @@ import MenuRoutes from "./routes/menu.route"
 import HppRoutes from "./routes/hpp.route"
 import ProfileRoutes from "./routes/profile.route"
 import StockRoutes from "./routes/stock.route"
+import { errorHandler } from "./middlewares/errorHandler.middleware"
 
 // import middlewares
 import express from "express"
@@ -81,5 +82,25 @@ app.use("/profile", ProfileRoutes)
 app.use("/menu", MenuRoutes)
 app.use("/resep", HppRoutes)
 app.use("/stock", StockRoutes)
+
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV,
+    });
+});
+
+app.use('*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        error: 'Route not found',
+        statusCode: 404
+    });
+});
+
+app.use(errorHandler)
+
 
 export default app

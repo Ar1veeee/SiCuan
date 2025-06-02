@@ -4,11 +4,15 @@ export interface BahanRequest {
   jumlah: number;
   satuan: string;
   jumlah_digunakan: number;
+  minimum_stock: number;
 }
 
 export interface BahanData extends BahanRequest {
   id: string;
+  userId: string;
   biaya?: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface HppResponse {
@@ -16,23 +20,13 @@ export interface HppResponse {
   data?: any;
 }
 
-export interface MenuHppData {
-  id: string;
-  menuId: string;
-  bahanId: string;
-  jumlah: number;
-  harga_beli: number;
-  satuan: string;
-  biaya: number;
-}
-
 declare global {
-    namespace Express {
-        interface Request {
-            userId?: string;
-            menuId?: string;
-            bahanId?: string;
-            BahanData?: BahanData;
-        }
+  namespace Express {
+    interface Request {
+      userId?: string;
+      menuId?: string;
+      bahanId?: string;
+      BahanData?: BahanData;
     }
+  }
 }

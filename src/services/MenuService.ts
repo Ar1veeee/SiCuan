@@ -56,25 +56,7 @@ export const getMenuDetailService = async (
         throw new ApiError("Menu tidak ditemukan", 404);
     }
 
-    const menuDetailWithFormatted = {
-        ...menuDetail,
-        createdAtFormatted: menuDetail.createdAt
-            ? new Date(menuDetail.createdAt).toLocaleDateString("id-ID", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            })
-            : undefined,
-        updatedAtFormatted: menuDetail.updatedAt
-            ? new Date(menuDetail.updatedAt).toLocaleDateString("id-ID", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            })
-            : undefined
-    };
-
-    return menuDetailWithFormatted;
+    return menuDetail;
 };
 
 /**

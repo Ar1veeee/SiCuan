@@ -6,11 +6,9 @@ export interface MenuData {
     id: string;
     userId: string;
     nama_menu: string;  
-    jumlah_hpp?: number | null;
+    hpp?: number | null;
     createdAt?: Date;
     updatedAt?: Date;
-    createdAtFormatted?: string;
-    updatedAtFormatted?: string;
 }
 
 export interface MenuResponse {

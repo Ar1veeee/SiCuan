@@ -37,6 +37,7 @@ export interface LoginResponse extends AuthResponse {
         userID: string | string;
         username: string;
         access_token: string;
+        expiresAt?: string;
     };
 }
 
@@ -48,5 +49,3 @@ declare global {
         }
     }
 }
-
-export { };

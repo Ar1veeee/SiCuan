@@ -21,13 +21,14 @@ export const createRecipeService = async (
   }
 
   await HppModel.createBahanWithMenuLink({
-    nama: bahan.nama_bahan,
+    userId,
+    menuId,
+    nama_bahan: bahan.nama_bahan,
     harga_beli: bahan.harga_beli,
     jumlah: bahan.jumlah,
     satuan: bahan.satuan,
-    menuId,
     jumlah_digunakan: bahan.jumlah_digunakan,
-    userId,
+    minimum_stock: bahan.minimum_stock,
   });
 
   await HppModel.updateTotalHPP(menuId);
@@ -65,12 +66,13 @@ export const updateRecipeService = async (
   await validateMenuOwnership(userId, menuId);
 
   const updated = await HppModel.updateMenuResep(userId, menuId, bahanId, {
-    nama: bahan.nama_bahan,
+    menuId,
+    nama_bahan: bahan.nama_bahan,
     harga_beli: bahan.harga_beli,
     jumlah: bahan.jumlah,
     satuan: bahan.satuan,
-    menuId,
     jumlah_digunakan: bahan.jumlah_digunakan,
+    minimum_stock: bahan.minimum_stock,
   });
 
   if (!updated) {

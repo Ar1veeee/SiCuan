@@ -5,31 +5,6 @@ import { validateStockOwnership } from "../validators/StockValidator";
 import { StockData, StockRequest, StockResponse, JenisTransaksi } from "../types/stock.type";
 
 /**
- * Service untuk membuat transaksi stok baru
- */
-export const createStockService = async (
-    userId: string,
-    data: StockRequest
-): Promise<StockResponse> => {
-    await validateUserExists(userId);
-
-    if (!data.nama || !data.jumlah || !data.jenis_transaksi) {
-        throw new ApiError("Data stok tidak lengkap", 400);
-    }
-
-    const existingStock = await StockModel.findExistingStockTransaction(userId, data.nama);
-    if (existingStock) {
-        throw new ApiError("Stok dengan nama tersebut sudah tersedia", 400);
-    }
-
-    await StockModel.createStockTransaction(userId, data);
-
-    return {
-        message: "Stok berhasil ditambahkan",
-    };
-};
-
-/**
  * Service untuk mendapatkan semua transaksi stok berdasarkan userId
  */
 export const getStocksService = async (userId: string): Promise<StockData[]> => {
@@ -39,7 +14,14 @@ export const getStocksService = async (userId: string): Promise<StockData[]> => 
 
     const formattedStocks = stocks.map(stock => ({
         ...stock,
-        tanggal: stock.tanggal ? new Date(stock.tanggal).toLocaleDateString("id-ID", {
+        createdAt: stock.createdAt ? new Date(stock.createdAt).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        }) : undefined,
+        updatedAt: stock.updatedAt ? new Date(stock.updatedAt).toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -68,7 +50,14 @@ export const getStockDetailService = async (
 
     const formattedStockDetail = {
         ...stockDetail,
-        tanggal: stockDetail.tanggal ? new Date(stockDetail.tanggal).toLocaleDateString("id-ID", {
+        createdAt: stockDetail.createdAt ? new Date(stockDetail.createdAt).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        }) : undefined,
+        updatedAt: stockDetail.updatedAt ? new Date(stockDetail.updatedAt).toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -106,7 +95,7 @@ export const updateStockService = async (
             newJumlah -= data.jumlah;
             if (newJumlah < 0) {
                 throw new ApiError(
-                    `Jumlah tidak cukup. Stok ${existingStock.nama} saat ini adalah ${existingStock.jumlah}`,
+                    `Jumlah tidak cukup. Stok ${existingStock.nama_bahan} saat ini adalah ${existingStock.jumlah}`,
                     400
                 );
             }
@@ -119,7 +108,7 @@ export const updateStockService = async (
         updatedData.jumlah = newJumlah;
     }
 
-    const updatedStock = await StockModel.updateStockTransaction(stockId, updatedData);
+    await StockModel.updateStockTransaction(stockId, updatedData);
 
     return {
         message: "Stok berhasil diperbarui",

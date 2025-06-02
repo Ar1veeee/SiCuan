@@ -8,7 +8,7 @@ const toDomainModel = (prismaMenu: any): MenuData => {
         id: prismaMenu.id,
         userId: prismaMenu.userId,
         nama_menu: prismaMenu.nama_menu,
-        jumlah_hpp: prismaMenu.jumlah_hpp,
+        hpp: prismaMenu.hpp,
         createdAt: prismaMenu.createdAt,
         updatedAt: prismaMenu.updatedAt
     };

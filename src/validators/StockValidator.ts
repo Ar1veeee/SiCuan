@@ -11,8 +11,6 @@ export const validateStockOwnership = async (userId: string, stockId: string) =>
 }
 
 export const stockSchema = z.object({
-    nama: z.string().nonempty('Nama stok wajib diisi'),
     jumlah: z.number().min(1, 'Jumlah harus lebih dari 0'),
     jenis_transaksi: z.string().nonempty('Jenis transaksi stok wajib diisi'),
-    keterangan: z.string().nonempty('Keterangan stok wajib diisi'),
 })

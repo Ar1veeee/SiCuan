@@ -37,16 +37,39 @@ const User = {
         })
     },
 
-    createOrUpdateAuthToken: async (userId: string, accessToken: string, refreshToken: string) => {
+    createOrUpdateAuthToken: async (
+        userId: string,
+        accessToken: string,
+        refreshToken: string,
+        deviceInfo?: string,
+        expiresAt?: Date
+    ) => {
         const userExists = await prisma.user.findUnique({ where: { id: userId } });
 
         if (!userExists) {
             throw new Error("Gagal membuat Auth: userId tidak ditemukan.");
         }
+
+        const defaultExpiresAt = expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
         return await prisma.auth.upsert({
             where: { userId },
-            update: { accessToken, refreshToken },
-            create: { id: ulid(), userId, accessToken, refreshToken }
+            update: {
+                accessToken,
+                refreshToken,
+                deviceInfo,
+                expiresAt: defaultExpiresAt,
+                isActive: true
+            },
+            create: {
+                id: ulid(),
+                userId,
+                accessToken,
+                refreshToken,
+                deviceInfo,
+                expiresAt: defaultExpiresAt,
+                isActive: true
+            }
         })
     },
 
@@ -56,10 +79,30 @@ const User = {
         })
     },
 
-    refreshToken: async (refreshToken: string, newAccessToken: string) => {
+    refreshToken: async (oldRefreshToken: string, newAccessToken: string, newRefreshToken: string) => {
+        const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); 
+
         return await prisma.auth.updateMany({
-            where: { refreshToken },
-            data: { accessToken: newAccessToken }
+            where: {
+                refreshToken: oldRefreshToken,
+                isActive: true
+            },
+            data: {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken, 
+                expiresAt: newExpiresAt
+            }
+        })
+    },
+
+    revokeAuth: async (userId: string) => {
+        return await prisma.auth.updateMany({
+            where: { userId },
+            data: { 
+                isActive: false,
+                accessToken: null,
+                refreshToken: null
+            }
         })
     }
 };

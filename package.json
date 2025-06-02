@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
+    "@types/compression": "^1.8.0",
+    "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.2",
+    "@types/hpp": "^0.2.6",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.15.29",
     "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.21.0"
   },
   "dependencies": {

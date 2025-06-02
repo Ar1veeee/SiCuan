@@ -7,15 +7,16 @@ export enum JenisTransaksi {
 export interface StockData {
     id: string;
     userId: string;
-    nama: string;
+    bahanId: string;
+    nama_bahan: string;
     jumlah: number;
     jenis_transaksi: JenisTransaksi;
     keterangan: string;
-    tanggal?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface StockRequest {
-    nama: string;
     jumlah: number;
     jenis_transaksi: JenisTransaksi | string;
     keterangan: string;
@@ -31,6 +32,7 @@ declare global {
         interface Request {
             userId?: string;
             stockId?: string;
+            bahanId?: string;
             stockData?: StockData;
         }
     }

@@ -62,7 +62,8 @@ export const loginService = async (
         throw new ApiError("ID user tidak valid", 500);
     }
 
-    await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken, undefined, expiresAt);
 
     return {
         message: "Login berhasil",
@@ -70,6 +71,7 @@ export const loginService = async (
             userID: user.id,
             username: user.name,
             access_token: accessToken,
+            expiresAt: expiresAt.toISOString()
         },
         refreshToken: refreshToken 
     };
@@ -103,6 +105,10 @@ export const refreshTokenService = async (
         throw new ApiError("Refresh token tidak valid", 400);
     }
 
+    if (!authRecord.isActive || authRecord.expiresAt < new Date()) {
+        throw new ApiError("Token sudah kedaluwarsa", 401);
+    }
+
     const newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
@@ -111,27 +117,18 @@ export const refreshTokenService = async (
         expiresIn: "7d",
     });
 
-    await UserModel.refreshToken(refreshTokenValue, newAccessToken);
+    await UserModel.refreshToken(refreshTokenValue, newAccessToken, newRefreshToken);
 
-    if (newRefreshToken !== refreshTokenValue) {
-        await UserModel.createOrUpdateAuthToken(userId, newAccessToken, newRefreshToken);
-
-        return {
-            data: {
-                userID: user.id,
-                username: user.name,
-                access_token: newAccessToken,
-            },
-            refreshToken: newRefreshToken
-        };
-    }
+    const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     return {
         data: {
             userID: user.id,
             username: user.name,
             access_token: newAccessToken,
-        }
+            expiresAt: newExpiresAt.toISOString()
+        },
+        refreshToken: newRefreshToken
     };
 };
 

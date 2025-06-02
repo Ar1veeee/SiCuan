@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { StockData, StockRequest, JenisTransaksi } from "../types/stock.type";
-import { ulid } from "ulid";
 
 const prisma = new PrismaClient();
 
@@ -8,35 +7,17 @@ const toDomainModel = (prismaStock: any): StockData => {
     return {
         id: prismaStock.id,
         userId: prismaStock.userId,
-        nama: prismaStock.nama,
+        bahanId: prismaStock.bahanId,
+        nama_bahan: prismaStock.nama_bahan,
         jumlah: prismaStock.jumlah,
         jenis_transaksi: prismaStock.jenis_transaksi as JenisTransaksi,
         keterangan: prismaStock.keterangan ?? '',
-        tanggal: prismaStock.tanggal
+        createdAt: prismaStock.createdAt,
+        updatedAt: prismaStock.updatedAt,
     };
 };
 
 const StockModel = {
-    /**
-     * Membuat transaksi stok baru
-     */
-    createStockTransaction: async (
-        userId: string,
-        data: StockRequest
-    ): Promise<StockData> => {
-        const result = await prisma.stockTransaction.create({
-            data: {
-                id: ulid(),
-                userId,
-                nama: data.nama,
-                jumlah: data.jumlah,
-                jenis_transaksi: data.jenis_transaksi,
-                keterangan: data.keterangan,
-            },
-        });
-        return toDomainModel(result);
-    },
-
     /**
      * Memperbarui transaksi stok
      */
@@ -94,10 +75,10 @@ const StockModel = {
      */
     findExistingStockTransaction: async (
         userId: string,
-        nama: string
+        nama_bahan: string
     ): Promise<StockData | null> => {
         const result = await prisma.stockTransaction.findFirst({
-            where: { userId, nama }
+            where: { userId, nama_bahan }
         });
         return result ? toDomainModel(result) : null;
     },

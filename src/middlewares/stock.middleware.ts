@@ -16,7 +16,7 @@ export const validateStockId = (req: Request, res: Response, next: NextFunction)
     }
 
     if (!isValidULID(stock_id)) {
-        apiResponse.badRequest(res, "Format Menu ID tidak valid");
+        apiResponse.badRequest(res, "Format Stock ID tidak valid");
         return;
     }
 

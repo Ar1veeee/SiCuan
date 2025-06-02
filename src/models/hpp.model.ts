@@ -4,34 +4,44 @@ import { calculateHpp } from "../utils/hppCalculate.util";
 import { ApiError } from "../exceptions/ApiError";
 import { ulid } from "ulid";
 
-const Hpp = {
+const HppModel = {
     createBahanWithMenuLink: async (data: {
         userId: string;
         menuId: string;
-        nama: string;
+        nama_bahan: string;
         harga_beli: number;
         jumlah: number;
         satuan: string;
         jumlah_digunakan: number;
+        minimum_stock?: number;
     }) => {
         const biaya = calculateHpp(data.harga_beli, data.jumlah, data.jumlah_digunakan);
 
         let bahan = await prisma.bahan.findUnique({
-            where: { nama: data.nama }
+            where: {
+                nama_bahan: data.nama_bahan,
+                userId: data.userId
+            }
         });
 
         if (!bahan) {
             bahan = await prisma.bahan.create({
                 data: {
                     id: ulid(),
-                    nama: data.nama,
+                    userId: data.userId,
+                    nama_bahan: data.nama_bahan,
                     jumlah: data.jumlah,
+                    harga_beli: data.harga_beli,
+                    satuan: data.satuan,
+                    minimum_stock: data.minimum_stock ?? 0,
                 },
             });
         } else {
-
             await prisma.bahan.update({
-                where: { id: bahan.id },
+                where: {
+                    id: bahan.id,
+                    userId: data.userId
+                },
                 data: { jumlah: data.jumlah }
             });
         }
@@ -42,15 +52,13 @@ const Hpp = {
                 menuId: data.menuId,
                 bahanId: bahan.id,
                 jumlah: data.jumlah_digunakan,
-                harga_beli: data.harga_beli,
-                satuan: data.satuan,
                 biaya: biaya
             },
         });
 
         const existingStockTransaction = await prisma.stockTransaction.findFirst({
             where: {
-                nama: data.nama
+                nama_bahan: data.nama_bahan
             }
         });
 
@@ -59,10 +67,11 @@ const Hpp = {
                 data: {
                     id: ulid(),
                     userId: data.userId,
-                    nama: data.nama,
-                    jumlah: 0,
-                    jenis_transaksi: 'info',
-                    keterangan: `Menu ingredient added: ${data.nama}`,
+                    bahanId: bahan.id,
+                    nama_bahan: data.nama_bahan,
+                    jumlah: data.jumlah,
+                    jenis_transaksi: 'PENYESUAIAN',
+                    keterangan: `Menambah Bahan Menu: ${data.nama_bahan}`,
                 }
             });
         }
@@ -80,7 +89,7 @@ const Hpp = {
 
         await prisma.menu.update({
             where: { id: menuId },
-            data: { jumlah_hpp: jumlahHpp },
+            data: { hpp: jumlahHpp },
         });
     },
 
@@ -114,7 +123,7 @@ const Hpp = {
             where: {
                 menuId,
                 bahan: {
-                    nama: nama_bahan,
+                    nama_bahan: nama_bahan,
                 },
             },
             include: {
@@ -161,7 +170,7 @@ const Hpp = {
                 id: menuId
             },
             data: {
-                jumlah_hpp: {
+                hpp: {
                     decrement: hppPerBahan
                 }
             }
@@ -170,12 +179,13 @@ const Hpp = {
     },
 
     updateMenuResep: async (userId: string, menuId: string, bahanId: string, data: {
-        nama: string;
+        nama_bahan: string;
         harga_beli: number;
         jumlah: number;
         satuan: string;
         menuId: string;
         jumlah_digunakan: number;
+        minimum_stock?: number;
     }) => {
         const menuBahan = await prisma.menuBahan.findFirst({
             where: {
@@ -202,9 +212,10 @@ const Hpp = {
                 id: bahanId,
             },
             data: {
-                nama: data.nama,
+                nama_bahan: data.nama_bahan,
                 jumlah: data.jumlah,
-
+                harga_beli: data.harga_beli,
+                satuan: data.satuan,
             },
         })
 
@@ -217,8 +228,6 @@ const Hpp = {
             },
             data: {
                 jumlah: data.jumlah_digunakan,
-                harga_beli: data.harga_beli,
-                satuan: data.satuan,
                 biaya: biayaBaru
             }
         })
@@ -226,4 +235,4 @@ const Hpp = {
     }
 }
 
-export default Hpp;
+export default HppModel;
