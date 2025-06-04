@@ -91,8 +91,9 @@ Thumbs.db
 # Prisma
 prisma/migrations/
 !prisma/schema.prisma
-dist
 
 # Cloud Function artifacts
 functions/*/node_modules/
 functions/*/.env
+
+dist/

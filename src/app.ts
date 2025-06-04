@@ -17,7 +17,7 @@ import hpp from "hpp"
 import xss from "xss"
 import logger from "./config/logger.config";
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpecs from './config/swagger.config';
+import swaggerSpecs from './config/swagger/config';
 
 const app = express()
 const morganFormat = ":method :url :status :response-time ms";
