@@ -2,6 +2,9 @@
 FROM oven/bun:1 AS builder
 WORKDIR /app
 
+# Set NODE_ENV di build stage
+ENV NODE_ENV=production
+
 # Copy package files
 COPY package.json bun.lock ./
 RUN bun install
@@ -10,9 +13,8 @@ RUN bun install
 COPY src ./src
 COPY prisma ./prisma
 COPY tsconfig.json ./
-COPY .env.production ./ 
 
-# Generate Prisma
+# Generate Prisma dengan NODE_ENV yang benar
 RUN bunx prisma generate
 
 # Build project
@@ -22,12 +24,19 @@ RUN bun run build
 FROM oven/bun:1-slim AS runner
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y openssl
+# Set environment variables di awal
+ENV NODE_ENV=production
+ENV PORT=8080
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 --ingroup nodejs sicuan
+# Install dependencies
+RUN apt-get update && apt-get install -y openssl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy package files
+# Create user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 --ingroup nodejs sicuan
+
+# Copy package files dan install production dependencies
 COPY package.json bun.lock ./
 RUN bun install --production
 
@@ -35,14 +44,21 @@ RUN bun install --production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/.env.production ./.env.production 
 
-RUN chown -R sicuan:nodejs /app && chmod 755 /app
+# Copy .env.production jika ada
+COPY .env.production* ./
+
+# Change ownership dan permissions
+RUN chown -R sicuan:nodejs /app && chmod -R 755 /app
+
+# Switch to non-root user
 USER sicuan
 
-RUN export NODE_ENV=production
-
-ENV PORT=8080
-
 EXPOSE 8080
-CMD ["bun", "run", "start"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD bun --eval "fetch('http://localhost:8080/health').then(r => process.exit(r.ok ? 0 : 1))" || exit 1
+
+# Jalankan aplikasi
+CMD ["bun", "run", "dist/server.js"]
