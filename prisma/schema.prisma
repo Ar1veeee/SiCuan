@@ -15,7 +15,9 @@ model User {
   email             String   @unique @db.VarChar(100)
   password          String   @db.VarChar(255)
   nama_usaha        String   @db.VarChar(255)
+  isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   Auth              Auth?
   passwordResets    PasswordReset[]
@@ -23,7 +25,9 @@ model User {
   bahan             Bahan[]
   stockTransactions StockTransaction[]
   sales             Sales[]
+
   @@index([email])
+  @@index([isActive])
 }
 
 model Auth {
@@ -39,6 +43,7 @@ model Auth {
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([expiresAt, isActive])
 }
 
 model Menu {
@@ -53,13 +58,13 @@ model Menu {
   bahanList   MenuBahan[]
   sales       Sales[]
 
-  @@index([userId])
+  @@unique([userId, nama_menu])
 }
 
 model Bahan {
   id                String                @id @db.Char(26)
   userId            String
-  nama_bahan        String                @unique
+  nama_bahan        String
   jumlah            Float                 @default(0)
   harga_beli        Float?        
   satuan            String?               // "kg", "pcs"
@@ -71,7 +76,8 @@ model Bahan {
   menuBahan         MenuBahan[]
   stockTransactions StockTransaction[]
 
-  @@index([nama_bahan])
+  @@unique([userId, nama_bahan])
+  @@index([userId, jumlah])
 }
 
 model MenuBahan {
@@ -79,20 +85,20 @@ model MenuBahan {
   menuId      String
   bahanId     String
   jumlah      Int?       // jumlah bahan yang digunakan dalam menu
-  biaya       Float?     // biaya tiap bahan
+  biaya       Float?     // biaya per bahan
   
   menu        Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
   bahan       Bahan      @relation(fields: [bahanId], references: [id], onDelete: Restrict)
 
   @@unique([menuId, bahanId])
   @@index([menuId])
+  @@index([bahanId])
 }
 
 model StockTransaction {
   id              String    @id @db.Char(26)
   userId          String
   bahanId         String
-  nama_bahan      String
   jumlah          Float
   jenis_transaksi String    // 'masuk', 'keluar', 'penyesuaian'
   keterangan      String?   @db.Text
@@ -124,10 +130,10 @@ model Sales {
   userId      String
   menuId      String
   tanggal     DateTime  @default(now())
-  harga_jual  Float     // Harga jual per unit
+  harga_jual  Float     // Harga jual menu
   jumlah_laku Int       // Quantity terjual
   hpp_satuan  Float?
-  income      Float?    // harga_jual * jumlah_laku (bisa dihitung otomatis)
+  income      Float?    // harga_jual * jumlah_laku
   profit      Float?    // (harga_jual - hpp) * jumlah_laku (bisa dihitung otomatis)
   keterangan  String?   @db.Text
   createdAt   DateTime  @default(now())
@@ -136,7 +142,5 @@ model Sales {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   menu        Menu      @relation(fields: [menuId], references: [id], onDelete: Restrict)
   
-  @@index([userId, tanggal])
-  @@index([menuId, tanggal])
-  @@index([tanggal])
+  @@index([userId, menuId, tanggal])
 }
