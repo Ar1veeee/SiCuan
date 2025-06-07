@@ -17,7 +17,7 @@ export interface BahanData extends BahanRequest {
 
 export interface HppResponse {
   message: string;
-  data?: any;
+  data?: object;
 }
 
 declare global {

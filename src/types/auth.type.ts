@@ -29,12 +29,13 @@ export interface ResetPasswordRequest {
 
 export interface AuthResponse {
     message: string;
-    data?: any;
+    data?: object;
 }
 
 export interface LoginResponse extends AuthResponse {
         userID: string | string;
         username: string;
+        deviceInfo?: string;
         access_token: string;
         expiresAt?: string;
 }

@@ -24,7 +24,7 @@ export interface StockRequest {
 
 export interface StockResponse {
     message: string;
-    data?: any;
+    data?: object;
 }
 
 declare global {

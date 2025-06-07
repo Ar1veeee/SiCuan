@@ -13,7 +13,7 @@ export interface MenuData {
 
 export interface MenuResponse {
     message: string;
-    data?: any;
+    data?: object;
 }
 
 declare global {

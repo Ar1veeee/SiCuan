@@ -21,7 +21,7 @@ export interface PenjualanRequest {
 
 export interface PenjualanResponse {
     message: string;
-    data?: any;
+    data?: object;
 }
 
 declare global{

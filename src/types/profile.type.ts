@@ -12,5 +12,5 @@ export interface UserProfile {
 
 export interface ProfileResponse {
     message: string;
-    data?: any;
+    data?: object;
 }
