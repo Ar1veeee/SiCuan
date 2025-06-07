@@ -4,6 +4,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dist
 
 # Environment variables
 .env
@@ -95,5 +96,3 @@ prisma/migrations/
 # Cloud Function artifacts
 functions/*/node_modules/
 functions/*/.env
-
-dist/

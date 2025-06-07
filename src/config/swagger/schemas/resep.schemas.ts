@@ -85,6 +85,10 @@ export const resepSchemas = {
                     jumlah: {
                         type: 'number',
                         description: 'Stok tersedia'
+                    },
+                    biaya: {
+                        type: 'number',
+                        description: 'Biaya bahan per satuan'
                     }
                 }
             }
@@ -100,7 +104,8 @@ export const resepSchemas = {
             createdAt: '2023-07-20T10:30:00Z',
             updatedAt: '2023-07-20T10:30:00Z',
             menuBahan: {
-                jumlah: 5
+                jumlah: 5,
+                biaya: 800
             }
         }
     },

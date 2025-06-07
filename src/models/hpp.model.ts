@@ -111,7 +111,8 @@ const HppModel = {
                         menuId: menuId
                     },
                     select: {
-                        jumlah: true
+                        jumlah: true,
+                        biaya: true
                     }
                 }
             }
