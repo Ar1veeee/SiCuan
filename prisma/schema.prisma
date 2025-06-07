@@ -132,7 +132,7 @@ model Sales {
   tanggal     DateTime  @default(now())
   harga_jual  Float     // Harga jual menu
   jumlah_laku Int       // Quantity terjual
-  hpp_satuan  Float?
+  hpp         Float?
   income      Float?    // harga_jual * jumlah_laku
   profit      Float?    // (harga_jual - hpp) * jumlah_laku (bisa dihitung otomatis)
   keterangan  String?   @db.Text
