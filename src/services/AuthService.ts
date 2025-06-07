@@ -33,7 +33,8 @@ export const registerService = async (
  */
 export const loginService = async (
     email: string,
-    password: string
+    password: string,
+    deviceInfo?: string
 ): Promise<LoginResponse & { refreshToken: string }> => {
     const user = await UserModel.findUserByEmail(email);
     if (!user) {
@@ -63,12 +64,13 @@ export const loginService = async (
     }
 
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken, undefined, expiresAt);
+    await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken, deviceInfo, expiresAt);
 
     return {
             message: "Login berhasil",
             userID: user.id,
             username: user.name,
+            deviceInfo: "Android",
             access_token: accessToken,
             expiresAt: expiresAt.toISOString(),
         refreshToken: refreshToken 
