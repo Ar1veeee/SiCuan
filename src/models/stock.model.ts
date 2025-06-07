@@ -69,19 +69,6 @@ const StockModel = {
         });
         return result ? toDomainModel(result) : null;
     },
-
-    /**
-     * Mencari transaksi stok berdasarkan nama dan userId
-     */
-    findExistingStockTransaction: async (
-        userId: string,
-        nama_bahan: string
-    ): Promise<StockData | null> => {
-        const result = await prisma.stockTransaction.findFirst({
-            where: { userId, nama_bahan }
-        });
-        return result ? toDomainModel(result) : null;
-    },
 };
 
 export default StockModel;

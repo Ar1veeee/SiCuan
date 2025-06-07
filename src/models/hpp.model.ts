@@ -17,10 +17,10 @@ const HppModel = {
     }) => {
         const biaya = calculateHpp(data.harga_beli, data.jumlah, data.jumlah_digunakan);
 
-        let bahan = await prisma.bahan.findUnique({
+        let bahan = await prisma.bahan.findFirst({
             where: {
-                nama_bahan: data.nama_bahan,
-                userId: data.userId
+                userId: data.userId,
+                nama_bahan: data.nama_bahan
             }
         });
 
@@ -58,7 +58,8 @@ const HppModel = {
 
         const existingStockTransaction = await prisma.stockTransaction.findFirst({
             where: {
-                nama_bahan: data.nama_bahan
+                userId: data.userId,
+                bahanId: bahan.id,
             }
         });
 
@@ -68,7 +69,6 @@ const HppModel = {
                     id: ulid(),
                     userId: data.userId,
                     bahanId: bahan.id,
-                    nama_bahan: data.nama_bahan,
                     jumlah: data.jumlah,
                     jenis_transaksi: 'PENYESUAIAN',
                     keterangan: `Menambah Bahan Menu: ${data.nama_bahan}`,
