@@ -53,7 +53,7 @@ export const menuPaths = {
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/Menu'
+                            $ref: '#/components/schemas/MenuRequest'
                         }
                     }
                 }
@@ -64,7 +64,7 @@ export const menuPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/MenuRequestSuccessResponse'
                             }
                         }
                     }
@@ -139,7 +139,7 @@ export const menuPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/UpdateMenuSuccessResponse'
                             }
                         }
                     }
@@ -163,7 +163,7 @@ export const menuPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/DeleteMenuSuccessResponse'
                             }
                         }
                     }

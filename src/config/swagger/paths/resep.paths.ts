@@ -68,7 +68,7 @@ export const resepPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/BahanRequestSuccessResponse'
                             }
                         }
                     }
@@ -104,7 +104,7 @@ export const resepPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/UpdateBahanSuccessResponse'
                             }
                         }
                     }
@@ -128,7 +128,7 @@ export const resepPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/DeleteBahanSuccessResponse'
                             }
                         }
                     }

@@ -152,7 +152,7 @@ export const authPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/OtpRequestSuccessResponse'
                             }
                         }
                     }
@@ -184,7 +184,7 @@ export const authPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/OtpVerifySuccessResponse'
                             }
                         }
                     }
@@ -215,7 +215,7 @@ export const authPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/ResetPasswordSuccessResponse'
                             }
                         }
                     }

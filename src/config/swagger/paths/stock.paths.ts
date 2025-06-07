@@ -108,7 +108,7 @@ export const stockPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/UpdateStockSuccessResponse'
                             }
                         }
                     }
@@ -141,7 +141,7 @@ export const stockPaths = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/AuthSuccessResponse'
+                                $ref: '#/components/schemas/DeleteStockSuccessResponse'
                             }
                         }
                     }

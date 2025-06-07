@@ -103,5 +103,95 @@ export const resepSchemas = {
                 jumlah: 5
             }
         }
+    },
+
+    BahanRequestSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Resource created successfully',
+            data: {
+                message: 'Bahan berhasil ditambahkan'
+            }
+        }
+    },
+
+    UpdateBahanSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Bahan berhasil diperbarui'
+            }
+        }
+    },
+
+    DeleteBahanSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Bahan berhasil dihapus'
+            }
+        }
     }
 }

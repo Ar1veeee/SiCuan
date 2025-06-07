@@ -1,5 +1,5 @@
 export const menuSchemas = {
-    Menu: {
+    MenuRequest: {
         type: 'object',
         required: ['nama_menu'],
         properties: {
@@ -51,6 +51,96 @@ export const menuSchemas = {
             hpp: 2000,
             createdAt: '2023-07-20T10:30:00Z',
             updatedAt: '2023-07-20T10:30:00Z'
+        }
+    },
+
+    MenuRequestSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Resource created successfully',
+            data: {
+                message: 'Menu berhasil ditambahkan'
+            }
+        }
+    },
+
+    UpdateMenuSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Menu berhasil diperbarui'
+            }
+        }
+    },
+
+    DeleteMenuSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Menu berhasil dihapus'
+            }
         }
     }
 }

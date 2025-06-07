@@ -47,5 +47,35 @@ export const profileSchemas = {
             newPassword: 'NewPassword123!',
             confirmPassword: 'NewPassword123!'
         }
+    },
+
+    UpdatePasswordSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Password berhasil diperbarui'
+            }
+        }
     }
 }

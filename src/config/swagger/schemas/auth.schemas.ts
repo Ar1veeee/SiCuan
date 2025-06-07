@@ -110,5 +110,95 @@ export const authSchemas = {
       newPassword: 'NewPassword123!',
       confirmPassword: 'NewPassword123!'
     }
-  }
+  },
+
+  OtpRequestSuccessResponse: {
+    type: 'object',
+    properties: {
+      success: {
+        type: 'boolean',
+        description: 'Status sukses'
+      },
+      message: {
+        type: 'string',
+        description: 'Pesan sukses'
+      },
+      data: {
+        type: 'object',
+        properties: {
+          meesage: {
+            type: 'string',
+            description: 'Pesan sukses'
+          }
+        }
+      },
+    },
+    example: {
+      success: true,
+      message: 'Resource created successfully',
+      data: {
+        message: 'Kode OTP telah dikirim ke email Anda'
+      }
+    }
+  },
+
+  OtpVerifySuccessResponse: {
+    type: 'object',
+    properties: {
+      success: {
+        type: 'boolean',
+        description: 'Status sukses'
+      },
+      message: {
+        type: 'string',
+        description: 'Pesan sukses'
+      },
+      data: {
+        type: 'object',
+        properties: {
+          meesage: {
+            type: 'string',
+            description: 'Pesan sukses'
+          }
+        }
+      },
+    },
+    example: {
+      success: true,
+      message: 'Resource created successfully',
+      data: {
+        message: 'OTP Valid'
+      }
+    }
+  },
+
+  ResetPasswordSuccessResponse: {
+    type: 'object',
+    properties: {
+      success: {
+        type: 'boolean',
+        description: 'Status sukses'
+      },
+      message: {
+        type: 'string',
+        description: 'Pesan sukses'
+      },
+      data: {
+        type: 'object',
+        properties: {
+          meesage: {
+            type: 'string',
+            description: 'Pesan sukses'
+          }
+        }
+      },
+    },
+    example: {
+      success: true,
+      message: 'Resource created successfully',
+      data: {
+        message: 'Password berhasil diperbarui'
+      }
+    }
+  },
 }

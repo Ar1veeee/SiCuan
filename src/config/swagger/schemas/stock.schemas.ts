@@ -76,5 +76,65 @@ export const stockSchemas = {
             createdAt: '20 Juli 2023, 10:30',
             updatedAt: '20 Juli 2023, 10:30'
         }
+    },
+
+    UpdateStockSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Stok berhasil diperbarui'
+            }
+        }
+    },
+
+    DeleteStockSuccessResponse: {
+        type: 'object',
+        properties: {
+            success: {
+                type: 'boolean',
+                description: 'Status sukses'
+            },
+            message: {
+                type: 'string',
+                description: 'Pesan sukses'
+            },
+            data: {
+                type: 'object',
+                properties: {
+                    meesage: {
+                        type: 'string',
+                        description: 'Pesan sukses'
+                    }
+                }
+            },
+        },
+        example: {
+            success: true,
+            message: 'Success',
+            data: {
+                message: 'Stok berhasil dihapus'
+            }
+        }
     }
 }
