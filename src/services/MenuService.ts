@@ -1,20 +1,19 @@
 import MenuModel from "../models/menu.model";
 import { ApiError } from "../exceptions/ApiError";
-import { validateUserExists } from "../validators/UserValidator";
-import { validateMenuOwnership } from "../validators/MenuValidator";
 import { MenuData, MenuResponse } from "../types/menu.type";
-import { isValidULID } from "../validators/IdValidator";
+import { updateTotalHPPService } from "./HppService";
 
 /**
  * Service untuk membuat menu baru
+ * @param userId 
+ * @param nama_menu 
+ * @returns 
  */
 export const createMenuService = async (
     userId: string,
     nama_menu: string
 ): Promise<MenuResponse> => {
-    await validateUserExists(userId);
-
-    const existingMenu = await MenuModel.findExistingMenu(userId, nama_menu);
+    const existingMenu = await MenuModel.findMenuByName(userId, nama_menu);
     if (existingMenu) {
         throw new ApiError("Menu sudah dipakai", 400);
     }
@@ -28,53 +27,33 @@ export const createMenuService = async (
 
 /**
  * Service untuk mendapatkan semua menu berdasarkan userId
+ * @param userId 
+ * @returns 
  */
 export const getMenusService = async (userId: string): Promise<MenuData[]> => {
-    await validateUserExists(userId);
-
     const menus = await MenuModel.findMenusByUserId(userId);
 
     return menus;
 };
 
 /**
- * Service untuk mendapatkan detail menu spesifik
- */
-export const getMenuDetailService = async (
-    userId: string,
-    menuId: string,
-): Promise<MenuData> => {
-    await validateUserExists(userId);
-
-    if (!isValidULID(menuId)) {
-        throw new ApiError("Format ID menu tidak valid", 400);
-    }
-
-    const menuDetail = await MenuModel.findMenuByIdAndUserId(userId, menuId);
-
-    if (!menuDetail) {
-        throw new ApiError("Menu tidak ditemukan", 404);
-    }
-
-    return menuDetail;
-};
-
-/**
- * Service untuk mengupdate menu
+ * Service untuk memperbarui menu
+ * @param userId 
+ * @param menuId 
+ * @param nama_menu 
+ * @returns 
  */
 export const updateMenuService = async (
     userId: string,
     menuId: string,
     nama_menu: string
 ): Promise<MenuResponse> => {
-    await validateUserExists(userId);
-    await validateMenuOwnership(userId, menuId);
-
-    if (!isValidULID(menuId)) {
-        throw new ApiError("Format ID menu tidak valid", 400);
+    const existingMenu = await MenuModel.findMenuByName(userId, nama_menu);
+    if (existingMenu && existingMenu.id !== menuId) {
+        throw new ApiError("Nama menu tersebut sudah digunakan oleh menu lain", 400);
     }
 
-    await MenuModel.updateMenu(userId, menuId, nama_menu);
+    await MenuModel.updateMenu(menuId, nama_menu);
 
     return {
         message: "Menu berhasil diperbarui",
@@ -82,19 +61,36 @@ export const updateMenuService = async (
 };
 
 /**
+ * Service untuk memperbarui keuntungan dan harga jual menu
+ * @param userId 
+ * @param nama_menu 
+ * @param hpp 
+ * @param keuntungan 
+ * @returns 
+ */
+export const menuSellingPriceService = async (
+    menuId: string,
+    hpp: number,
+    keuntungan: number
+): Promise<MenuResponse> => {
+    await MenuModel.updateKeuntungan(menuId, keuntungan);
+    await updateTotalHPPService(menuId);
+    
+    const menuTerbaru = await MenuModel.findMenuById(menuId);
+
+    return {
+        message: `Keuntungan berhasil diatur menjadi ${keuntungan}%. Harga Jual baru sekarang adalah Rp.${menuTerbaru?.harga_jual ?? 0}`
+    };
+};
+
+/**
  * Service untuk menghapus menu
+ * @param menuId 
+ * @returns 
  */
 export const deleteMenuService = async (
-    userId: string,
     menuId: string
 ): Promise<MenuResponse> => {
-    await validateUserExists(userId);
-    await validateMenuOwnership(userId, menuId);
-
-    if (!isValidULID(menuId)) {
-        throw new ApiError("Format ID menu tidak valid", 400);
-    }
-
     await MenuModel.deleteMenu(menuId);
 
     return {

@@ -7,6 +7,8 @@ export interface MenuData {
     userId: string;
     nama_menu: string;  
     hpp?: number | null;
+    keuntungan?: number | null;
+    harga_jual?: number | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -14,14 +16,4 @@ export interface MenuData {
 export interface MenuResponse {
     message: string;
     data?: object;
-}
-
-declare global {
-    namespace Express {
-        interface Request {
-            userId?: string;
-            menuId?: string;
-            menuData?: MenuData;
-        }
-    }
 }

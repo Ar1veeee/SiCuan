@@ -6,47 +6,56 @@ import {
     getMenuDetail,
     updateMenu,
     deleteMenu,
+    menuSellingPrice,
 } from "../controllers/menu.controller";
 import verifyToken from "../middlewares/auth.middleware";
 import {
     validateMenuId,
-    verifyMenuOwnership
+    verifyAndAttachMenu
 } from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
-import { menuSchema } from "../validators/MenuValidator";
+import { menuBodySchema } from "../validators/menu.validator";
 
 router.use(verifyToken);
 
 router.get(
     "/",
-    getMenus
+    getMenus,
 );
 
 router.get(
     "/:menu_id",
     validateMenuId,
+    verifyAndAttachMenu,
     getMenuDetail
 );
 
 router.post(
     "/",
-    validate(menuSchema),
+    validate(menuBodySchema),
     createMenu
 );
 
 router.patch(
     "/:menu_id",
-    validate(menuSchema),
+    validate(menuBodySchema),
     validateMenuId,
-    verifyMenuOwnership,
+    verifyAndAttachMenu,
     updateMenu
 );
 
 router.delete(
     "/:menu_id",
     validateMenuId,
-    verifyMenuOwnership,
+    verifyAndAttachMenu,
     deleteMenu
+);
+
+router.patch(
+    "/:menu_id/selling-price",
+    validateMenuId, 
+    verifyAndAttachMenu,
+    menuSellingPrice 
 );
 
 export default router;
