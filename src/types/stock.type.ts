@@ -2,7 +2,6 @@ import { Bahan, StockTransaction } from '@prisma/client';
 
 export interface CreateStockTransactionRequest {
     nama_bahan: string;
-    satuan: string;
     minimum_stock: number;
     jumlah: number;
     jenis_transaksi: 'PEMBELIAN' | 'PENJUALAN' | 'PENYESUAIAN';
