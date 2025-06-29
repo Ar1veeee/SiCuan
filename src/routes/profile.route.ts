@@ -5,11 +5,8 @@ import {
     userProfile
 } from "../controllers/profile.controller";
 import verifyToken from "../middlewares/auth.middleware";
-import {
-    validatePasswordMatch
-} from "../middlewares/profile.middleware";
 import { validate } from "../middlewares/validate.middleware";
-import { updatePasswordSchema } from "../validators/UserValidator";
+import { passwordConfirmationSchema } from "../validators/auth.validator";
 
 router.use(verifyToken);
 
@@ -20,8 +17,7 @@ router.get(
 
 router.patch(
     "/password",
-    validate(updatePasswordSchema),
-    validatePasswordMatch,
+    validate(passwordConfirmationSchema),
     updatePassword
 );
 

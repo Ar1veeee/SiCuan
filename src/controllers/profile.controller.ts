@@ -1,12 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { apiResponse } from "../utils/apiResponse.util";
 import { updatePasswordService, userProfileService } from "../services/ProfileService";
-import { handleProfileError } from "../middlewares/profile.middleware";
 
 /**
  * Controller untuk memperbarui password pengguna
  */
-export const updatePassword = async (req: Request, res: Response): Promise<void> => {
+export const updatePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const userId = req.userId;
 
@@ -15,17 +14,17 @@ export const updatePassword = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        const result = await updatePasswordService(userId, req.body.newPassword);
+        const result = await updatePasswordService(userId, req.body.password);
         apiResponse.success(res, result);
     } catch (error) {
-        handleProfileError(error, res);
+        next(error);
     }
 };
 
 /**
  * Controller untuk mendapatkan profil pengguna berdasarkan user_id
  */
-export const userProfile = async (req: Request, res: Response): Promise<void> => {
+export const userProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const userId = req.userId;
 
@@ -37,6 +36,6 @@ export const userProfile = async (req: Request, res: Response): Promise<void> =>
         const profile = await userProfileService(userId);
         apiResponse.success(res, profile);
     } catch (error) {
-        handleProfileError(error, res);
+        next(error);
     }
 };

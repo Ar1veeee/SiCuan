@@ -1,39 +1,41 @@
-export enum JenisTransaksi {
-    MASUK = 'Masuk',
-    KELUAR = 'Keluar',
-    PENYESUAIAN = 'Penyesuaian'
+import { Bahan, StockTransaction } from '@prisma/client';
+
+export interface CreateStockTransactionRequest {
+    nama_bahan: string;
+    satuan: string;
+    minimum_stock: number;
+    jumlah: number;
+    jenis_transaksi: 'PEMBELIAN' | 'PENJUALAN' | 'PENYESUAIAN';
+    keterangan?: string;
 }
 
-export interface StockData {
+export interface StockSummaryResponse {
     id: string;
     userId: string;
-    bahanId: string;
     nama_bahan: string;
     jumlah: number;
-    jenis_transaksi: JenisTransaksi;
-    keterangan: string;
+    satuan: string | null;
+    minimum_stock: number | null;
     createdAt?: string;
     updatedAt?: string;
 }
 
-export interface StockRequest {
-    jumlah: number;
-    jenis_transaksi: JenisTransaksi | string;
-    keterangan: string;
+export interface StockTransactionInfo {
+    jenis_transaksi: string;
+    jumlah: number; 
+    keterangan: string | null;
+    createdAt: string;
 }
 
-export interface StockResponse {
+export interface StockDetailResponse extends StockSummaryResponse {
+    transactions: StockTransactionInfo[];
+}
+
+export type BahanWithTransactions = Bahan & {
+    stockTransactions: StockTransaction[];
+};
+
+export interface DefaultStockResponse {
     message: string;
     data?: object;
-}
-
-declare global {
-    namespace Express {
-        interface Request {
-            userId?: string;
-            stockId?: string;
-            bahanId?: string;
-            stockData?: StockData;
-        }
-    }
 }
