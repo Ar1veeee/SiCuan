@@ -1,5 +1,3 @@
-import { JwtPayload } from "jsonwebtoken";
-
 export interface UserRegisterRequest {
     username: string;
     email: string;
@@ -40,11 +38,3 @@ export interface LoginResponse extends AuthResponse {
         expiresAt?: string;
 }
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: JwtPayload;
-            userId?: string;  
-        }
-    }
-}

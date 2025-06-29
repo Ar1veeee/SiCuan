@@ -5,7 +5,6 @@ import { comparePassword } from "../utils/password.util";
 import { generateOtp } from "../utils/generateOtp.util";
 import PubSubService from "./PubSubService";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { validateOtp } from "../validators/ResetPasswordValidator";
 import { AuthResponse, LoginResponse } from "../types/auth.type";
 
 /**
@@ -67,13 +66,13 @@ export const loginService = async (
     await UserModel.createOrUpdateAuthToken(userId, accessToken, refreshToken, deviceInfo, expiresAt);
 
     return {
-            message: "Login berhasil",
-            userID: user.id,
-            username: user.name,
-            deviceInfo: "Android",
-            access_token: accessToken,
-            expiresAt: expiresAt.toISOString(),
-        refreshToken: refreshToken 
+        message: "Login berhasil",
+        userID: user.id,
+        username: user.name,
+        deviceInfo: "Android",
+        access_token: accessToken,
+        expiresAt: expiresAt.toISOString(),
+        refreshToken: refreshToken
     };
 };
 
@@ -145,7 +144,7 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await PasswordResetModel.create({ userId: user.id, otp, expiresAt });
-    
+
     try {
         await PubSubService.publishEmailMessage({
             to: email,
@@ -153,7 +152,7 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
             otp: otp,
             type: 'otp'
         });
-        
+
         console.log(`OTP email message published for ${email}`);
     } catch (error) {
         console.error('Failed to publish email message:', error);
@@ -182,12 +181,10 @@ export const verifyOtpService = async (otp: string): Promise<AuthResponse> => {
  * Service untuk reset password
  */
 export const resetPasswordService = async (
-    otp: string,
-    newPassword: string
+    userId: string,
+    newPassword: string,
 ): Promise<AuthResponse> => {
-    const entry = await validateOtp(otp);
-    await UserModel.updatePassword(entry.userId, newPassword);
-    await PasswordResetModel.markOtpUsed(otp);
+    await UserModel.updatePassword(userId, newPassword);
 
     return {
         message: 'Password berhasil diperbarui'

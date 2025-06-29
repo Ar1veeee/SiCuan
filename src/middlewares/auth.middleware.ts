@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { apiResponse } from "../utils/apiResponse.util";
-import { passwordValidation, emailValidation } from "../validators/UserValidator";
 import { ApiError } from "../exceptions/ApiError";
+import PasswordResetModel from "../models/passwordReset.model";
+import jwt from "jsonwebtoken";
 
 /**
  * Middleware to validate token from request header
@@ -11,23 +10,20 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   try {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
-      apiResponse.unauthorized(res, "Authorization header tidak ditemukan");
-      return;
+      throw ApiError.unauthorized("Authorization header tidak ditemukan");
     }
 
     const tokenParts = authHeader.split(" ");
     const token = tokenParts[1]?.trim();
 
     if (!token) {
-      apiResponse.unauthorized(res, "Token tidak ditemukan");
-      return;
+      throw ApiError.unauthorized("Token tidak ditemukan");
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (typeof decoded === "string") {
-      apiResponse.forbidden(res, "Format token tidak valid");
-      return;
+      throw ApiError.forbidden("Format token tidak valid");
     }
 
     req.user = decoded;
@@ -36,63 +32,36 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
       req.userId = decoded.id;
       next();
     } else {
-      apiResponse.forbidden(res, "Token tidak berisi informasi ID pengguna");
-      return;
+      throw ApiError.forbidden("Token tidak berisi informasi ID pengguna");
     }
-  } catch (error: any) {
-    console.error("Token verification error:", error);
-    apiResponse.error(res, "Token tidak valid", 403, {
-      type: error.name,
-      detail: error.message,
-    });
-  }
-};
+  } catch (error) {
+    next(error)
+  };
+}
 
 /**
- * Middleware to validate registration data
+ * Middleware untuk memverifikasi OTP dari req.body.
+ * Jika valid, lampirkan data entri OTP ke`req.otpEntry`.
  */
-export const validateRegistrationData = (req: Request, res: Response, next: NextFunction): void => {
-  const { password, confirmPassword, email } = req.body;
+export const verifyAndAttachOtpEntry = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { otp } = req.body;
 
-  if (!passwordValidation.isValidPassword(password)) {
-    apiResponse.badRequest(
-      res,
-      passwordValidation.getValidationMessage(password, confirmPassword)
-    );
-    return;
-  }
+    if (!otp) {
+      throw ApiError.badRequest("OTP wajib diisi.");
+    }
 
-  if (!passwordValidation.isPasswordMatch(password, confirmPassword)) {
-    apiResponse.badRequest(
-      res,
-      passwordValidation.getValidationMessage(password, confirmPassword)
-    );
-    return;
-  }
+    const otpEntry = await PasswordResetModel.findValidOtp(otp);
 
-  if (!emailValidation.isValidEmail(email)) {
-    apiResponse.badRequest(
-      res,
-      emailValidation.getValidationMessage(email)
-    );
-    return;
-  }
+    if (!otpEntry) {
+      throw ApiError.badRequest("OTP tidak valid atau sudah kedaluwarsa.");
+    }
 
-  next();
-};
+    req.otpEntry = otpEntry;
 
-/**
- * Handler error global untuk controller auth
- */
-export const handleAuthError = (error: unknown, res: Response): void => {
-  console.error("[Auth Error]:", error);
-
-  if (error instanceof ApiError) {
-    apiResponse.error(res, error.message, error.statusCode);
-  } else if (error === 'TokenExpiredError') {
-    apiResponse.badRequest(res, "Token telah kedaluwarsa");
-  } else {
-    apiResponse.internalServerError(res, "Terjadi kesalahan pada server. Silahkan coba lagi nanti");
+    next();
+  } catch (error) {
+    next(error);
   }
 };
 

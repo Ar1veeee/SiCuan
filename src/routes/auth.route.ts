@@ -9,19 +9,18 @@ import {
     resetPassword
 } from "../controllers/auth.controller";
 import { validate } from "../middlewares/validate.middleware";
-import { loginSchema, registerSchema } from "../validators/UserValidator";
+import { loginSchema, registerSchema } from "../validators/auth.validator";
 import {
     resetPasswordSchema,
-    verifyeEmailSchema,
-    verifyeOtpSchema
-} from "../validators/ResetPasswordValidator";
-import { validateRegistrationData } from "../middlewares/auth.middleware";
+    verifyEmailSchema,
+    verifyOtpSchema
+} from "../validators/resetPassword.validator";
+import { verifyAndAttachOtpEntry } from "../middlewares/auth.middleware";
 
 
 router.post(
     "/register",
     validate(registerSchema),
-    validateRegistrationData,
     register
 );
 
@@ -39,19 +38,20 @@ router.post(
 
 router.post(
     "/forget-password",
-    validate(verifyeEmailSchema),
+    validate(verifyEmailSchema),
     sendOtp
 );
 
 router.post(
     "/verify-otp",
-    validate(verifyeOtpSchema),
+    validate(verifyOtpSchema),
     verifyOtp
 );
 
 router.post(
     "/reset-password",
     validate(resetPasswordSchema),
+    verifyAndAttachOtpEntry,
     resetPassword
 );
 
