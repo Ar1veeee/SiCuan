@@ -37,7 +37,7 @@ export const createRecipeService = async (
 ): Promise<HppResponse> => {
   const existingResep = await HppModel.existingResep(menuId, bahanData.nama_bahan);
   if (existingResep) {
-    throw new ApiError("Bahan sudah ada", 409);
+    throw new ApiError("Resep sudah ada", 409);
   }
 
   const biaya = Math.round(

@@ -50,7 +50,7 @@ export const updateMenuService = async (
 ): Promise<MenuResponse> => {
     const existingMenu = await MenuModel.findMenuByName(userId, nama_menu);
     if (existingMenu && existingMenu.id !== menuId) {
-        throw new ApiError("Nama menu tersebut sudah digunakan oleh menu lain", 400);
+        throw new ApiError("Nama menu tersebut sudah digunakan oleh menu lain", 409);
     }
 
     await MenuModel.updateMenu(menuId, nama_menu);

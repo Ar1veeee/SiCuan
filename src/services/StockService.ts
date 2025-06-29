@@ -39,6 +39,12 @@ export const createStockTransactionService = async (
         }
     }
 
+    const existingBahan = await StockModel.findBahanByName(userId, bahan.nama_bahan)
+
+    if (existingBahan) {
+        throw new ApiError("Bahan sudah tersedia", 409)
+    }
+
     await StockModel.createTransactionAndUpdateBahan(
         userId,
         bahan.id,
