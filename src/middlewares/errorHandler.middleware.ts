@@ -1,31 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../exceptions/ApiError';
-import { apiResponse } from '../utils/apiResponse.util';
+import logger from '../config/logger.config'; 
 
-export const errorHandler = (
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-): void => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction):void => {
     if (err instanceof ApiError) {
+        logger.info(`Handled ApiError: ${err.statusCode} - ${err.message} - URL: ${req.originalUrl}`);
+        
         res.status(err.statusCode).json({
-            success: false,
-            error: err.message,
-            statusCode: err.statusCode
+            status: 'fail',
+            message: err.message
         });
         return
     }
 
-    console.error('Unexpected Error:', {
-        message: err.message,
-        stack: err.stack,
-        url: req.url,
-        method: req.method,
-        timestamp: new Date().toISOString()
+    logger.error('Unhandled Exception:', { 
+        message: err.message, 
+        stack: err.stack
     });
 
-    apiResponse.internalServerError(
-        res,
-    );
+    res.status(500).json({
+        status: 'error',
+        message: 'Terjadi kesalahan internal pada server.'
+    });
+    return
 };
