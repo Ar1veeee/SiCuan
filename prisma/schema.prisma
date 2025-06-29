@@ -46,11 +46,26 @@ model Auth {
   @@index([expiresAt, isActive])
 }
 
+model PasswordReset {
+  id        String    @id @db.Char(26)
+  userId    String
+  otp       String    @db.VarChar(10)
+  used      Boolean   @default(false)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([otp, used, expiresAt])
+}
+
 model Menu {
   id          String        @id @db.Char(26)
   userId      String
   nama_menu   String
   hpp         Float?
+  keuntungan  Float?
+  harga_jual  Float?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -65,10 +80,9 @@ model Bahan {
   id                String                @id @db.Char(26)
   userId            String
   nama_bahan        String
-  jumlah            Float                 @default(0)
-  harga_beli        Float?        
-  satuan            String?               // "kg", "pcs"
-  minimum_stock     Float?                @default(0)
+  jumlah            Int                   @default(0)        
+  satuan            String                // "kg", "pcs"
+  minimum_stock     Int?                   @default(0)
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
   
@@ -81,14 +95,16 @@ model Bahan {
 }
 
 model MenuBahan {
-  id          String     @id @db.Char(26)
-  menuId      String
-  bahanId     String
-  jumlah      Int?       // jumlah bahan yang digunakan dalam menu
-  biaya       Float?     // biaya per bahan
+  id                  String     @id @db.Char(26)
+  menuId              String
+  bahanId             String
+  harga_beli          Float?
+  jumlah_beli         Int
+  jumlah_digunakan    Int?       
+  biaya               Float?     // biaya per bahan
   
-  menu        Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
-  bahan       Bahan      @relation(fields: [bahanId], references: [id], onDelete: Restrict)
+  menu                Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  bahan               Bahan      @relation(fields: [bahanId], references: [id], onDelete: Restrict)
 
   @@unique([menuId, bahanId])
   @@index([menuId])
@@ -99,30 +115,17 @@ model StockTransaction {
   id              String    @id @db.Char(26)
   userId          String
   bahanId         String
-  jumlah          Float
-  jenis_transaksi String    // 'masuk', 'keluar', 'penyesuaian'
+  jenis_transaksi String    // 'PEMBELIAN', 'PENJUALAN', 'PENYESUAIAN'
+  jumlah          Int
   keterangan      String?   @db.Text
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bahan           Bahan    @relation(fields: [bahanId], references: [id], onDelete: Restrict)
+  bahan           Bahan     @relation(fields: [bahanId], references: [id], onDelete: Restrict)
 
   @@index([userId, bahanId, createdAt])
   @@index([jenis_transaksi, createdAt])
-}
-
-model PasswordReset {
-  id        String    @id @db.Char(26)
-  userId    String
-  otp       String    @db.VarChar(10)
-  used      Boolean   @default(false)
-  expiresAt DateTime
-  createdAt DateTime  @default(now())
-
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([otp, used, expiresAt])
 }
 
 model Sales {
