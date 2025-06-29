@@ -78,10 +78,10 @@ app.use(express.json())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
 
 app.use("/auth", authLimitter, AuthRoutes)
-app.use("/profile", ProfileRoutes)
-app.use("/menu", MenuRoutes)
-app.use("/resep", HppRoutes)
-app.use("/stock", StockRoutes)
+app.use("/profiles", ProfileRoutes)
+app.use("/menus", MenuRoutes)
+app.use("/recipes", HppRoutes)
+app.use("/stocks", StockRoutes)
 
 app.get('/health', (req, res) => {
     res.status(200).json({
