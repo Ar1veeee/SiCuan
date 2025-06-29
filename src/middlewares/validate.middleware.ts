@@ -1,17 +1,18 @@
-import { Request, Response, NextFunction } from "express";
-import { ZodSchema } from "zod";
-import { apiResponse } from "../utils/apiResponse.util";
+import { Request, Response, NextFunction } from 'express';
+import { z, ZodSchema } from 'zod';
+import { ApiError } from '../exceptions/ApiError';
 
-// Middleware untuk validasi request body menggunakan Zod
-export const validate = (schema: ZodSchema) => (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): void => {
+export const validate = (schema: ZodSchema) => 
+    (req: Request, res: Response, next: NextFunction): void => {
     try {
-        req.body = schema.parse(req.body)
-        next()
+        schema.parse(req.body);
+        next();
     } catch (error: any) {
-        apiResponse.badRequest(res, error.errors[0].message)
+        if (error instanceof z.ZodError) {
+            const errorMessages = error.issues.map((issue) => issue.message).join(', ');
+            next(ApiError.badRequest(errorMessages));
+        } else {
+            next(error);
+        }
     }
-}
+};
