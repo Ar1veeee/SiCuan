@@ -1,10 +1,17 @@
 export interface BahanRequest {
   nama_bahan: string;
   harga_beli: number;
-  jumlah: number;
+  jumlah_beli: number;
   satuan: string;
   jumlah_digunakan: number;
-  minimum_stock: number;
+  biayaBaru: number;
+}
+
+export interface BahanUpdateRequest {
+  harga_beli: number;
+  jumlah_beli: number;
+  jumlah_digunakan: number;
+  biayaBaru: number;
 }
 
 export interface BahanData extends BahanRequest {
@@ -18,15 +25,4 @@ export interface BahanData extends BahanRequest {
 export interface HppResponse {
   message: string;
   data?: object;
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      userId?: string;
-      menuId?: string;
-      bahanId?: string;
-      BahanData?: BahanData;
-    }
-  }
 }

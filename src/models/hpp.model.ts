@@ -1,122 +1,115 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient()
-import { calculateHpp } from "../utils/hppCalculate.util";
 import { ApiError } from "../exceptions/ApiError";
 import { ulid } from "ulid";
 
+const prisma = new PrismaClient()
+
 const HppModel = {
+    /**
+     * Membuat bahan
+     * @param data 
+     * @returns 
+     */
     createBahanWithMenuLink: async (data: {
         userId: string;
         menuId: string;
         nama_bahan: string;
         harga_beli: number;
-        jumlah: number;
+        jumlah_beli: number;
         satuan: string;
         jumlah_digunakan: number;
-        minimum_stock?: number;
+        biaya: number
     }) => {
-        const biaya = calculateHpp(data.harga_beli, data.jumlah, data.jumlah_digunakan);
-
-        let bahan = await prisma.bahan.findFirst({
-            where: {
-                userId: data.userId,
-                nama_bahan: data.nama_bahan
-            }
-        });
-
-        if (!bahan) {
-            bahan = await prisma.bahan.create({
-                data: {
-                    id: ulid(),
-                    userId: data.userId,
-                    nama_bahan: data.nama_bahan,
-                    jumlah: data.jumlah,
-                    harga_beli: data.harga_beli,
-                    satuan: data.satuan,
-                    minimum_stock: data.minimum_stock ?? 0,
-                },
-            });
-        } else {
-            await prisma.bahan.update({
+        await prisma.$transaction(async (tx) => {
+            let bahan = await tx.bahan.findFirst({
                 where: {
-                    id: bahan.id,
-                    userId: data.userId
-                },
-                data: { jumlah: data.jumlah }
-            });
-        }
-
-        await prisma.menuBahan.create({
-            data: {
-                id: ulid(),
-                menuId: data.menuId,
-                bahanId: bahan.id,
-                jumlah: data.jumlah_digunakan,
-                biaya: biaya
-            },
-        });
-
-        const existingStockTransaction = await prisma.stockTransaction.findFirst({
-            where: {
-                userId: data.userId,
-                bahanId: bahan.id,
-            }
-        });
-
-        if (!existingStockTransaction && data.userId) {
-            await prisma.stockTransaction.create({
-                data: {
-                    id: ulid(),
                     userId: data.userId,
-                    bahanId: bahan.id,
-                    jumlah: data.jumlah,
-                    jenis_transaksi: 'PENYESUAIAN',
-                    keterangan: `Menambah Bahan Menu: ${data.nama_bahan}`,
+                    nama_bahan: data.nama_bahan
                 }
             });
-        }
 
-        return bahan;
+            if (!bahan) {
+                bahan = await tx.bahan.create({
+                    data: {
+                        id: ulid(),
+                        userId: data.userId,
+                        nama_bahan: data.nama_bahan,
+                        satuan: data.satuan,
+                        jumlah: 0,
+                        minimum_stock: 0,
+                    },
+                });
+            }
+
+            await tx.menuBahan.create({
+                data: {
+                    id: ulid(),
+                    menuId: data.menuId,
+                    bahanId: bahan.id,
+                    jumlah_beli: data.jumlah_beli,
+                    jumlah_digunakan: data.jumlah_digunakan,
+                    biaya: data.biaya,
+                    harga_beli: data.harga_beli
+                },
+            });
+        });
+
+        return true;
     },
 
-    updateTotalHPP: async (menuId: string) => {
-        const totalBiayaHpp = await prisma.menuBahan.findMany({
+    getMenuBahanCosts: async (menuId: string) => {
+        return await prisma.menuBahan.findMany({
             where: { menuId },
-            include: { bahan: true },
-        });
+            include: { bahan: true }
+        })
+    },
 
-        const jumlahHpp = totalBiayaHpp.reduce((acc: number, item: typeof totalBiayaHpp[0]) => acc + (item.biaya ?? 0), 0);
-
+    saveMenuCostAndPrive: async (menuId: string, totalHpp: number, hargaJual: number | null) => {
         await prisma.menu.update({
             where: { id: menuId },
-            data: { hpp: jumlahHpp },
-        });
+            data: { 
+                hpp: totalHpp,
+                ...(hargaJual !== null && {harga_jual: hargaJual})
+            }
+        })
     },
 
     findResepByUserIdAndMenuId: async (userId: string, menuId: string) => {
-        return await prisma.bahan.findMany({
+        return await prisma.menuBahan.findMany({
             where: {
-                menuBahan: {
-                    some: {
-                        menu: {
-                            userId: userId,
-                            id: menuId
-                        }
-                    }
+                menu: {
+                    userId: userId,
+                    id: menuId
                 }
             },
             include: {
-                menuBahan: {
-                    where: {
-                        menuId: menuId
-                    },
+                bahan: {
                     select: {
-                        jumlah: true,
-                        biaya: true
+                        nama_bahan: true
                     }
                 }
             }
         })
+    },
+
+    findResepDetail: async (userId: string, menuId: string, bahanId: string) => {
+        return await prisma.menuBahan.findFirst({
+            where: {
+                menuId: menuId,
+                bahanId: bahanId,
+                menu: {
+                    userId: userId
+                }
+            },
+            include: {
+                bahan: {
+                    select: {
+                        nama_bahan: true,
+                        satuan: true
+                    }
+                }
+            }
+        });
     },
 
     existingResep: async (menuId: string, nama_bahan: string) => {
@@ -161,11 +154,6 @@ const HppModel = {
                 }
             }
         })
-        await prisma.bahan.delete({
-            where: {
-                id: bahanId
-            }
-        })
         await prisma.menu.update({
             where: {
                 id: menuId
@@ -179,15 +167,16 @@ const HppModel = {
         return true
     },
 
-    updateMenuResep: async (userId: string, menuId: string, bahanId: string, data: {
-        nama_bahan: string;
-        harga_beli: number;
-        jumlah: number;
-        satuan: string;
-        menuId: string;
-        jumlah_digunakan: number;
-        minimum_stock?: number;
-    }) => {
+    updateMenuResep: async (
+        userId: string,
+        menuId: string,
+        bahanId: string,
+        data: {
+            harga_beli: number;
+            jumlah_beli: number;
+            jumlah_digunakan: number;
+            biayaBaru: number
+        }) => {
         const menuBahan = await prisma.menuBahan.findFirst({
             where: {
                 menuId,
@@ -196,8 +185,8 @@ const HppModel = {
                     userId
                 }
             },
-            include: {
-                bahan: true
+            select: {
+                biaya: true
             }
         });
 
@@ -205,32 +194,19 @@ const HppModel = {
             throw new ApiError("Bahan untuk menu ini tidak ditemukan", 400)
         }
 
-        const biayaBaru = calculateHpp(data.harga_beli, data.jumlah, data.jumlah_digunakan)
-
-
-        await prisma.bahan.update({
-            where: {
-                id: bahanId,
-            },
-            data: {
-                nama_bahan: data.nama_bahan,
-                jumlah: data.jumlah,
-                harga_beli: data.harga_beli,
-                satuan: data.satuan,
-            },
-        })
-
         await prisma.menuBahan.update({
             where: {
                 menuId_bahanId: {
                     menuId: menuId,
-                    bahanId: bahanId
+                    bahanId: bahanId,
                 },
             },
             data: {
-                jumlah: data.jumlah_digunakan,
-                biaya: biayaBaru
-            }
+                harga_beli: data.harga_beli,
+                jumlah_beli: data.jumlah_beli,
+                jumlah_digunakan: data.jumlah_digunakan,
+                biaya: data.biayaBaru
+            },
         })
         return true
     }

@@ -1,51 +1,56 @@
 import { Router } from "express";
 const router = Router();
-import { 
-    createResep, 
-    deleteMenuResep, 
-    getRecipes, 
-    updateMenuResep 
+import {
+    createResep,
+    deleteMenuResep,
+    getRecipes,
+    getRecipesDetail,
+    updateMenuResep
 } from "../controllers/hpp.controller";
 import verifyToken from "../middlewares/auth.middleware";
-import { 
-    validateMenuId, 
-    validateBahanId, 
-    verifyHppOwnership 
-} from '../middlewares/hpp.middleware';
+import { validateBahanId } from '../middlewares/hpp.middleware';
+import { validateMenuId, verifyAndAttachMenu } from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
-import { bahanSchema } from "../validators/HppValidator";
+import { bahanSchema, updateBahanSchema } from "../validators/hpp.validator";
 
 router.use(verifyToken);
 
 router.get(
-    "/:menu_id", 
+    "/:menu_id",
     validateMenuId,
-    verifyHppOwnership,
+    verifyAndAttachMenu,
     getRecipes
 );
 
+router.get(
+    "/:menu_id/:bahan_id",
+    validateMenuId,
+    verifyAndAttachMenu,
+    getRecipesDetail
+);
+
 router.post(
-    "/:menu_id", 
+    "/:menu_id",
     validate(bahanSchema),
     validateMenuId,
-    verifyHppOwnership,
+    verifyAndAttachMenu,
     createResep
 );
 
 router.put(
-    "/:menu_id/:bahan_id", 
-    validate(bahanSchema),
+    "/:menu_id/:bahan_id",
+    validate(updateBahanSchema),
     validateMenuId,
     validateBahanId,
-    verifyHppOwnership,
+    verifyAndAttachMenu,
     updateMenuResep
 );
 
 router.delete(
-    "/:menu_id/:bahan_id", 
+    "/:menu_id/:bahan_id",
     validateMenuId,
     validateBahanId,
-    verifyHppOwnership,
+    verifyAndAttachMenu,
     deleteMenuResep
 );
 

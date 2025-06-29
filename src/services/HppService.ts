@@ -1,37 +1,57 @@
 import HppModel from "../models/hpp.model";
 import { ApiError } from "../exceptions/ApiError";
-import { validateUserExists } from "../validators/UserValidator";
-import { validateMenuOwnership } from "../validators/MenuValidator";
-import { BahanRequest, HppResponse } from "../types/hpp.type";
+import { BahanRequest, BahanUpdateRequest, HppResponse } from "../types/hpp.type";
+import { calculateHpp } from "../utils/hppCalculate.util";
+import MenuModel from "../models/menu.model";
 
 /**
- * Service untuk menambahkan resep baru ke menu
+ * Service untuk menghitung total hpp menu
+ */
+export const updateTotalHPPService = async (menuId: string): Promise<void> => {
+  const menuBahanItems = await HppModel.getMenuBahanCosts(menuId);
+  const totalHpp = Math.round(
+    menuBahanItems.reduce((acc: number, item: { biaya: number | null }) => acc + (item.biaya ?? 0), 0)
+  );
+
+  const menu = await MenuModel.findMenuById(menuId);
+  if (!menu) {
+    console.error(`Menu dengan ID ${menuId} tidak ditemukan saat mencoba update HPP.`);
+    return;
+  }
+
+  let hargaJualBaru: number | null = menu.harga_jual ?? null;
+  if (typeof menu.keuntungan === 'number' && menu.keuntungan >= 0) {
+    hargaJualBaru = Math.round(totalHpp + (menu.keuntungan / 100) * totalHpp)
+  }
+
+  await HppModel.saveMenuCostAndPrive(menuId, totalHpp, hargaJualBaru);
+}
+
+/**
+ * Service untuk menambah resep ke menu
  */
 export const createRecipeService = async (
   userId: string,
   menuId: string,
-  bahan: BahanRequest
+  bahanData: BahanRequest
 ): Promise<HppResponse> => {
-  await validateUserExists(userId);
-  await validateMenuOwnership(userId, menuId);
-
-  const existing = await HppModel.existingResep(menuId, bahan.nama_bahan);
-  if (existing) {
-    throw new ApiError("Bahan sudah ada", 400);
+  const existingResep = await HppModel.existingResep(menuId, bahanData.nama_bahan);
+  if (existingResep) {
+    throw new ApiError("Bahan sudah ada", 409);
   }
+
+  const biaya = Math.round(
+    calculateHpp(bahanData.harga_beli, bahanData.jumlah_beli, bahanData.jumlah_digunakan)
+  )
 
   await HppModel.createBahanWithMenuLink({
     userId,
     menuId,
-    nama_bahan: bahan.nama_bahan,
-    harga_beli: bahan.harga_beli,
-    jumlah: bahan.jumlah,
-    satuan: bahan.satuan,
-    jumlah_digunakan: bahan.jumlah_digunakan,
-    minimum_stock: bahan.minimum_stock,
+    ...bahanData,
+    biaya
   });
 
-  await HppModel.updateTotalHPP(menuId);
+  await updateTotalHPPService(menuId);
 
   return {
     message: "Bahan berhasil ditambahkan"
@@ -45,12 +65,7 @@ export const getRecipesService = async (
   userId: string,
   menuId: string
 ): Promise<any[]> => {
-  await validateUserExists(userId);
-  await validateMenuOwnership(userId, menuId);
-
-  const recipes = await HppModel.findResepByUserIdAndMenuId(userId, menuId);
-
-  return recipes;
+  return await HppModel.findResepByUserIdAndMenuId(userId, menuId);
 };
 
 /**
@@ -60,26 +75,22 @@ export const updateRecipeService = async (
   userId: string,
   menuId: string,
   bahanId: string,
-  bahan: BahanRequest
+  bahan: BahanUpdateRequest
 ): Promise<HppResponse> => {
-  await validateUserExists(userId);
-  await validateMenuOwnership(userId, menuId);
+  const biayaBaru = Math.round(
+    calculateHpp(bahan.harga_beli, bahan.jumlah_beli, bahan.jumlah_digunakan)
+  );
 
   const updated = await HppModel.updateMenuResep(userId, menuId, bahanId, {
-    menuId,
-    nama_bahan: bahan.nama_bahan,
-    harga_beli: bahan.harga_beli,
-    jumlah: bahan.jumlah,
-    satuan: bahan.satuan,
-    jumlah_digunakan: bahan.jumlah_digunakan,
-    minimum_stock: bahan.minimum_stock,
+    ...bahan,
+    biayaBaru
   });
 
   if (!updated) {
     throw new ApiError("Resep gagal diperbarui", 400);
   }
 
-  await HppModel.updateTotalHPP(menuId);
+  await updateTotalHPPService(menuId);
 
   return {
     message: "Bahan berhasil diperbarui"
@@ -94,13 +105,12 @@ export const deleteRecipeService = async (
   menuId: string,
   bahanId: string
 ): Promise<HppResponse> => {
-  await validateUserExists(userId);
-  await validateMenuOwnership(userId, menuId);
-
   const deleted = await HppModel.deleteMenuResep(userId, menuId, bahanId);
   if (!deleted) {
-    throw new ApiError("Bahan gagal dihapus", 400);
-  }
+    throw ApiError.badRequest("Bahan gagal dihapus");
+  };
+
+  await updateTotalHPPService(menuId);
 
   return {
     message: "Bahan berhasil dihapus"

@@ -1,77 +1,60 @@
 import { Request, Response, NextFunction } from 'express';
-import { apiResponse } from '../utils/apiResponse.util';
-import { validateUserExists } from '../validators/UserValidator';
-import { validateMenuOwnership } from '../validators/MenuValidator';
 import { ApiError } from '../exceptions/ApiError';
-import { isValidULID } from '../validators/IdValidator';
+import { isValidULID } from '../validators/ulid.validator';
+import HppModel from '../models/hpp.model';
 
 export const validateMenuId = (req: Request, res: Response, next: NextFunction): void => {
-    const { menu_id } = req.params;
+    try {
+        const { menu_id } = req.params;
 
-    if (!menu_id) {
-        apiResponse.badRequest(res, "Menu ID diperlukan");
-        return;
+        if (!menu_id) {
+            throw ApiError.badRequest("Menu ID diperlukan");
+        }
+
+        if (!isValidULID(menu_id)) {
+            throw ApiError.badRequest("Format Menu ID tidak valid");
+        }
+        req.menuId = menu_id;
+        next();
+    } catch (error) {
+        next(error)
     }
 
-    if (!isValidULID(menu_id)) {
-        apiResponse.badRequest(res, "Format Menu ID tidak valid");
-        return;
-    }
-    req.menuId = menu_id;
-    next();
 };
 
 export const validateBahanId = (req: Request, res: Response, next: NextFunction): void => {
-    const { bahan_id } = req.params;
-
-    if (!bahan_id) {
-        apiResponse.badRequest(res, "Bahan ID diperlukan");
-        return;
-    }
-
-    if (!isValidULID(bahan_id)) {
-        apiResponse.badRequest(res, "Format Menu ID tidak valid");
-        return;
-    }
-
-    req.bahanId = bahan_id;
-    next();
-};
-
-export const verifyHppOwnership = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.userId) {
-            apiResponse.badRequest(res, "User ID diperlukan");
-            return;
-        }
-        if (!req.menuId) {
-            apiResponse.badRequest(res, "Menu ID diperlukan");
-            return;
+        const { bahan_id } = req.params;
+
+        if (!bahan_id || !isValidULID(bahan_id)) {
+            throw ApiError.badRequest("Format Bahan ID tidak valid atau tidak ada.");
         }
 
-        await validateUserExists(req.userId);
-        await validateMenuOwnership(req.userId, req.menuId);
-
+        req.bahanId = bahan_id;
         next();
     } catch (error) {
-        if (error instanceof ApiError) {
-            apiResponse.error(res, error.message, error.statusCode);
-        } else {
-            apiResponse.internalServerError(res, "Terjadi kesalahan saat verifikasi kepemilikan menu");
-        }
+        next(error)
     }
 };
 
-/**
- * Handler error global untuk controller hpp
- */
-export const handleHppError = (error: unknown, res: Response): void => {
-    // Untuk production, gunakan logger yang proper seperti Winston atau Pino
-    console.error("[HPP Error]:", error);
+export const verifyAndAttachRecipeItem = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const { userId, menuId, bahanId } = req;
 
-    if (error instanceof ApiError) {
-        apiResponse.error(res, error.message, error.statusCode);
-    } else {
-        apiResponse.internalServerError(res, "Terjadi kesalahan pada server. Silahkan coba lagi nanti");
+        if (!userId || !menuId || !bahanId) {
+            throw ApiError.badRequest("Informasi User, Menu, atau Bahan tidak lengkap.");
+        }
+        
+        const recipeItem = await HppModel.findResepDetail(userId, menuId, bahanId)
+
+        if (!recipeItem) {
+            throw ApiError.notFound("Detail resep tidak ditemukan atau Anda tidak memiliki akses.");
+        }
+
+        req.recipeItem = recipeItem;
+        
+        next();
+    } catch (error) {
+        next(error);
     }
 };
