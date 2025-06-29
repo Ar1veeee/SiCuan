@@ -7,4 +7,5 @@ app.listen(PORT, () => {
   console.log(`Running in ${env} mode`);
   console.log(`Server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
 });
