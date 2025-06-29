@@ -60,6 +60,18 @@ const StockModel = {
         })
     },
 
+    findBahanByName: async (
+        userId: string,
+        nama_bahan: string,
+    ) => {
+        return await prisma.bahan.findFirst({
+            where:{
+                userId,
+                nama_bahan: nama_bahan 
+            }
+        })
+    },
+
     findBahanByIdAndUserId: async (
         userId: string,
         bahanId: string
