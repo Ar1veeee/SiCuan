@@ -13,17 +13,19 @@ declare global {
     namespace Express {
         interface Request {
             user?: JwtPayload;
-            userId?: string;
 
+            userId?: string;
             menuId?: string;
             bahanId?: string;
             stockId?: string;
+            salesId?: string;
             
             otpEntry?: OtpEntryData;            
             menu?: MenuData;
             bahanData?: BahanData;
             recipeItem?: RecipeItemWithBahan;
             stockData?: StockData;
+            salesData?: SalesData;
         }
     }
 }
