@@ -3,6 +3,11 @@ import { ApiError } from "../exceptions/ApiError";
 import { CreateStockTransactionRequest, DefaultStockResponse, StockSummaryResponse } from "../types/stock.type";
 import { Bahan } from "@prisma/client";
 
+export const getStockSummaryService = async (userId: string) => {
+    const summaryData = await StockModel.getSummary(userId);
+    return summaryData;
+};
+
 /**
  * Service untuk mendapatkan semua transaksi stok berdasarkan userId
  * @param userId 
@@ -41,7 +46,7 @@ export const createStockTransactionService = async (
 
     const existingBahan = await StockModel.findBahanByName(userId, bahan.nama_bahan)
 
-    if (existingBahan) {
+    if (existingBahan && existingBahan.id !== bahan.id) {
         throw new ApiError("Bahan sudah tersedia", 409)
     }
 
