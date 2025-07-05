@@ -1,71 +1,74 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { apiResponse } from "../utils/apiResponse.util";
 import {
     getStocksService,
-    getStockDetailService,
-    updateStockService,
-    deleteStockService,
+    createStockTransactionService,
+    getStockSummaryService,
+    // deleteStockService,
 } from "../services/StockService";
-import { handleStockError } from "../middlewares/stock.middleware";
+import { formatStockDetailResponse } from "../utils/stockFormatter.util";
+
+/**
+ * Controller untuk mendapatkan total bahan dan bahan yang hampir habis
+ * @param req 
+ * @param res 
+ * @param next 
+ */
+
+export const getStockSummary = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const summary = await getStockSummaryService(req.userId!);
+        apiResponse.success(res, summary);
+    } catch (error) {
+        next(error);
+    }
+};
 
 /**
  * Controller untuk mendapatkan semua transaksi stok user
+ * @param req 
+ * @param res 
+ * @param next 
  */
-export const getStocks = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const userId = req.userId;
 
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-        const stocks = await getStocksService(userId);
+export const getStocks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const stocks = await getStocksService(req.userId!);
         apiResponse.success(res, { stocks });
     } catch (error) {
-        handleStockError(error, res);
+        next(error);
     }
 };
 
 /**
  * Controller untuk mendapatkan detail stok berdasarkan ID
  */
-export const getStockDetail = async (req: Request, res: Response): Promise<void> => {
+export const getStockDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-        const stock = await getStockDetailService(userId, req.stockId!);
-        apiResponse.success(res, { stock });
+        const bahanData = req.bahanData;
+        const formattedResponse = formatStockDetailResponse(bahanData)
+        apiResponse.success(res, { stock:formattedResponse });
     } catch (error) {
-        handleStockError(error, res);
+        next(error);
     }
 };
 
 /**
  * Controller untuk memperbarui transaksi stok
  */
-export const updateStock = async (req: Request, res: Response): Promise<void> => {
+export const createStockTransaction = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-        const result = await updateStockService(userId, req.stockId!, req.body);
+        const result = await createStockTransactionService(req.userId!, req.bahanData, req.body);
         apiResponse.success(res, result);
     } catch (error) {
-        handleStockError(error, res);
+        next(error);
     }
 };
 
 /**
  * Controller untuk menghapus transaksi stok
  */
-export const deleteStock = async (req: Request, res: Response): Promise<void> => {
+export const deleteStock = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const userId = req.userId;
 
@@ -73,9 +76,9 @@ export const deleteStock = async (req: Request, res: Response): Promise<void> =>
             apiResponse.badRequest(res, "User ID tidak valid");
             return;
         }
-        const result = await deleteStockService(userId, req.stockId!);
+        const result = await deleteStockService(userId, req.bahanId!);
         apiResponse.success(res, result);
     } catch (error) {
-        handleStockError(error, res);
+        next(error);
     }
 };
