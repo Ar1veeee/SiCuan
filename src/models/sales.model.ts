@@ -1,99 +1,41 @@
-import { PrismaClient, Sales } from "@prisma/client";
+import { Bahan, MenuBahan, PrismaClient, Sales } from "@prisma/client";
 import { ApiError } from "../exceptions/ApiError";
 import { ulid } from "ulid";
-import { SalesData } from "../types/sales.type";
 const prisma = new PrismaClient()
 
 const SalesModel = {
-    createSalesWithStockUpdate: async (data: SalesData) => {
-        const {
-            userId,
-            nama_menu,
-            tanggal = new Date(),
-            harga_jual,
-            jumlah_laku,
-            hpp,
-            keterangan
-        } = data;
-
-        return await prisma.$transaction(async (tx) => {
-            const menu = await tx.menu.findUnique({
-                where: {
-                    userId_nama_menu: {
-                        userId,
-                        nama_menu
-                    }
-                },
-                include: {
-                    bahanList: {
-                        include: {
-                            bahan: true
-                        }
-                    }
-                }
-            });
-
-            if (!menu) {
-                throw new ApiError(`Menu dengan nama${nama_menu} tidak ditemukan`, 404);
-            };
-
-            for (const menuBahan of menu.bahanList) {
-                const totalNeeded = (menuBahan.jumlah || 0) * jumlah_laku;
-
-                if (totalNeeded > menuBahan.bahan.jumlah) {
-                    throw new ApiError(
-                        `Bahan ${menuBahan.bahan.nama_bahan} tidak cukup untuk membuat ${jumlah_laku} porsi ${nama_menu}.` +
-                        `Dibutuhkan ${totalNeeded} ${menuBahan.bahan.satuan} tersedia ${menuBahan.bahan.jumlah} ${menuBahan.bahan.satuan}`,
-                        400);
-                }
-            };
-
-            const hppUsed = hpp || menu.hpp || 0;
-            const income = harga_jual * jumlah_laku;
-            const profit = (harga_jual - hppUsed) * jumlah_laku;
-
-            const sales = await tx.sales.create({
-                data: {
-                    id: ulid(),
-                    userId,
-                    menuId: menu.id,
-                    tanggal,
-                    harga_jual,
-                    jumlah_laku,
-                    hpp: hppUsed,
-                    income,
-                    profit,
-                    keterangan
-                }
-            });
-
-            for (const menuBahan of menu.bahanList) {
-                const lessQuantity = (menuBahan.jumlah || 0) * jumlah_laku;
-
-                await tx.bahan.update({
-                    where: {
-                        id: menuBahan.bahanId
-                    },
-                    data: {
-                        jumlah: {
-                            decrement: lessQuantity
-                        }
-                    }
-                });
-
-                await tx.stockTransaction.create({
-                    data: {
-                        id: ulid(),
-                        userId,
-                        bahanId: menuBahan.bahanId,
-                        jumlah: -lessQuantity,
-                        jenis_transaksi: "keluar",
-                        keterangan: `Penggunaan bahan untuk penjualan menu "${nama_menu}" sebanyak ${jumlah_laku} porsi`
-                    }
-                });
+    findSalesByIdAndUserId: async (
+        salesId: string,
+        userId: string,
+    ) => {
+        return await prisma.sales.findFirst({
+            where: {
+                id: salesId,
+                userId
             }
-            return sales;
-        });
+        })
+    },
+
+    findSalesByDate: async (userId: string, startDate: Date, endDate: Date) => {
+        return await prisma.sales.findMany({
+            where: {
+                userId,
+                tanggal: {
+                    gte: startDate,
+                    lte: endDate
+                }
+            },
+            include: {
+                menu: {
+                    select: {
+                        nama_menu: true
+                    }
+                }
+            },
+            orderBy: {
+                tanggal: 'desc'
+            }
+        })
     },
 
     getSalesById: async (salesId: string, userId: string) => {
@@ -121,77 +63,70 @@ const SalesModel = {
         return sales;
     },
 
-    getSalesReport: async (userId: string, startDate: Date, endDate: Date) => {
-        const whereClause: any = { userId };
-
-        if (startDate || endDate) {
-            whereClause.tanggal = {};
-            if (startDate) whereClause.tanggal.gte = startDate;
-            if (endDate) whereClause.tanggal.lte = endDate;
-        }
-
-        const sales = await prisma.sales.findMany({
-            where: whereClause,
-            include: {
-                menu: true
+    getSummary: async (userId: string) => {
+        const summary = await prisma.sales.aggregate({
+            where: {
+                userId: userId,
             },
-            orderBy: {
-                tanggal: 'desc'            }
+            _sum: {
+                income: true,
+                profit: true,
+            },
         });
 
-        const totalIncome = sales.reduce((sum, sale) => sum + (sale.income || 0), 0);
-        const totalProfit = sales.reduce((sum, sale) => sum + (sale.profit || 0), 0);
-
         return {
-            sales,
-            summary: {
-                totalTransactions: sales.length,
-                totalIncome,
-                totalProfit
-            }
-        }
+            totalPenjualan: summary._sum.income || 0,
+            totalKeuntungan: summary._sum.profit || 0,
+        };
     },
 
-    checkStockAvailability: async (userId: string, nama_menu: string, jumlah_laku: number) => {
-        const menu = await prisma.menu.findUnique({
-            where: {
-                userId_nama_menu: {
+    executeSalesTransaction: async (
+        userId: string,
+        menuId: string,
+        salesData: any,
+        recipe: (MenuBahan & { bahan: Bahan })[]
+    ) => {
+        return await prisma.$transaction(async (tx) => {
+            const sales = await tx.sales.create({
+                data: {
+                    id: ulid(),
                     userId,
-                    nama_menu
+                    menuId,
+                    tanggal: new Date(salesData.tanggal),
+                    harga_jual: salesData.harga_jual,
+                    jumlah_laku: salesData.jumlah_laku,
+                    hpp: salesData.hpp,
+                    income: salesData.income,
+                    profit: salesData.profit,
+                    keterangan: salesData.keterangan
                 }
-            },
-            include: {
-                bahanList: {
-                    include: {
-                        bahan: true
+            })
+
+            for (const recipeItem of recipe) {
+                const lessQuantity = (recipeItem.jumlah_digunakan || 0) * salesData.jumlah_laku;
+
+                await tx.bahan.update({
+                    where: { id: recipeItem.bahanId },
+                    data: {
+                        jumlah: {
+                            decrement: lessQuantity
+                        }
                     }
-                }
+                })
+
+                await tx.stockTransaction.create({
+                    data: {
+                        id: ulid(),
+                        userId,
+                        bahanId: recipeItem.bahanId,
+                        jumlah: lessQuantity,
+                        jenis_transaksi: 'PENJUALAN',
+                        keterangan: `Penjualan menu "${salesData.nama_menu}" (${salesData.jumlah_laku} porsi)`
+                    }
+                })
             }
-        });
-        
-        if (!menu) {
-            throw new ApiError(`Menu dengan nama ${nama_menu} tidak ditemukan`, 404)
-        }
-
-        const stockCheck = menu.bahanList.map((menuBahan) => {
-            const totalNeeded = (menuBahan.jumlah || 0) * jumlah_laku;
-            const isAvailable = totalNeeded <= menuBahan.bahan.jumlah;
-
-            return {
-                nama_bahan: menuBahan.bahan.nama_bahan,
-                kebutuhan: totalNeeded,
-                tersedia: menuBahan.bahan.jumlah,
-                satuan: menuBahan.bahan.satuan,
-                cukup: isAvailable
-            };
-        });
-
-        const allAvailable = stockCheck.every((item) => item.cukup)
-
-        return {
-            available: allAvailable,
-            details: stockCheck
-        }
+            return sales
+        })
     }
 }
 
