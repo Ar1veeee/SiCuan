@@ -6,6 +6,6 @@ export const stockSchema = z.object({
     jenis_transaksi: z.enum(['PEMBELIAN', 'PENJUALAN', 'PENYESUAIAN'], {
         errorMap: () => ({ message: "Jenis transaksi tidak valid." })
     }),
-    keterangan: z.string().optional(),
     minimum_stock: z.number().min(1, 'Minimal stok harus lebih dari 0'),
+    keterangan: z.string().optional(),
 })
