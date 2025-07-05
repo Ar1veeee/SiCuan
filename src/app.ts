@@ -4,6 +4,8 @@ import MenuRoutes from "./routes/menu.route"
 import HppRoutes from "./routes/hpp.route"
 import ProfileRoutes from "./routes/profile.route"
 import StockRoutes from "./routes/stock.route"
+import SalesRoutes from "./routes/sales.route"
+import DashboardRoutes from "./routes/dashboard.route"
 import { errorHandler } from "./middlewares/errorHandler.middleware"
 
 // import middlewares
@@ -82,6 +84,8 @@ app.use("/profiles", ProfileRoutes)
 app.use("/menus", MenuRoutes)
 app.use("/recipes", HppRoutes)
 app.use("/stocks", StockRoutes)
+app.use("/sales", SalesRoutes)
+app.use("/dashboard", DashboardRoutes)
 
 app.get('/health', (req, res) => {
     res.status(200).json({
