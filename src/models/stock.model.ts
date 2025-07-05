@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 import { CreateStockTransactionRequest } from "../types/stock.type";
+import { count } from "console";
+import { bigint } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -65,9 +67,9 @@ const StockModel = {
         nama_bahan: string,
     ) => {
         return await prisma.bahan.findFirst({
-            where:{
+            where: {
                 userId,
-                nama_bahan: nama_bahan 
+                nama_bahan: nama_bahan
             }
         })
     },
@@ -81,9 +83,9 @@ const StockModel = {
                 id: bahanId,
                 userId
             },
-            include:{
-                stockTransactions:{
-                    select:{
+            include: {
+                stockTransactions: {
+                    select: {
                         jenis_transaksi: true,
                         jumlah: true,
                         keterangan: true,
@@ -96,6 +98,31 @@ const StockModel = {
             }
         })
     },
+
+    getSummary: async (userId: string) => {
+        const totalBahanPromise = prisma.bahan.count({
+            where: { userId }
+        });
+
+        const hampirHabisPromise = await prisma.$queryRaw<[{ count: bigint }]>`
+            SELECT COUNT(*) as count FROM Bahan
+            WHERE userId = ${userId}
+            AND minimum_stock IS NOT NULL
+            AND minimum_stock > 0
+            AND jumlah <= minimum_stock
+        `;
+
+        const [totalBahan] = await Promise.all([
+            totalBahanPromise,
+        ]);
+
+        const hampirHabis = Number(hampirHabisPromise[0]?.count || 0);
+
+        return {
+            totalBahan,
+            hampirHabis,
+        };
+    }
 
     // /**
     //  * Menghapus transaksi stok
