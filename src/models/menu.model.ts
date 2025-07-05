@@ -110,6 +110,30 @@ const MenuModel = {
     },
 
     /**
+     * Mencari menu, menuBahan, bahan berdasarkan userId dan nama menu
+     * @param userId 
+     * @param nama_menu 
+     * @returns 
+     */
+    findMenuByNameWithBahan: async (userId: string, nama_menu: string) => {
+        return await prisma.menu.findUnique({
+            where: {
+                userId_nama_menu: { 
+                    userId: userId,
+                    nama_menu: nama_menu,
+                }
+            },
+            include: {
+                bahanList: { 
+                    include: {
+                        bahan: true 
+                    }
+                }
+            }
+        });
+    },
+
+    /**
      * Mencari menu berdasarkan menuId
      * @param menuId 
      * @returns 
