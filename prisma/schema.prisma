@@ -101,7 +101,7 @@ model MenuBahan {
   harga_beli          Float?
   jumlah_beli         Int
   jumlah_digunakan    Int?       
-  biaya               Float?     // biaya per bahan
+  biaya               Float?
   
   menu                Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
   bahan               Bahan      @relation(fields: [bahanId], references: [id], onDelete: Restrict)
