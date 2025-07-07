@@ -2,6 +2,7 @@ import StockModel from "../models/stock.model";
 import { ApiError } from "../exceptions/ApiError";
 import { CreateStockTransactionRequest, DefaultStockResponse, StockSummaryResponse } from "../types/stock.type";
 import { Bahan } from "@prisma/client";
+import { updateTotalHPPService } from "./HppService";
 
 export const getStockSummaryService = async (userId: string) => {
     const summaryData = await StockModel.getSummary(userId);
@@ -65,7 +66,12 @@ export const createStockTransactionService = async (
 export const deleteStockBahanService = async (
     bahanId: string,
 ): Promise<DefaultStockResponse> => {
-    await StockModel.deleteBahanByIdAndUserId(bahanId);
+    const affectedMenuIds = await StockModel.findMenusByBahanId(bahanId);
+    await StockModel.deleteBahanAndRelations(bahanId);
+    
+    const hppUpdatePromises = affectedMenuIds.map(menuId => updateTotalHPPService(menuId));
+    await Promise.all(hppUpdatePromises);
+
     return {
         message: "Stok berhasil dihapus",
     };

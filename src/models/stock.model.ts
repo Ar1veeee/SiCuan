@@ -125,7 +125,7 @@ const StockModel = {
     /**
      * Menghapus transaksi stok
      */
-    deleteBahanByIdAndUserId: async (
+    deleteBahanAndRelations: async (
         bahanId: string,
     ) => {
         return prisma.$transaction(async (tx) => {
@@ -150,6 +150,17 @@ const StockModel = {
             return deletedBahan;
         })
     },
+
+    findMenusByBahanId: async (bahanId: string) => {
+        const menuBahanRecords = await prisma.menuBahan.findMany({
+            where: { bahanId: bahanId },
+            select: {
+                menuId: true 
+            }
+        });
+        
+        return [...new Set(menuBahanRecords.map(record => record.menuId))];
+    }
 }
 
 export default StockModel;
