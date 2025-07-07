@@ -53,16 +53,23 @@ const MenuModel = {
     },
 
     /**
-     * Memperbarui keuntungan menu
-     * @param menuId 
-     * @param keuntungan 
-     * @returns 
+     * Memperbarui keuntungan dan harga jual dari sebuah menu.
+     * @param {string} menuId
+     * @param {number} keuntungan
+     * @param {number} harga_jual
+     * @returns {Promise<MenuData>}
      */
-    updateKeuntungan: async (menuId: string, keuntungan: number): Promise<void> => {
-        await prisma.menu.update({
-            where: { id: menuId },
-            data: { keuntungan }
+    updateMenuPricing: async (menuId: string, keuntungan: number, harga_jual: number): Promise<MenuData> => {
+        const updatedMenu = await prisma.menu.update({
+            where: {
+                id: menuId,
+            },
+            data: {
+                keuntungan,
+                harga_jual,
+            }
         });
+        return toDomainModel(updatedMenu);
     },
 
     /**
@@ -118,15 +125,15 @@ const MenuModel = {
     findMenuByNameWithBahan: async (userId: string, nama_menu: string) => {
         return await prisma.menu.findUnique({
             where: {
-                userId_nama_menu: { 
+                userId_nama_menu: {
                     userId: userId,
                     nama_menu: nama_menu,
                 }
             },
             include: {
-                bahanList: { 
+                bahanList: {
                     include: {
-                        bahan: true 
+                        bahan: true
                     }
                 }
             }

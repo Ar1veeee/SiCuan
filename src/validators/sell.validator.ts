@@ -11,6 +11,6 @@ export const validateMenuOwnership = async (userId: string, menuId: string) => {
 }
 
 export const sellSchema = z.object({
-    hpp: z.number().min(1, 'HPP harus lebih dari 0'),
-    keuntungan: z.number().min(1, 'Keuntungan harus lebih dari 0')
+    nama_menu: z.string().nonempty('Nama menu wajib diisi.'),
+    keuntungan: z.number().min(1, 'Keuntungan harus lebih dari 0.')
 })

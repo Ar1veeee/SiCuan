@@ -15,6 +15,7 @@ import {
 } from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
 import { menuBodySchema } from "../validators/menu.validator";
+import { sellSchema } from "../validators/sell.validator";
 
 router.use(verifyToken);
 
@@ -22,6 +23,13 @@ router.get(
     "/",
     getMenus,
 );
+
+router.patch(
+    "/selling-price",
+    validate(sellSchema),
+    menuSellingPrice 
+);
+
 
 router.get(
     "/:menu_id",
@@ -49,13 +57,6 @@ router.delete(
     validateMenuId,
     verifyAndAttachMenu,
     deleteMenu
-);
-
-router.patch(
-    "/:menu_id/selling-price",
-    validateMenuId, 
-    verifyAndAttachMenu,
-    menuSellingPrice 
 );
 
 export default router;

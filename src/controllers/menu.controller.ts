@@ -76,10 +76,10 @@ export const getMenuDetail = async (req: Request, res: Response, next: NextFunct
  */
 export const menuSellingPrice = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const menu = req.menu;
-        const { keuntungan } = req.body;
+        const userId = req.userId!;
+        const { nama_menu, keuntungan } = req.body;
 
-        const result = await menuSellingPriceService(menu.id, menu.hpp!, keuntungan);
+        const result = await menuSellingPriceService(userId, nama_menu, keuntungan);
         apiResponse.success(res, result);
     } catch (error) {
         next(error);

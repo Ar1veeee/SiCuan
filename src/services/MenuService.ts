@@ -2,6 +2,7 @@ import MenuModel from "../models/menu.model";
 import { ApiError } from "../exceptions/ApiError";
 import { MenuData, MenuResponse } from "../types/menu.type";
 import { updateTotalHPPService } from "./HppService";
+import { number } from "zod";
 
 /**
  * Service untuk membuat menu baru
@@ -69,17 +70,26 @@ export const updateMenuService = async (
  * @returns 
  */
 export const menuSellingPriceService = async (
-    menuId: string,
-    hpp: number,
+    userId: string,
+    nama_menu: string,
     keuntungan: number
 ): Promise<MenuResponse> => {
-    await MenuModel.updateKeuntungan(menuId, keuntungan);
-    await updateTotalHPPService(menuId);
-    
-    const menuTerbaru = await MenuModel.findMenuById(menuId);
+    const menu = await MenuModel.findMenuByName(userId, nama_menu);
+    if (!menu) {
+        throw ApiError.notFound(`Menu ${nama_menu} tidak ditemukan`);
+    }
+
+    const hppMenu = menu?.hpp;
+
+    if (typeof hppMenu !== 'number') {
+        throw ApiError.badRequest(`HPP untuk menu ${nama_menu} belum dihitung. Silahkan tambahkan resep terlebih dahulu.`);
+    }
+    const harga_jual = Math.round(hppMenu + (keuntungan / 100) * hppMenu);
+
+    await MenuModel.updateMenuPricing(menu.id, keuntungan, harga_jual)
 
     return {
-        message: `Keuntungan berhasil diatur menjadi ${keuntungan}%. Harga Jual baru sekarang adalah Rp.${menuTerbaru?.harga_jual ?? 0}`
+        message: `Harga Jual untuk menu ${nama_menu} dengan keuntungan ${keuntungan}% berhasil diperbarui menjadi Rp.${harga_jual}`
     };
 };
 
