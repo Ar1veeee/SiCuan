@@ -6,6 +6,36 @@ const prisma = new PrismaClient();
 
 const StockModel = {
     /**
+     * Menghitung 
+     * @param userId 
+     * @returns 
+     */
+    getSummary: async (userId: string) => {
+        const totalBahanPromise = prisma.bahan.count({
+            where: { userId }
+        });
+
+        const hampirHabisPromise = await prisma.$queryRaw<[{ count: bigint }]>`
+            SELECT COUNT(*) as count FROM Bahan
+            WHERE userId = ${userId}
+            AND minimum_stock IS NOT NULL
+            AND minimum_stock > 0
+            AND jumlah <= minimum_stock
+        `;
+
+        const [totalBahan] = await Promise.all([
+            totalBahanPromise,
+        ]);
+
+        const hampirHabis = Number(hampirHabisPromise[0]?.count || 0);
+
+        return {
+            totalBahan,
+            hampirHabis,
+        };
+    },
+
+    /**
      * Memperbarui transaksi stok
      */
     createTransactionAndUpdateBahan: async (
@@ -95,31 +125,6 @@ const StockModel = {
                 }
             }
         })
-    },
-
-    getSummary: async (userId: string) => {
-        const totalBahanPromise = prisma.bahan.count({
-            where: { userId }
-        });
-
-        const hampirHabisPromise = await prisma.$queryRaw<[{ count: bigint }]>`
-            SELECT COUNT(*) as count FROM Bahan
-            WHERE userId = ${userId}
-            AND minimum_stock IS NOT NULL
-            AND minimum_stock > 0
-            AND jumlah <= minimum_stock
-        `;
-
-        const [totalBahan] = await Promise.all([
-            totalBahanPromise,
-        ]);
-
-        const hampirHabis = Number(hampirHabisPromise[0]?.count || 0);
-
-        return {
-            totalBahan,
-            hampirHabis,
-        };
     },
 
     /**

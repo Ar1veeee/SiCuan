@@ -4,6 +4,23 @@ import { ulid } from "ulid";
 const prisma = new PrismaClient()
 
 const SalesModel = {
+    getSummary: async (userId: string) => {
+        const summary = await prisma.sales.aggregate({
+            where: {
+                userId: userId,
+            },
+            _sum: {
+                income: true,
+                profit: true,
+            },
+        });
+
+        return {
+            totalPenjualan: summary._sum.income || 0,
+            totalKeuntungan: summary._sum.profit || 0,
+        };
+    },
+    
     findSalesByIdAndUserId: async (
         salesId: string,
         userId: string,
@@ -36,48 +53,6 @@ const SalesModel = {
                 tanggal: 'desc'
             }
         })
-    },
-
-    getSalesById: async (salesId: string, userId: string) => {
-        const sales = await prisma.sales.findUnique({
-            where: {
-                id: salesId,
-                userId
-            },
-            include: {
-                menu: {
-                    include: {
-                        bahanList: {
-                            include: {
-                                bahan: true
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        if (!sales) {
-            throw new ApiError("Data penjualan tidak ditemukan", 404);
-        }
-        return sales;
-    },
-
-    getSummary: async (userId: string) => {
-        const summary = await prisma.sales.aggregate({
-            where: {
-                userId: userId,
-            },
-            _sum: {
-                income: true,
-                profit: true,
-            },
-        });
-
-        return {
-            totalPenjualan: summary._sum.income || 0,
-            totalKeuntungan: summary._sum.profit || 0,
-        };
     },
 
     executeSalesTransaction: async (
