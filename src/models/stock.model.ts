@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const StockModel = {
     /**
-     * Menghitung 
+     * Menghitung jumlah bahan dan bahan yang menipis
      * @param userId 
      * @returns 
      */
@@ -15,7 +15,7 @@ const StockModel = {
             where: { userId }
         });
 
-        const hampirHabisPromise = await prisma.$queryRaw<[{ count: bigint }]>`
+        const hampirHabisPromise = prisma.$queryRaw<[{ count: bigint }]>`
             SELECT COUNT(*) as count FROM Bahan
             WHERE userId = ${userId}
             AND minimum_stock IS NOT NULL
@@ -23,11 +23,12 @@ const StockModel = {
             AND jumlah <= minimum_stock
         `;
 
-        const [totalBahan] = await Promise.all([
+        const [totalBahan, hampirHabisResult] = await Promise.all([
             totalBahanPromise,
+            hampirHabisPromise,
         ]);
 
-        const hampirHabis = Number(hampirHabisPromise[0]?.count || 0);
+        const hampirHabis = Number(hampirHabisResult[0]?.count || 0);
 
         return {
             totalBahan,
@@ -84,9 +85,7 @@ const StockModel = {
         userId: string
     ) => {
         return await prisma.bahan.findMany({
-            where: {
-                userId
-            }
+            where: { userId }
         })
     },
 
@@ -119,9 +118,7 @@ const StockModel = {
                         keterangan: true,
                         createdAt: true,
                     },
-                    orderBy: {
-                        createdAt: 'desc',
-                    }
+                    orderBy: { createdAt: 'desc', }
                 }
             }
         })
@@ -135,21 +132,15 @@ const StockModel = {
     ) => {
         return prisma.$transaction(async (tx) => {
             await tx.menuBahan.deleteMany({
-                where: {
-                    bahanId: bahanId,
-                }
+                where: { bahanId: bahanId, }
             });
 
             await tx.stockTransaction.deleteMany({
-                where: {
-                    bahanId: bahanId,
-                }
+                where: { bahanId: bahanId, }
             });
 
             const deletedBahan = await tx.bahan.delete({
-                where: {
-                    id: bahanId,
-                }
+                where: { id: bahanId, }
             });
 
             return deletedBahan;
@@ -159,12 +150,11 @@ const StockModel = {
     findMenusByBahanId: async (bahanId: string) => {
         const menuBahanRecords = await prisma.menuBahan.findMany({
             where: { bahanId: bahanId },
-            select: {
-                menuId: true 
-            }
+            select: { menuId: true },
+            distinct: ['menuId'],
         });
-        
-        return [...new Set(menuBahanRecords.map(record => record.menuId))];
+
+        return menuBahanRecords.map(record => record.menuId);
     }
 }
 
