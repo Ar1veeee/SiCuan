@@ -59,23 +59,14 @@ export const createStockTransactionService = async (
     return { message: "Transaksi stok berhasil dicatat" };
 };
 
-// /**
-//  * Service untuk menghapus transaksi stok
-//  */
-// export const deleteStockService = async (
-//     userId: string,
-//     stockId: string
-// ): Promise<DefaultStockResponse> => {
-//     await validateUserExists(userId);
-//     await validateStockOwnership(userId, stockId);
-
-//     try {
-//         await StockModel.deleteStockTransaction(stockId);
-
-//         return {
-//             message: "Stok berhasil dihapus",
-//         };
-//     } catch (error) {
-//         throw new ApiError("Gagal menghapus stok", 400);
-//     }
-// };
+/**
+ * Service untuk menghapus transaksi stok
+ */
+export const deleteStockBahanService = async (
+    bahanId: string,
+): Promise<DefaultStockResponse> => {
+    await StockModel.deleteBahanByIdAndUserId(bahanId);
+    return {
+        message: "Stok berhasil dihapus",
+    };
+};

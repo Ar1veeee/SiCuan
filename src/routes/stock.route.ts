@@ -4,7 +4,7 @@ import {
     getStocks, 
     getStockDetail,
     createStockTransaction,
-    deleteStock, 
+    deleteStockBahan, 
 } from "../controllers/stock.controller";
 import { validate } from "../middlewares/validate.middleware";
 import { validateBahanId, verifyAndAttachBahan } from "../middlewares/stock.middleware";
@@ -38,7 +38,7 @@ router.delete(
     "/:bahan_id",
     validateBahanId,
     verifyAndAttachBahan,
-    deleteStock
+    deleteStockBahan
 );
 
 export default router;

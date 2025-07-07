@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 import { CreateStockTransactionRequest } from "../types/stock.type";
-import { count } from "console";
-import { bigint } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -122,103 +120,36 @@ const StockModel = {
             totalBahan,
             hampirHabis,
         };
-    }
+    },
 
-    // /**
-    //  * Menghapus transaksi stok
-    //  */
-    // deleteStockTransaction: async (
-    //     stockId: string
-    // ) => {
-    //     const result = await prisma.stockTransaction.delete({
-    //         where: { id: stockId },
-    //         include: {
-    //             bahan: true
-    //         }
-    //     });
-    //     return toDomainModel(result);
-    // },
+    /**
+     * Menghapus transaksi stok
+     */
+    deleteBahanByIdAndUserId: async (
+        bahanId: string,
+    ) => {
+        return prisma.$transaction(async (tx) => {
+            await tx.menuBahan.deleteMany({
+                where: {
+                    bahanId: bahanId,
+                }
+            });
 
-    // /**
-    //  * Mencari semua transaksi stok berdasarkan userId
-    //  */
-    // findStockTransactionByUserId: async (userId: string): Promise<StockData[]> => {
-    //     const results = await prisma.stockTransaction.findMany({
-    //         where: { userId },
-    //         include: {
-    //             bahan: true
-    //         },
-    //         orderBy: {
-    //             createdAt: 'desc'
-    //         }
-    //     });
-    //     return results.map(toDomainModel);
-    // },
+            await tx.stockTransaction.deleteMany({
+                where: {
+                    bahanId: bahanId,
+                }
+            });
 
-    // /**
-    //  * Mencari transaksi stok berdasarkan id dan userId
-    //  */
-    // findStockTransactionByIdAndUserId: async (
-    //     userId: string,
-    //     stockTransactionId: string
-    // ): Promise<StockData | null> => {
-    //     const result = await prisma.stockTransaction.findFirst({
-    //         where: {
-    //             userId,
-    //             id: stockTransactionId
-    //         },
-    //         include: {
-    //             bahan: true
-    //         }
-    //     });
-    //     return result ? toDomainModel(result) : null;
-    // },
+            const deletedBahan = await tx.bahan.delete({
+                where: {
+                    id: bahanId,
+                }
+            });
 
-    // /**
-    //  * Mendapatkan ringkasan stok per bahan (aggregated)
-    //  */
-    // getStockSummaryByUserId: async (userId: string) => {
-    //     const results = await prisma.stockTransaction.findMany({
-    //         where: { userId },
-    //         include: {
-    //             bahan: true
-    //         },
-    //         orderBy: {
-    //             createdAt: 'asc'
-    //         }
-    //     });
-
-    //     const stockSummary = new Map();
-
-    //     results.forEach(transaction => {
-    //         const bahanId = transaction.bahanId;
-    //         const namaBahan = transaction.bahan?.nama_bahan || '';
-
-    //         if (!stockSummary.has(bahanId)) {
-    //             stockSummary.set(bahanId, {
-    //                 bahanId,
-    //                 nama_bahan: namaBahan,
-    //                 jumlah: 0
-    //             });
-    //         }
-
-    //         const currentStock = stockSummary.get(bahanId);
-
-    //         switch (transaction.jenis_transaksi.toLowerCase()) {
-    //             case 'masuk':
-    //             case 'penyesuaian':
-    //                 currentStock.jumlah += transaction.jumlah;
-    //                 break;
-    //             case 'keluar':
-    //                 currentStock.jumlah -= transaction.jumlah;
-    //                 break;
-    //         }
-
-    //         stockSummary.set(bahanId, currentStock);
-    //     });
-
-    //     return Array.from(stockSummary.values());
-    // }
-};
+            return deletedBahan;
+        })
+    },
+}
 
 export default StockModel;

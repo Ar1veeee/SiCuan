@@ -4,7 +4,7 @@ import {
     getStocksService,
     createStockTransactionService,
     getStockSummaryService,
-    // deleteStockService,
+    deleteStockBahanService,
 } from "../services/StockService";
 import { formatStockDetailResponse } from "../utils/stockFormatter.util";
 
@@ -42,6 +42,10 @@ export const getStocks = async (req: Request, res: Response, next: NextFunction)
 
 /**
  * Controller untuk mendapatkan detail stok berdasarkan ID
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns 
  */
 export const getStockDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -55,6 +59,10 @@ export const getStockDetail = async (req: Request, res: Response, next: NextFunc
 
 /**
  * Controller untuk memperbarui transaksi stok
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns 
  */
 export const createStockTransaction = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -67,16 +75,14 @@ export const createStockTransaction = async (req: Request, res: Response, next: 
 
 /**
  * Controller untuk menghapus transaksi stok
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns 
  */
-export const deleteStock = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const deleteStockBahan = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-        const result = await deleteStockService(userId, req.bahanId!);
+        const result = await deleteStockBahanService(req.bahanId!);
         apiResponse.success(res, result);
     } catch (error) {
         next(error);
