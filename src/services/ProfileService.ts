@@ -10,10 +10,7 @@ export const updatePasswordService = async (
     newPassword: string
 ): Promise<ProfileResponse> => {
     const updated = await UserModel.updatePassword(userId, newPassword);
-    if (!updated) {
-        throw new ApiError("Password gagal diperbarui", 400);
-    }
-
+    
     return {
         message: "Password berhasil diperbarui"
     };

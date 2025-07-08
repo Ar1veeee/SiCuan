@@ -10,14 +10,14 @@ import { ApiError } from "../exceptions/ApiError";
  */
 const verifyUserAccess = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const paramId = parseInt(req.params.user_id)
-        const tokenUserId = (req.user?.id) ?? null;
+        const paramId = req.params.user_id;
+        const tokenUserId = req.userId;
     
         if (!paramId || !tokenUserId) {
-            throw ApiError.unauthorized("User ID tidak valid")
+            throw ApiError.unauthorized("User ID tidak valid.")
         }
         if (paramId !== tokenUserId) {
-            throw ApiError.forbidden("Akses ditolak: token bukan milik user ini")
+            throw ApiError.forbidden("Akses ditolak: Anda tidak diizinkan mengakses sumber daya pengguna ini.")
         }
     
         next()

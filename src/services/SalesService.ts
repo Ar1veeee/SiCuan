@@ -2,6 +2,7 @@ import SalesModel from "../models/sales.model";
 import { ApiError } from "../exceptions/ApiError";
 import { CreateSalesRequest, SalesResponse, SalesSummaryResponse } from "../types/sales.type";
 import MenuModel from "../models/menu.model";
+import { calculateFinancials, validateStockAvailability } from "../utils/sales.utils";
 
 export const getSalesSummaryService = async (userId: string) => {
     const summaryData = await SalesModel.getSummary(userId);
@@ -36,26 +37,12 @@ export const createSalesService = async (
         throw ApiError.notFound(`Menu dengan nama ${data.nama_menu} tidak ditemukan.`)
     }
 
-    for (const resepItem of menu.bahanList) {
-        const totalDibutuhkan = (resepItem.jumlah_digunakan || 0) * data.jumlah_laku;
-        if (totalDibutuhkan > resepItem.bahan.jumlah) {
-            throw ApiError.badRequest(
-                `Stok ${resepItem.bahan.nama_bahan} tidak cukup. Dibutuhkan: ${totalDibutuhkan}, Tersedia: ${resepItem.bahan.jumlah}.`
-            );
-        }
-    }
-
-    const hppMenu = menu.hpp || 0;
-    const hargaJualMenu = menu.harga_jual || 0;
-    const income = hargaJualMenu * data.jumlah_laku;
-    const profit = (hargaJualMenu - hppMenu) * data.jumlah_laku;
+    await validateStockAvailability(menu, data.jumlah_laku);
+    const financials = calculateFinancials(menu, data.jumlah_laku);
 
     const salesData = {
         ...data,
-        hpp: hppMenu,
-        harga_jual: hargaJualMenu,
-        income,
-        profit,
+        ...financials
     }
     const recipe = menu.bahanList
 
