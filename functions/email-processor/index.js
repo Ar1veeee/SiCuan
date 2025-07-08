@@ -135,9 +135,7 @@ exports.processEmailQueue = async (message, context) => {
         } else {
             console.error(`Failed to send email to ${emailData.to}:`, result.message);
         }
-
     } catch (error) {
         console.error('Error processing email message:', error);
-        // Don't throw error to avoid retries for malformed messages
     }
 };
