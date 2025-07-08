@@ -1,11 +1,11 @@
-import express from "express"
+import express, { Request, Response, NextFunction } from "express"
 import morgan from "morgan"
 import cookieParser from "cookie-parser"
 import helmet from "helmet"
 import compression from "compression"
 import rateLimit from "express-rate-limit"
 import hpp from "hpp"
-import xss from "xss-clean"
+import xss from "xss-clean" 
 import logger from "./config/logger.config";
 import DatabaseService from './config/database.config';
 
@@ -22,6 +22,9 @@ import DashboardRoutes from "./routes/dashboard.route"
 import { errorHandler } from "./middlewares/errorHandler.middleware"
 
 const app = express()
+
+// Memory monitoring
+let memoryMonitor: NodeJS.Timeout | null = null;
 
 // Rate limiting configurations
 const limitter = rateLimit({
@@ -43,12 +46,8 @@ const authLimitter = rateLimit({
 // Apply middlewares
 app.use(limitter)
 app.use(hpp())
-app.use(express.json({ limit: '1mb' })) // Batasi payload
-app.use(express.urlencoded({ extended: true, limit: '1mb' }))
+app.use(xss());
 app.use(cookieParser())
-app.use(xss()) // Terapkan sanitasi XSS
-app.use(compression())
-app.use(helmet()) 
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -58,31 +57,84 @@ if (process.env.NODE_ENV === 'development') {
             method: tokens.method(req, res),
             url: tokens.url(req, res),
             status: tokens.status(req, res),
+            contentLength: tokens.res(req, res, 'content-length'),
             responseTime: `${tokens['response-time'](req, res)} ms`,
         };
         logger.info(JSON.stringify(logObject));
-        return null; 
+        return null;
     }));
 }
 
-// Routes
-app.use("/auth", authLimitter, AuthRoutes)
-app.use("/profiles", ProfileRoutes)
-app.use("/menus", MenuRoutes)
-app.use("/recipes", HppRoutes)
-app.use("/stocks", StockRoutes)
-app.use("/sales", SalesRoutes)
-app.use("/dashboard", DashboardRoutes)
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                imgSrc: ["'self'", "data:", "https:"],
+            },
+        },
+        crossOriginEmbedderPolicy: false,
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+    })
+);
 
-// Fixed health check endpoint
-app.get('/health', async (req, res) => {
+app.use(compression())
+
+app.use(express.json({ 
+    limit: '1mb',
+    strict: true
+}))
+app.use(express.urlencoded({ 
+    extended: true, 
+    limit: '1mb',
+    parameterLimit: 1000
+}))
+
+// Routes
+app.use(`/auth`, authLimitter, AuthRoutes)
+app.use(`/profiles`, ProfileRoutes)
+app.use(`/menus`, MenuRoutes)
+app.use(`/recipes`, HppRoutes)
+app.use(`/stocks`, StockRoutes)
+app.use(`/sales`, SalesRoutes)
+app.use(`/dashboard`, DashboardRoutes)
+
+let healthCheckCache: {
+    data: any;
+    statusCode: number;
+    timestamp: number;
+} | null = null;
+
+const HEALTH_CHECK_CACHE_TTL = 30000;
+
+app.get('/health', async (req: Request, res: Response) => {
     const startTime = Date.now();
+    const now = Date.now();
+    
     try {
-        const databaseHealthy = await DatabaseService.healthCheck();
+        if (healthCheckCache && (now - healthCheckCache.timestamp) < HEALTH_CHECK_CACHE_TTL) {
+            const responseTime = Date.now() - startTime;
+            res.status(healthCheckCache.statusCode).json({
+                ...healthCheckCache.data,
+                responseTime: `${responseTime}ms`,
+                cached: true
+            });
+            return; 
+        }
+
+        const databaseHealthy = await Promise.race([
+            DatabaseService.healthCheck(),
+            new Promise<boolean>((_, reject) => 
+                setTimeout(() => reject(new Error('Health check timeout')), 5000)
+            )
+        ]);
+
         const memoryUsage = process.memoryUsage();
         
         const memoryHealthy = memoryUsage.rss < 500 * 1024 * 1024;
-        const heapHealthy = memoryUsage.heapUsed < 100 * 1024 * 1024;
+        const heapHealthy = memoryUsage.heapUsed < 150 * 1024 * 1024;
         
         const isHealthy = databaseHealthy && memoryHealthy && heapHealthy;
         const responseTime = Date.now() - startTime;
@@ -96,7 +148,7 @@ app.get('/health', async (req, res) => {
             pid: process.pid,
             runtime: {
                 name: 'bun',
-                version: Bun.version,
+                version: (global as any).Bun?.version || process.version,
                 platform: process.platform,
                 arch: process.arch,
             },
@@ -105,7 +157,6 @@ app.get('/health', async (req, res) => {
                 database: {
                     status: databaseHealthy ? 'healthy' : 'unhealthy',
                     connected: DatabaseService.isReady(),
-                    info: DatabaseService.isReady()
                 },
                 memory: {
                     status: (memoryHealthy && heapHealthy) ? 'healthy' : 'unhealthy',
@@ -117,7 +168,7 @@ app.get('/health', async (req, res) => {
                         heapUsedPercent: `${Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100)}%`
                     },
                     thresholds: {
-                        heapLimit: '100MB',
+                        heapLimit: '150MB',
                         rssLimit: '500MB'
                     }
                 }
@@ -125,57 +176,126 @@ app.get('/health', async (req, res) => {
         };
 
         const statusCode = isHealthy ? 200 : 503;
+        
+        healthCheckCache = {
+            data: healthData,
+            statusCode,
+            timestamp: now
+        };
+        
         res.status(statusCode).json(healthData);
     } catch (error) {
+        healthCheckCache = null;
         logger.error('Health check failed:', error);
         res.status(503).json({
             status: 'unhealthy',
             timestamp: new Date().toISOString(),
             error: 'Health check failed',
             responseTime: `${Date.now() - startTime}ms`,
-            runtime: 'bun'
         });
     }
 });
 
-// Readiness check endpoint
-app.get('/ready', async (req, res) => {
-    try {
-        const databaseReady = await DatabaseService.healthCheck();
+let readinessCache: {
+    data: any;
+    statusCode: number;
+    timestamp: number;
+} | null = null;
 
-        if (databaseReady) {
-            res.status(200).json({
-                status: 'ready',
-                timestamp: new Date().toISOString(),
-                message: 'Application is ready to serve requests',
-                runtime: 'bun'
+app.get('/ready', async (req: Request, res: Response) => {
+    const now = Date.now();
+    
+    try {
+        if (readinessCache && (now - readinessCache.timestamp) < HEALTH_CHECK_CACHE_TTL) {
+            res.status(readinessCache.statusCode).json({
+                ...readinessCache.data,
+                cached: true
             });
-        } else {
-            res.status(503).json({
-                status: 'not ready',
-                timestamp: new Date().toISOString(),
-                message: 'Application is not ready to serve requests',
-                runtime: 'bun'
-            });
+            return; 
         }
+
+        const databaseReady = await Promise.race([
+            DatabaseService.healthCheck(),
+            new Promise<boolean>((_, reject) => 
+                setTimeout(() => reject(new Error('Readiness check timeout')), 3000)
+            )
+        ]);
+
+        const statusCode = databaseReady ? 200 : 503;
+        const responseData = {
+            status: databaseReady ? 'ready' : 'not ready',
+            timestamp: new Date().toISOString(),
+            message: databaseReady 
+                ? 'Application is ready to serve requests' 
+                : 'Application is not ready to serve requests',
+        };
+
+        readinessCache = {
+            data: responseData,
+            statusCode,
+            timestamp: now
+        };
+
+        res.status(statusCode).json(responseData);
     } catch (error) {
+        readinessCache = null;
         logger.error('Ready check failed:', error);
         res.status(503).json({
             status: 'not ready',
             timestamp: new Date().toISOString(),
             error: 'Ready check failed',
-            runtime: 'bun'
         });
     }
 });
 
+const startMemoryMonitoring = () => {
+    if (memoryMonitor) return;
+    
+    memoryMonitor = setInterval(() => {
+        const usage = process.memoryUsage();
+        const rssMB = usage.rss / 1024 / 1024;
+        const heapUsedMB = usage.heapUsed / 1024 / 1024;
+        
+        if (rssMB > 400 || heapUsedMB > 120) { 
+            logger.warn('High memory usage detected:', {
+                rss: `${Math.round(rssMB)}MB`,
+                heapUsed: `${Math.round(heapUsedMB)}MB`,
+            });
+            
+            healthCheckCache = null;
+            readinessCache = null;
+            
+            if (global.gc) {
+                global.gc();
+                logger.info('Garbage collection triggered');
+            }
+        }
+    }, 60000);
+};
+
+const cleanup = () => {
+    if (memoryMonitor) {
+        clearInterval(memoryMonitor);
+        memoryMonitor = null;
+    }
+    
+    healthCheckCache = null;
+    readinessCache = null;
+    
+    logger.info('Application cleanup completed');
+};
+
+startMemoryMonitoring();
+
+process.on('SIGTERM', cleanup);
+process.on('SIGINT', cleanup);
+
 // 404 handler
-app.use('*', (req, res) => {
+app.use('*', (req: Request, res: Response) => {
     res.status(404).json({
         success: false,
         error: 'Route not found',
         statusCode: 404,
-        runtime: 'bun'
     });
 });
 
