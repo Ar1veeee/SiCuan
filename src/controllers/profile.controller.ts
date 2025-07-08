@@ -6,15 +6,8 @@ import { updatePasswordService, userProfileService } from "../services/ProfileSe
  * Controller untuk memperbarui password pengguna
  */
 export const updatePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
-        const result = await updatePasswordService(userId, req.body.password);
+    try {      
+        const result = await updatePasswordService(req.userId!, req.body.password);
         apiResponse.success(res, result);
     } catch (error) {
         next(error);
@@ -26,14 +19,7 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
  */
 export const userProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
-        const profile = await userProfileService(userId);
+        const profile = await userProfileService(req.userId!);
         apiResponse.success(res, profile);
     } catch (error) {
         next(error);

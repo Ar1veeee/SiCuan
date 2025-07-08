@@ -11,14 +11,8 @@ import {
  * Controller untuk menambah resep
  */
 export const createResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
+    try {   
+        const userId = req.userId!;
         const menuId = req.menuId!;
 
         const result = await createRecipeService(userId, menuId, req.body);
@@ -33,13 +27,7 @@ export const createResep = async (req: Request, res: Response, next: NextFunctio
  */
 export const getRecipes = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
+        const userId = req.userId!;
         const menuId = req.menuId!;
 
         const recipes = await getRecipesService(userId, menuId);
@@ -63,15 +51,10 @@ export const getRecipesDetail = async (req: Request, res: Response, next: NextFu
  */
 export const updateMenuResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
+        const userId = req.userId!;        
         const menuId = req.menuId!;
         const bahanId = req.bahanId!;
+        
         const result = await updateRecipeService(userId, menuId, bahanId, req.body);
         apiResponse.success(res, result);
     } catch (error) {
@@ -84,13 +67,7 @@ export const updateMenuResep = async (req: Request, res: Response, next: NextFun
  */
 export const deleteMenuResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
-
+        const userId = req.userId!;
         const menuId = req.menuId!;
         const bahanId = req.bahanId!;
 

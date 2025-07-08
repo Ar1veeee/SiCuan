@@ -17,12 +17,7 @@ import {
 
 export const createMenu = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
+        const userId = req.userId!;
 
         const result = await createMenuService(userId, req.body.nama_menu);
         apiResponse.created(res, result);
@@ -39,12 +34,7 @@ export const createMenu = async (req: Request, res: Response, next: NextFunction
  */
 export const getMenus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId;
-
-        if (!userId) {
-            apiResponse.badRequest(res, "User ID tidak valid");
-            return;
-        }
+        const userId = req.userId!;
 
         const menus = await getMenusService(userId);
         apiResponse.success(res, { menus });
