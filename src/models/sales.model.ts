@@ -1,7 +1,8 @@
-import { Bahan, MenuBahan, PrismaClient, Sales } from "@prisma/client";
-import { ApiError } from "../exceptions/ApiError";
+import { Bahan, MenuBahan } from "@prisma/client";
 import { ulid } from "ulid";
-const prisma = new PrismaClient()
+import DatabaseService from "../config/database.config";
+
+const prisma = DatabaseService.getInstance()
 
 const SalesModel = {
     getSummary: async (userId: string) => {

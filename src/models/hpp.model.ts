@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { ApiError } from "../exceptions/ApiError";
 import { ulid } from "ulid";
+import DatabaseService from "../config/database.config";
 
-const prisma = new PrismaClient()
+const prisma = DatabaseService.getInstance()
 
 const HppModel = {
     /**

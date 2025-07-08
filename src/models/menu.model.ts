@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { MenuData } from "../types/menu.type";
 import { ulid } from "ulid";
-const prisma = new PrismaClient()
+import DatabaseService from "../config/database.config";
+const prisma = DatabaseService.getInstance()
 
 const toDomainModel = (prismaMenu: any): MenuData => {
     return {
@@ -42,9 +42,7 @@ const MenuModel = {
      */
     updateMenu: async (menuId: string, nama_menu: string): Promise<MenuData> => {
         const result = await prisma.menu.update({
-            where: {
-                id: menuId,
-            },
+            where: { id: menuId, },
             data: {
                 nama_menu
             }
@@ -61,9 +59,7 @@ const MenuModel = {
      */
     updateMenuPricing: async (menuId: string, keuntungan: number, harga_jual: number): Promise<MenuData> => {
         const updatedMenu = await prisma.menu.update({
-            where: {
-                id: menuId,
-            },
+            where: { id: menuId, },
             data: {
                 keuntungan,
                 harga_jual,
@@ -79,9 +75,7 @@ const MenuModel = {
      */
     deleteMenu: async (menuId: string): Promise<MenuData> => {
         const result = await prisma.menu.delete({
-            where: {
-                id: menuId
-            }
+            where: { id: menuId }
         });
         return toDomainModel(result);
     },

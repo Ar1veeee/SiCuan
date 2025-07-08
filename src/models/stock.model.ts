@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 import { CreateStockTransactionRequest } from "../types/stock.type";
+import DatabaseService from "../config/database.config";
 
-const prisma = new PrismaClient();
+const prisma = DatabaseService.getInstance()
 
 const StockModel = {
     /**

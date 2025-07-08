@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../utils/password.util";
 import { ulid } from "ulid";
-const prisma = new PrismaClient()
+import DatabaseService from "../config/database.config";
+
+const prisma = DatabaseService.getInstance()
 
 const User = {
     createUser: async (name: string, email: string, password: string, nama_usaha: string) => {
@@ -80,7 +81,7 @@ const User = {
     },
 
     refreshToken: async (oldRefreshToken: string, newAccessToken: string, newRefreshToken: string) => {
-        const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); 
+        const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
         return await prisma.auth.updateMany({
             where: {
@@ -89,7 +90,7 @@ const User = {
             },
             data: {
                 accessToken: newAccessToken,
-                refreshToken: newRefreshToken, 
+                refreshToken: newRefreshToken,
                 expiresAt: newExpiresAt
             }
         })
@@ -98,7 +99,7 @@ const User = {
     revokeAuth: async (userId: string) => {
         return await prisma.auth.updateMany({
             where: { userId },
-            data: { 
+            data: {
                 isActive: false,
                 accessToken: null,
                 refreshToken: null

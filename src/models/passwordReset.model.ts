@@ -1,6 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
-const prisma = new PrismaClient()
+import DatabaseService from "../config/database.config";
+
+const prisma = DatabaseService.getInstance()
 
 const PasswordReset = {
   create: async ({ userId, otp, expiresAt }: { userId: string; otp: string; expiresAt: Date }) => {
