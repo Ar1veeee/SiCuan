@@ -12,7 +12,9 @@ class PubSubService {
   private topicName: string;
 
   constructor() {
-    this.pubsub = new PubSub();
+    this.pubsub = new PubSub({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT,
+    });
     this.topicName = process.env.EMAIL_TOPIC_NAME || 'email-notifications';
   }
 
