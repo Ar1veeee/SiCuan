@@ -110,7 +110,6 @@ const sendEmail = async (to, subject, otp) => {
 // Cloud Function entry point
 exports.processEmailQueue = async (message, context) => {
     try {
-        // Decode the Pub/Sub message
         const messageBody = message.data ? Buffer.from(message.data, 'base64').toString() : null;
         
         if (!messageBody) {
