@@ -52,3 +52,11 @@ export const createSalesService = async (
         message: "Penjualan berhasil disimpan",
     }
 }
+
+export const deleteSalesService = async (salesId: string, userId: string):Promise<SalesResponse> => {
+    await SalesModel.deleteSalesByIdAndUserId(userId, salesId);
+
+    return {
+        message: "Penjualan berhasil terhapus"
+    }
+}

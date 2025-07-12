@@ -103,6 +103,15 @@ const SalesModel = {
             }
             return sales
         })
+    },
+
+    deleteSalesByIdAndUserId: async (salesId: string, userId: string) => {
+        return await prisma.sales.delete({
+            where: {
+                id: salesId,
+                userId,
+            }
+        })
     }
 }
 

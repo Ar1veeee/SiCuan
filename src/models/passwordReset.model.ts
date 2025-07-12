@@ -14,6 +14,7 @@ const PasswordReset = {
       },
     });
   },
+
   findValidOtp: async (otp: string) => {
     return prisma.passwordReset.findFirst({
       where: {
@@ -23,9 +24,10 @@ const PasswordReset = {
       },
     });
   },
-  markOtpUsed: async (otp: string) => {
-    return prisma.passwordReset.updateMany({
-      where: { otp },
+
+  markAsUsed: async (otpId: string) => {
+    return prisma.passwordReset.update({
+      where: { id: otpId },
       data: { used: true },
     });
   },

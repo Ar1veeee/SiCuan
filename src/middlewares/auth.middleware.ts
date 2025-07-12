@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../exceptions/ApiError";
-import PasswordResetModel from "../models/passwordReset.model";
 import jwt from "jsonwebtoken";
 
 /**
@@ -38,31 +37,5 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
     next(error)
   };
 }
-
-/**
- * Middleware untuk memverifikasi OTP dari req.body.
- * Jika valid, lampirkan data entri OTP ke`req.otpEntry`.
- */
-export const verifyAndAttachOtpEntry = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { otp } = req.body;
-
-    if (!otp) {
-      throw ApiError.badRequest("OTP wajib diisi.");
-    }
-
-    const otpEntry = await PasswordResetModel.findValidOtp(otp);
-
-    if (!otpEntry) {
-      throw ApiError.badRequest("OTP tidak valid atau sudah kedaluwarsa.");
-    }
-
-    req.otpEntry = otpEntry;
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
 
 export default verifyToken;

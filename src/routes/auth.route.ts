@@ -1,22 +1,26 @@
+// import configurations
 import { Router } from "express";
+import container from "../config/container.config";
 const router = Router();
-import {
-    register,
-    login,
-    refreshToken,
-    sendOtp,
-    verifyOtp,
-    resetPassword
-} from "../controllers/auth.controller";
-import { validate } from "../middlewares/validate.middleware";
+
+// import validations
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import {
     resetPasswordSchema,
     verifyEmailSchema,
     verifyOtpSchema
 } from "../validators/resetPassword.validator";
-import { verifyAndAttachOtpEntry } from "../middlewares/auth.middleware";
 
+// import middleware
+import { validate } from "../middlewares/validate.middleware";
+import verifyToken from "../middlewares/auth.middleware";
+
+const register = container.resolve("register");
+const login = container.resolve("login");
+const refreshToken = container.resolve("refreshToken");
+const sendOtp = container.resolve("sendOtp");
+const verifyOtp = container.resolve("verifyOtp");
+const resetPassword = container.resolve("resetPassword");
 
 router.post(
     "/register",
@@ -51,7 +55,7 @@ router.post(
 router.post(
     "/reset-password",
     validate(resetPasswordSchema),
-    verifyAndAttachOtpEntry,
+    verifyToken,
     resetPassword
 );
 

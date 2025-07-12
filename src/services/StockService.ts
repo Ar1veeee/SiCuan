@@ -1,10 +1,10 @@
 import StockModel from "../models/stock.model";
 import { ApiError } from "../exceptions/ApiError";
-import { CreateStockTransactionRequest, DefaultStockResponse, StockSummaryResponse } from "../types/stock.type";
+import { CreateStockTransactionRequest, DefaultStockResponse, StockSummaryResponse, SummaryResponse } from "../types/stock.type";
 import { Bahan } from "@prisma/client";
-import { updateTotalHPPService } from "./HppService";
+import { updateTotalHPPService } from "./RecipeService";
 
-export const getStockSummaryService = async (userId: string) => {
+export const getStockSummaryService = async (userId: string): Promise<SummaryResponse> => {
     const summaryData = await StockModel.getSummary(userId);
     return summaryData;
 };
@@ -63,7 +63,7 @@ export const createStockTransactionService = async (
 /**
  * Service untuk menghapus transaksi stok
  */
-export const deleteStockBahanService = async (
+export const deleteStockService = async (
     bahanId: string,
 ): Promise<DefaultStockResponse> => {
     const affectedMenuIds = await StockModel.findMenusByBahanId(bahanId);

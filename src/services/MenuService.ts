@@ -1,8 +1,7 @@
 import MenuModel from "../models/menu.model";
 import { ApiError } from "../exceptions/ApiError";
 import { MenuData, MenuResponse } from "../types/menu.type";
-import { updateTotalHPPService } from "./HppService";
-import { number } from "zod";
+import { updateTotalHPPService } from "./RecipeService";
 
 /**
  * Service untuk membuat menu baru

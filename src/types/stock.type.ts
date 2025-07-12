@@ -8,6 +8,11 @@ export interface CreateStockTransactionRequest {
     keterangan?: string;
 }
 
+export interface SummaryResponse {
+    totalBahan: number;
+    hampirHabis: number;
+}
+
 export interface StockSummaryResponse {
     id: string;
     userId: string;

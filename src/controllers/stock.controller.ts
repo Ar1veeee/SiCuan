@@ -4,7 +4,7 @@ import {
     getStocksService,
     createStockTransactionService,
     getStockSummaryService,
-    deleteStockBahanService,
+    deleteStockService,
 } from "../services/StockService";
 import { formatStockDetailResponse } from "../utils/stockFormatter.util";
 
@@ -14,7 +14,6 @@ import { formatStockDetailResponse } from "../utils/stockFormatter.util";
  * @param res 
  * @param next 
  */
-
 export const getStockSummary = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const summary = await getStockSummaryService(req.userId!);
@@ -30,7 +29,6 @@ export const getStockSummary = async (req: Request, res: Response, next: NextFun
  * @param res 
  * @param next 
  */
-
 export const getStocks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const stocks = await getStocksService(req.userId!);
@@ -80,9 +78,9 @@ export const createStockTransaction = async (req: Request, res: Response, next: 
  * @param next 
  * @returns 
  */
-export const deleteStockBahan = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const deleteStock = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const result = await deleteStockBahanService(req.bahanId!);
+        const result = await deleteStockService(req.bahanId!);
         apiResponse.success(res, result);
     } catch (error) {
         next(error);

@@ -12,7 +12,7 @@ import DatabaseService from './config/database.config';
 // Import routes
 import AuthRoutes from "./routes/auth.route"
 import MenuRoutes from "./routes/menu.route"
-import HppRoutes from "./routes/hpp.route"
+import HppRoutes from "./routes/recipe.route"
 import ProfileRoutes from "./routes/profile.route"
 import StockRoutes from "./routes/stock.route"
 import SalesRoutes from "./routes/sales.route"

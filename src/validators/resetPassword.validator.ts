@@ -10,12 +10,9 @@ export const verifyOtpSchema = z.object({
 })
 
 export const resetPasswordSchema = z.object({
-    body: z.object({
-        otp: z.string().nonempty("OTP wajib diisi"),
-        password: passwordSchema,
-        confirmPassword: z.string()
-    })
-}).refine(data => data.body.password === data.body.confirmPassword, {
+    newPassword: passwordSchema,
+    confirmPassword: z.string()
+}).refine(data => data.newPassword === data.confirmPassword, {
     message: "Password baru dan konfirmasi tidak cocok.",
-    path: ["body", "confirmPassword"],
+    path: ["confirmPassword"],
 });

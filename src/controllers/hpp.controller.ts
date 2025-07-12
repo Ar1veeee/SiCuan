@@ -5,10 +5,13 @@ import {
     getRecipesService,
     deleteRecipeService,
     updateRecipeService
-} from "../services/HppService";
+} from "../services/RecipeService";
 
 /**
- * Controller untuk menambah resep
+ * Controller untuk menambah resep berdasarkan userId dan menuId
+ * @param req 
+ * @param res 
+ * @param next 
  */
 export const createResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {   
@@ -23,7 +26,10 @@ export const createResep = async (req: Request, res: Response, next: NextFunctio
 };
 
 /**
- * Controller untuk mendapatkan resep berdasarkan user_id dan menu_id
+ * Controller untuk mendapatkan resep berdasarkan userId dan menuId
+ * @param req 
+ * @param res 
+ * @param next
  */
 export const getRecipes = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -37,7 +43,13 @@ export const getRecipes = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-export const getRecipesDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+/**
+ * Controller untuk menampilkan detail berdasarkan recipeId
+ * @param req 
+ * @param res 
+ * @param next 
+ */
+export const getRecipeDetails = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const recipeDetail = req.recipeItem;
         apiResponse.success(res, { recipe: recipeDetail })
@@ -47,7 +59,7 @@ export const getRecipesDetail = async (req: Request, res: Response, next: NextFu
 }
 
 /**
- * Controller untuk mengupdate resep berdasarkan user_id, menu_id, dan bahan_id
+ * Controller untuk mengupdate resep berdasarkan userId, menuId, dan bahanId
  */
 export const updateMenuResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -63,7 +75,7 @@ export const updateMenuResep = async (req: Request, res: Response, next: NextFun
 };
 
 /**
- * Controller untuk menghapus resep berdasarkan user_id, menu_id, dan bahan_id
+ * Controller untuk menghapus resep berdasarkan userId, menuId, dan bahanId
  */
 export const deleteMenuResep = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

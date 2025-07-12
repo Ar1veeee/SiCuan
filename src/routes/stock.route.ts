@@ -1,19 +1,25 @@
+// Import configuration
 import { Router } from "express";
 const router = Router();
-import { 
-    getStocks, 
-    getStockDetail,
-    createStockTransaction,
-    deleteStockBahan, 
-} from "../controllers/stock.controller";
+
+// Import container
+import container from "../containers/stock.container";
+
+// Import middlewares
 import { validate } from "../middlewares/validate.middleware";
 import { validateBahanId, verifyAndAttachBahan } from "../middlewares/stock.middleware";
-import { stockSchema } from "../validators/stock.validator";
 import verifyToken from "../middlewares/auth.middleware";
 
+// Import validation
+import { stockSchema } from "../validators/stock.validator";
 
+const getStocks = container.resolve("getStocks");
+const getStockDetail = container.resolve("getStockDetail");
+const createStockTransaction = container.resolve("createStockTransaction");
+const deleteStock = container.resolve("deleteStock");
+
+// Route endpoint
 router.use(verifyToken);
-
 router.get(
     "/", 
     getStocks
@@ -38,7 +44,7 @@ router.delete(
     "/:bahan_id",
     validateBahanId,
     verifyAndAttachBahan,
-    deleteStockBahan
+    deleteStock
 );
 
 export default router;

@@ -43,14 +43,14 @@ echo -e "${YELLOW}☁️ Deploying Cloud Function...${NC}"
 cd functions/email-processor
 
 gcloud functions deploy $FUNCTION_NAME \
-  --runtime nodejs18 \
-  --trigger-topic $TOPIC_NAME \
-  --source . \
-  --entry-point processEmailQueue \
-  --set-env-vars MAILJET_API_KEY=$MAILJET_API_KEY,MAILJET_SECRET_KEY=$MAILJET_SECRET_KEY,MAILJET_SENDER=$MAILJET_SENDER \
-  --region $REGION \
-  --memory 256MB \
-  --timeout 540s
+    --runtime nodejs18 \
+    --trigger-topic $TOPIC_NAME \
+    --source . \
+    --entry-point processEmailQueue \
+    --set-env-vars MAILJET_API_KEY=$MAILJET_API_KEY,MAILJET_SECRET_KEY=$MAILJET_SECRET_KEY,MAILJET_SENDER=$MAILJET_SENDER \
+    --region $REGION \
+    --memory 256MB \
+    --timeout 540s
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Cloud Function deployed successfully${NC}"
@@ -75,14 +75,14 @@ fi
 echo -e "${YELLOW}🚀 Deploying Cloud Run service...${NC}"
 
 gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --platform managed \
-  --region $REGION \
-  --allow-unauthenticated \
-  --memory 2G \
-  --cpu 1 \
-  --max-instances 5 \
-  --timeout 300
+    --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+    --platform managed \
+    --region $REGION \
+    --allow-unauthenticated \
+    --memory 2G \
+    --cpu 1 \
+    --max-instances 5 \
+    --timeout 300
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Cloud Run service deployed successfully${NC}"

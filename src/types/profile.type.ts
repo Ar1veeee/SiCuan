@@ -3,7 +3,7 @@ export interface UpdatePasswordRequest {
     confirmPassword: string;
 }
 
-export interface UserProfile {
+export interface ProfileData {
     userId: string;
     username: string;
     email: string;

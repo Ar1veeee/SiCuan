@@ -19,6 +19,7 @@ declare global {
             bahanId?: string;
             stockId?: string;
             salesId?: string;
+            recipeId?: string;
             
             otpEntry?: OtpEntryData;            
             menu?: MenuData;

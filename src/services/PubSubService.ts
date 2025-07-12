@@ -20,7 +20,6 @@ class PubSubService {
     try {
       const topic = this.pubsub.topic(this.topicName);
       
-      // Ensure topic exists
       const [exists] = await topic.exists();
       if (!exists) {
         await topic.create();

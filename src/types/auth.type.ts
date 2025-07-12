@@ -36,5 +36,6 @@ export interface LoginResponse extends AuthResponse {
         deviceInfo?: string;
         access_token: string;
         expiresAt?: string;
+        refreshToken: string;
 }
 

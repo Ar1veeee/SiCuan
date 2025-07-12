@@ -1,15 +1,19 @@
+// Import configurations
 import { Router } from "express";
+import container from "../config/container.config";
 const router = Router();
-import {
-    updatePassword,
-    userProfile
-} from "../controllers/profile.controller";
+
+// Import middlewares
 import verifyToken from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validate.middleware";
+
+// Import validation
 import { passwordConfirmationSchema } from "../validators/auth.validator";
 
-router.use(verifyToken);
+const userProfile = container.resolve("userProfile");
+const updatePassword = container.resolve("updatePassword");
 
+router.use(verifyToken);
 router.get(
     "/", 
     userProfile

@@ -34,7 +34,7 @@ export const loginService = async (
     email: string,
     password: string,
     deviceInfo?: string
-): Promise<LoginResponse & { refreshToken: string }> => {
+): Promise<LoginResponse> => {
     const user = await UserModel.findUserByEmail(email);
     if (!user) {
         throw new ApiError("Pengguna tidak ditemukan", 404);
@@ -81,7 +81,7 @@ export const loginService = async (
  */
 export const refreshTokenService = async (
     refreshTokenValue: string
-): Promise<{ data: any, refreshToken?: string }> => {
+): Promise<LoginResponse> => {
     if (!process.env.JWT_SECRET) {
         throw new ApiError("JWT Secret tidak didefinisikan", 500);
     }
@@ -121,12 +121,12 @@ export const refreshTokenService = async (
     const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     return {
-        data: {
-            userID: user.id,
-            username: user.name,
-            access_token: newAccessToken,
-            expiresAt: newExpiresAt.toISOString()
-        },
+        message: "Token berhasil diperbarui",
+        userID: user.id,
+        username: user.name,
+        deviceInfo: "Android",
+        access_token: newAccessToken,
+        expiresAt: newExpiresAt.toISOString(),
         refreshToken: newRefreshToken
     };
 };
@@ -164,26 +164,48 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
 };
 
 /**
- * Service untuk verifikasi OTP
+ * Service untuk verifikasi OTP dan generate reset token
  */
-export const verifyOtpService = async (otp: string): Promise<AuthResponse> => {
+export const verifyOtpService = async (otp: string): Promise<{ message: string, resetToken: string }> => {
     const entry = await PasswordResetModel.findValidOtp(otp);
     if (!entry) {
         throw new ApiError('OTP tidak valid atau sudah kedaluwarsa', 400);
     }
 
+    if (!process.env.JWT_SECRET) {
+        throw new ApiError("JWT Secret tidak didefinisikan", 500);
+    }
+
+    const resetToken = jwt.sign(
+        {
+            id: entry.userId,
+            otpId: entry.id,
+            type: 'password_reset'
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' }
+    );
+
+    await PasswordResetModel.markAsUsed(entry.id)
+
     return {
-        message: 'OTP valid'
+        message: 'OTP valid',
+        resetToken: resetToken
     };
 };
 
 /**
- * Service untuk reset password
+ * Service untuk reset password dengan validasi reset token
  */
 export const resetPasswordService = async (
     userId: string,
     newPassword: string,
-): Promise<AuthResponse> => {
+): Promise<{ message: string }> => {
+    const user = await UserModel.findUserById(userId);
+    if (!user) {
+        throw new ApiError('User tidak ditemukan', 404);
+    }
+
     await UserModel.updatePassword(userId, newPassword);
 
     return {

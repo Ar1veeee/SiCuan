@@ -1,6 +1,5 @@
 import { Menu, Bahan, MenuBahan } from "@prisma/client";
 
-
 export interface CreateSalesRequest {
     nama_menu: string;
     tanggal: string | Date;
@@ -11,6 +10,11 @@ export interface CreateSalesRequest {
 export interface SalesResponse {
     message: string;
     data?: object;
+}
+
+export interface SummaryResponse {
+    totalPenjualan: number;
+    totalKeuntungan: number;
 }
 
 export interface SalesSummaryResponse {
