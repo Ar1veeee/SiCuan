@@ -4,20 +4,21 @@
     "description": "Cloud Function to process email queue from Pub/Sub",
     "main": "index.js",
     "engines": {
-      "node": "20"
+        "node": "20"
     },
     "dependencies": {
-      "nodemailer": "^6.9.0"
+        "node-mailjet": "^6.0.8",
+        "nodemailer": "^6.9.0"
     },
     "scripts": {
-      "start": "node index.js"
+        "start": "node index.js"
     },
     "keywords": [
-      "cloud-functions",
-      "pubsub",
-      "email",
-      "nodejs"
+        "cloud-functions",
+        "pubsub",
+        "email",
+        "nodejs"
     ],
     "author": "Alief",
     "license": "MIT"
-  }
+}
