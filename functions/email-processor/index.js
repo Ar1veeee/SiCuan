@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+require("dotenv").config();
 
 const generateOtpEmailTemplate = (otp, email) => {
   const encodedMessage = encodeURIComponent(`Halo, saya butuh bantuan terkait OTP. Email saya: ${email}`);
@@ -63,16 +64,18 @@ const generateOtpEmailTemplate = (otp, email) => {
   `;
 };
 
-const mailjet = require('node-mailjet').connect(
-  process.env.MAILJET_API_KEY,
-  process.env.MAILJET_SECRET_KEY
-);
+const Mailjet = require('node-mailjet');
+
+const mailjet = new Mailjet({
+  apiKey: process.env.MAILJET_API_KEY,
+  apiSecret: process.env.MAILJET_SECRET_KEY,
+});
 
 const sendEmail = async (to, subject, otp) => {
   try {
     const htmlContent = generateOtpEmailTemplate(otp, to);
 
-    const request = await mailjet
+    const response = await mailjet
       .post("send", { version: "v3.1" })
       .request({
         Messages: [
@@ -81,11 +84,7 @@ const sendEmail = async (to, subject, otp) => {
               Email: process.env.MAILJET_SENDER,
               Name: "SiCuan Service",
             },
-            To: [
-              {
-                Email: to,
-              },
-            ],
+            To: [{ Email: to }],
             Subject: subject,
             TextPart: `Kode OTP Anda adalah ${otp}`,
             HTMLPart: htmlContent,
@@ -93,13 +92,14 @@ const sendEmail = async (to, subject, otp) => {
         ],
       });
 
-    console.log("Email berhasil dikirim:", request.body);
+    console.log("Email berhasil dikirim:", response.body);
     return { success: true, message: "Email berhasil dikirim" };
   } catch (error) {
     console.error("Gagal kirim email via Mailjet API:", error);
     return { success: false, message: error.message };
   }
 };
+
 
 
 // Cloud Function entry point
