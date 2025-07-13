@@ -3,13 +3,13 @@ import {
     getSalesSummaryController,
     getSalesController,
     createSalesController,
-    // deleteStockController,
+    deleteSalesController,
 } from "../controllers/sale";
 import {
     getSalesSummaryService,
     createSalesService,
     getSalesService,
-    // deleteStockService,
+    deleteSalesService
 } from "../services/SalesService";
 
 const container = createContainer();
@@ -19,13 +19,14 @@ container.register({
     getSalesSummaryService: asFunction(() => getSalesSummaryService).singleton(),
     getSalesService: asFunction(() => getSalesService).singleton(),
     createSalesService: asFunction(() => createSalesService).scoped(),
-    // deleteStockService: asFunction(() => deleteStockService).scoped(),
+    deleteSalesService: asFunction(() => deleteSalesService).scoped(),
+
 
     // Controllers
     getSalesSummary: asFunction(getSalesSummaryController).scoped(),
     getSales: asFunction(getSalesController).scoped(),
     createSales: asFunction(createSalesController).scoped(),
-    // deleteStock: asFunction(deleteStockController).scoped(),
+    deleteSales: asFunction(deleteSalesController).scoped(),
 });
 
 export default container;

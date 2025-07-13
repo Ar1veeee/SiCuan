@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const Mailjet = require('node-mailjet');
 require("dotenv").config();
 
 const generateOtpEmailTemplate = (otp, email) => {
@@ -64,8 +65,6 @@ const generateOtpEmailTemplate = (otp, email) => {
   `;
 };
 
-const Mailjet = require('node-mailjet');
-
 const mailjet = new Mailjet({
   apiKey: process.env.MAILJET_API_KEY,
   apiSecret: process.env.MAILJET_SECRET_KEY,
@@ -115,13 +114,11 @@ exports.processEmailQueue = async (message, context) => {
         const emailData = JSON.parse(messageBody);
         console.log('Processing email:', emailData);
 
-        // Validate required fields
         if (!emailData.to || !emailData.subject || !emailData.otp) {
             console.error('Missing required fields in email data');
             return;
         }
 
-        // Send email
         const result = await sendEmail(emailData.to, emailData.subject, emailData.otp);
         
         if (result.success) {

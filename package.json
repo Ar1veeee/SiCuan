@@ -38,7 +38,7 @@
   "scripts": {
     "start": "bun dist/server.js",
     "dev": "bun --watch src/server.ts",
-    "build": "bun build src/server.ts --target=bun --outdir=dist",
+    "build": "tsc",
     "clean": "rm -rf build",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",

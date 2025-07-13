@@ -112,8 +112,6 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 
     const result = await resetPasswordService(otpEntry.userId, newPassword);
 
-    await PasswordResetModel.markOtpUsed(otpEntry.otp);
-
     apiResponse.success(res, result);
   } catch (error) {
     next(error);
