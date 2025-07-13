@@ -53,8 +53,8 @@ export const createSalesService = async (
     }
 }
 
-export const deleteSalesService = async (salesId: string, userId: string):Promise<SalesResponse> => {
-    await SalesModel.deleteSalesByIdAndUserId(userId, salesId);
+export const deleteSalesService = async (salesId: string):Promise<SalesResponse> => {
+    await SalesModel.deleteSalesByIdAndUserId(salesId);
 
     return {
         message: "Penjualan berhasil terhapus"

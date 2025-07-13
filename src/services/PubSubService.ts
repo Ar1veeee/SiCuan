@@ -21,12 +21,6 @@ class PubSubService {
   async publishEmailMessage(message: EmailMessage): Promise<string> {
     try {
       const topic = this.pubsub.topic(this.topicName);
-      
-      const [exists] = await topic.exists();
-      if (!exists) {
-        await topic.create();
-        console.log(`Topic ${this.topicName} created`);
-      }
 
       const messageBuffer = Buffer.from(JSON.stringify(message));
       const messageId = await topic.publish(messageBuffer);
