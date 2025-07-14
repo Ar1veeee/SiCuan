@@ -28,6 +28,17 @@ export interface SalesSummaryResponse {
     updatedAt?: string;
 }
 
+export interface SalesData {
+    id: string;
+    userId: string;
+    nama_menu: string;
+    laku: number;
+    income: number;
+    profit: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
 export type MenuWithRecipe = Menu & {
     bahanList: (MenuBahan & { bahan: Bahan })[];
 };

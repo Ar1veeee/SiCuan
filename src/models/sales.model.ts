@@ -23,13 +23,13 @@ const SalesModel = {
     },
     
     findSalesByIdAndUserId: async (
-        salesId: string,
         userId: string,
+        salesId: string,
     ) => {
         return await prisma.sales.findFirst({
             where: {
-                id: salesId,
-                userId
+                userId,
+                id: salesId
             }
         })
     },
@@ -105,9 +105,10 @@ const SalesModel = {
         })
     },
 
-    deleteSalesByIdAndUserId: async (salesId: string) => {
-        return await prisma.sales.delete({
+    deleteSalesByIdAndUserId: async (userId: string, salesId: string) => {
+        return await prisma.sales.deleteMany({
             where: {
+                userId,
                 id: salesId,
             }
         })

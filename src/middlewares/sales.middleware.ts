@@ -20,9 +20,9 @@ export const verifyAndAttachSalesItem = async (req: Request, res: Response, next
     try {
         if (!req.userId || !req.salesId) {
             throw ApiError.badRequest("ID User, atau Sales tidak tersedia.");
-        }
-        
-        const salesData = await SalesModel.findSalesByIdAndUserId(req.userId, req.salesId,)
+        }    
+
+        const salesData = await SalesModel.findSalesByIdAndUserId(req.userId, req.salesId,)        
 
         if (!salesData) {
             throw ApiError.notFound("Data penjualan tidak ditemukan atau anda tidak memiliki akses");
