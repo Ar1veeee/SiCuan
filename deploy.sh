@@ -43,7 +43,7 @@ echo -e "${YELLOW}☁️ Deploying Cloud Function...${NC}"
 cd functions/email-processor
 
 gcloud functions deploy $FUNCTION_NAME \
-    --runtime nodejs18 \
+    --runtime nodejs20 \
     --trigger-topic $TOPIC_NAME \
     --source . \
     --entry-point processEmailQueue \
