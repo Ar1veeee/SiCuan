@@ -4,6 +4,8 @@ interface EmailMessage {
   to: string;
   subject: string;
   otp: string;
+  username: string;
+  nama_usaha: string;
   type: 'otp' | 'notification';
 }
 

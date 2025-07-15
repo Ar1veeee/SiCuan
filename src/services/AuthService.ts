@@ -22,6 +22,22 @@ export const registerService = async (
     }
 
     await UserModel.createUser(username, email, password, nama_usaha);
+
+    try {
+        await PubSubService.publishEmailMessage({
+            to: email,
+            subject: 'Verifikasi OTP',
+            otp: "",
+            username: username,
+            nama_usaha: nama_usaha,
+            type: 'notification'
+        });
+
+        console.log(`OTP email message published for ${email}`);
+    } catch (error) {
+        console.error('Failed to publish email message:', error);
+    }
+
     return {
         message: "Pendaftaran berhasil"
     };
@@ -150,6 +166,8 @@ export const sendOtpService = async (email: string): Promise<AuthResponse> => {
             to: email,
             subject: 'Verifikasi OTP',
             otp: otp,
+            username: "",
+            nama_usaha: "",
             type: 'otp'
         });
 

@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y openssl && \
 
 # Create user
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 --ingroup nodejs sicuan
+    adduser --system --uid 999 --ingroup nodejs sicuan
 
 # Copy package files dan install production dependencies
 COPY package.json bun.lock ./
