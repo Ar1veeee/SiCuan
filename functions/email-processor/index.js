@@ -1237,12 +1237,12 @@ const generateWelcomeEmailTemplate = (email, username, nama_usaha) => {
   `;
 };
 
-const sendEmail = async (to, subject, otp, type) => {
+const sendEmail = async (to, subject, otp, username, nama_usaha, type) => {
   try {
     const htmlContent =
       type === "otp"
         ? generateOtpEmailTemplate(otp, to)
-        : generateWelcomeEmailTemplate(to);
+        : generateWelcomeEmailTemplate(username, nama_usaha, to);
 
     const response = await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
