@@ -49,7 +49,7 @@ gcloud functions deploy $FUNCTION_NAME \
     --entry-point processEmailQueue \
     --set-env-vars MAILJET_API_KEY=$MAILJET_API_KEY,MAILJET_SECRET_KEY=$MAILJET_SECRET_KEY,MAILJET_SENDER=$MAILJET_SENDER \
     --region $REGION \
-    --memory 256MB \
+    --memory 512MB \
     --timeout 540s
 
 if [ $? -eq 0 ]; then

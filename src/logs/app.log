@@ -1,9 +1,0 @@
-{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 21244","timestamp":"2025-07-15T00:27:24.709Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.15","timestamp":"2025-07-15T00:27:24.712Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-15T00:27:24.712Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.15","timestamp":"2025-07-15T00:27:24.776Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-15T00:27:24.777Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-15T00:27:24.777Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-15T00:27:24.777Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-15T00:27:24.785Z"}
-{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/forget-password\",\"status\":\"201\",\"contentLength\":\"116\",\"responseTime\":\"484.214 ms\"}","timestamp":"2025-07-15T00:27:46.518Z"}
