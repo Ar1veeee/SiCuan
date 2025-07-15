@@ -26,7 +26,7 @@ export const registerService = async (
     try {
         await PubSubService.publishEmailMessage({
             to: email,
-            subject: 'Verifikasi OTP',
+            subject: 'Selamat Datang',
             otp: "",
             username: username,
             nama_usaha: nama_usaha,
