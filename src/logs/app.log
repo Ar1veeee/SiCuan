@@ -1,0 +1,51 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 8540","timestamp":"2025-07-25T14:00:13.396Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.15","timestamp":"2025-07-25T14:00:13.399Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-25T14:00:13.399Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.15","timestamp":"2025-07-25T14:00:13.459Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-25T14:00:13.460Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-25T14:00:13.460Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-25T14:00:13.460Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-25T14:00:13.469Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Password salah - URL: /auth/login","timestamp":"2025-07-25T14:01:16.818Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"400\",\"contentLength\":\"44\",\"responseTime\":\"166.463 ms\"}","timestamp":"2025-07-25T14:01:16.826Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"200\",\"contentLength\":\"386\",\"responseTime\":\"111.236 ms\"}","timestamp":"2025-07-25T14:01:19.953Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-20T12:00:00Z&endDate=2025-06-25T12:00:00Z\",\"status\":\"200\",\"contentLength\":\"56\",\"responseTime\":\"14.909 ms\"}","timestamp":"2025-07-25T14:01:33.651Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Format tanggal mulai harus YYYY-MM-DD, Format tanggal akhir harus YYYY-MM-DD, Tanggal mulai harus lebih kecil dari tanggal akhir. - URL: /sales?startDate=2025-06-30&endDate=2025-06-25","timestamp":"2025-07-25T14:01:50.239Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-30&endDate=2025-06-25\",\"status\":\"400\",\"contentLength\":\"159\",\"responseTime\":\"4.547 ms\"}","timestamp":"2025-07-25T14:01:50.243Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Format tanggal mulai harus YYYY-MM-DD, Format tanggal akhir harus YYYY-MM-DD, Tanggal mulai harus lebih kecil dari tanggal akhir. - URL: /sales?startDate=2025-06-30&endDate=2025-06-30","timestamp":"2025-07-25T14:02:01.022Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-30&endDate=2025-06-30\",\"status\":\"400\",\"contentLength\":\"159\",\"responseTime\":\"2.078 ms\"}","timestamp":"2025-07-25T14:02:01.023Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 23624","timestamp":"2025-07-25T14:04:39.361Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.15","timestamp":"2025-07-25T14:04:39.363Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-25T14:04:39.363Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-25T14:04:39.382Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.15","timestamp":"2025-07-25T14:04:39.392Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-25T14:04:39.393Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-25T14:04:39.393Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-25T14:04:39.393Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Tanggal mulai harus lebih kecil dari tanggal akhir. - URL: /sales?startDate=2025-06-30&endDate=2025-06-30","timestamp":"2025-07-25T14:04:41.630Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-30&endDate=2025-06-30\",\"status\":\"400\",\"contentLength\":\"81\",\"responseTime\":\"7.823 ms\"}","timestamp":"2025-07-25T14:04:41.635Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 9708","timestamp":"2025-07-25T14:05:17.576Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.15","timestamp":"2025-07-25T14:05:17.578Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-25T14:05:17.578Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-25T14:05:17.597Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.15","timestamp":"2025-07-25T14:05:17.600Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-25T14:05:17.601Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-25T14:05:17.601Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-25T14:05:17.601Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-30&endDate=2025-06-30\",\"status\":\"200\",\"contentLength\":\"56\",\"responseTime\":\"18.269 ms\"}","timestamp":"2025-07-25T14:05:21.867Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-06-30&endDate=2025-06-30\",\"status\":\"200\",\"contentLength\":\"186\",\"responseTime\":\"10.660 ms\"}","timestamp":"2025-07-25T14:05:47.986Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Format tanggal tidak valid - URL: /sales/","timestamp":"2025-07-25T14:06:26.870Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"400\",\"contentLength\":\"56\",\"responseTime\":\"11.688 ms\"}","timestamp":"2025-07-25T14:06:26.871Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 18980","timestamp":"2025-07-25T14:06:56.192Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.15","timestamp":"2025-07-25T14:06:56.193Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-25T14:06:56.193Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-25T14:06:56.214Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.15","timestamp":"2025-07-25T14:06:56.223Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-25T14:06:56.224Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-25T14:06:56.224Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-25T14:06:56.224Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"201\",\"contentLength\":\"107\",\"responseTime\":\"55.165 ms\"}","timestamp":"2025-07-25T14:06:57.766Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-07-25&endDate=2025-07-25\",\"status\":\"200\",\"contentLength\":\"186\",\"responseTime\":\"7.266 ms\"}","timestamp":"2025-07-25T14:07:17.867Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-07-25&endDate=2025-07-30\",\"status\":\"200\",\"contentLength\":\"186\",\"responseTime\":\"3.204 ms\"}","timestamp":"2025-07-25T14:07:26.209Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Tanggal mulai harus lebih kecil dari tanggal akhir., Rentang tanggal maksimal 7 hari. - URL: /sales?startDate=2025-07-25&endDate=2025-07-35","timestamp":"2025-07-25T14:07:44.793Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales?startDate=2025-07-25&endDate=2025-07-35\",\"status\":\"400\",\"contentLength\":\"115\",\"responseTime\":\"2.538 ms\"}","timestamp":"2025-07-25T14:07:44.794Z"}

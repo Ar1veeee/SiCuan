@@ -9,7 +9,6 @@ const generateOtpEmailTemplate = (otp) => {
   return `
     <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,7 +112,7 @@ const generateOtpEmailTemplate = (otp) => {
   `;
 };
 
-const generateWelcomeEmailTemplate = (email, username, nama_usaha) => {
+const generateWelcomeEmailTemplate = ({ email, username, nama_usaha }) => {
   const encodedMessage = encodeURIComponent(
     `Halo, saya butuh panduan lebih lengkap SiCuan untuk usaha ${nama_usaha} saya. Email: ${email}`
   );
@@ -363,7 +362,7 @@ const sendEmail = async (to, subject, otp, username, nama_usaha, type) => {
     const htmlContent =
       type === "otp"
         ? generateOtpEmailTemplate(otp, to)
-        : generateWelcomeEmailTemplate(username, nama_usaha, to);
+        : generateWelcomeEmailTemplate({ email: to, username, nama_usaha });
 
     const response = await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [

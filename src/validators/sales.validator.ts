@@ -2,17 +2,19 @@ import { z } from "zod"
 
 export const salesSchema = z.object({
     nama_menu: z.string().nonempty('Nama menu wajib diisi'),
-    tanggal: z.string().datetime('Format tanggal tidak valid'),
+    tanggal: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal mulai harus YYYY-MM-DD'),
     jumlah_laku: z.number().positive('Jumlah yang digunakan harus angka positif'),
     keterangan: z.string().optional()
 })
 
 export const getSalesQuerySchema = z.object({
-    startDate: z.string().datetime('Format tanggal mulai harus YYYY-MM-DD'),
-    endDate: z.string().datetime('Format tanggal akhir harus YYYY-MM-DD')
+    startDate: z.string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal mulai harus YYYY-MM-DD'),
+    endDate: z.string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal akhir harus YYYY-MM-DD')
 }).refine((data) => {
     if (data.startDate && data.endDate) {
-        return new Date(data.startDate) < new Date(data.endDate);
+        return new Date(data.startDate) <= new Date(data.endDate);
     }
 }, {
     message: 'Tanggal mulai harus lebih kecil dari tanggal akhir.',
