@@ -1,16 +1,16 @@
 export interface UpdatePasswordRequest {
-    newPassword: string;
-    confirmPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface ProfileData {
-    userId: string;
-    username: string;
-    email: string;
-    nama_usaha: string;
+  userId: string;
+  username: string;
+  email: string;
+  nama_usaha: string;
 }
 
 export interface ProfileResponse {
-    message: string;
-    data?: object;
+  message: string;
+  data?: object;
 }

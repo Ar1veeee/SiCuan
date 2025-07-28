@@ -6,9 +6,9 @@ const router = Router();
 // import validations
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import {
-    resetPasswordSchema,
-    verifyEmailSchema,
-    verifyOtpSchema
+  resetPasswordSchema,
+  verifyEmailSchema,
+  verifyOtpSchema,
 } from "../validators/resetPassword.validator";
 
 // import middleware
@@ -22,41 +22,21 @@ const sendOtp = container.resolve("sendOtp");
 const verifyOtp = container.resolve("verifyOtp");
 const resetPassword = container.resolve("resetPassword");
 
-router.post(
-    "/register",
-    validate(registerSchema),
-    register
-);
+router.post("/register", validate(registerSchema), register);
+
+router.post("/login", validate(loginSchema), login);
+
+router.post("/refresh-token", refreshToken);
+
+router.post("/forget-password", validate(verifyEmailSchema), sendOtp);
+
+router.post("/verify-otp", validate(verifyOtpSchema), verifyOtp);
 
 router.post(
-    "/login",
-    validate(loginSchema),
-    login
-);
-
-router.post(
-    "/refresh-token",
-    refreshToken
-);
-
-
-router.post(
-    "/forget-password",
-    validate(verifyEmailSchema),
-    sendOtp
-);
-
-router.post(
-    "/verify-otp",
-    validate(verifyOtpSchema),
-    verifyOtp
-);
-
-router.post(
-    "/reset-password",
-    validate(resetPasswordSchema),
-    verifyToken,
-    resetPassword
+  "/reset-password",
+  validate(resetPasswordSchema),
+  verifyToken,
+  resetPassword
 );
 
 export default router;

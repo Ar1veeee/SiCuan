@@ -14,15 +14,8 @@ const userProfile = container.resolve("userProfile");
 const updatePassword = container.resolve("updatePassword");
 
 router.use(verifyToken);
-router.get(
-    "/", 
-    userProfile
-);
+router.get("/", userProfile);
 
-router.patch(
-    "/password",
-    validate(passwordConfirmationSchema),
-    updatePassword
-);
+router.patch("/password", validate(passwordConfirmationSchema), updatePassword);
 
 export default router;

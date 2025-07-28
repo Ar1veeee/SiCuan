@@ -14,14 +14,8 @@ const getSalesSummary = containerSales.resolve("getSalesSummary");
 
 // Route endpoint
 router.use(verifyToken);
-router.get(
-    "/stock-summary",
-    getStockSummary
-);
+router.get("/stock-summary", getStockSummary);
 
-router.get(
-    "/sales-summary",
-    getSalesSummary
-);
+router.get("/sales-summary", getSalesSummary);
 
 export default router;

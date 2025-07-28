@@ -6,8 +6,8 @@ const router = Router();
 // Import middlewares
 import verifyToken from "../middlewares/auth.middleware";
 import {
-    validateMenuId,
-    verifyAndAttachMenu
+  validateMenuId,
+  verifyAndAttachMenu,
 } from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
 
@@ -17,50 +17,28 @@ import { sellSchema } from "../validators/sell.validator";
 
 const getMenus = container.resolve("getMenus");
 const updateSellingPrice = container.resolve("updateSellingPrice");
-const getMenuDetail = container.resolve("getMenuDetail")
+const getMenuDetail = container.resolve("getMenuDetail");
 const createMenu = container.resolve("createMenu");
 const updateMenu = container.resolve("updateMenu");
 const deleteMenu = container.resolve("deleteMenu");
 
 router.use(verifyToken);
-router.get(
-    "/",
-    getMenus,
-);
+router.get("/", getMenus);
+
+router.patch("/selling-price", validate(sellSchema), updateSellingPrice);
+
+router.get("/:menu_id", validateMenuId, verifyAndAttachMenu, getMenuDetail);
+
+router.post("/", validate(menuBodySchema), createMenu);
 
 router.patch(
-    "/selling-price",
-    validate(sellSchema),
-    updateSellingPrice 
+  "/:menu_id",
+  validate(menuBodySchema),
+  validateMenuId,
+  verifyAndAttachMenu,
+  updateMenu
 );
 
-
-router.get(
-    "/:menu_id",
-    validateMenuId,
-    verifyAndAttachMenu,
-    getMenuDetail
-);
-
-router.post(
-    "/",
-    validate(menuBodySchema),
-    createMenu
-);
-
-router.patch(
-    "/:menu_id",
-    validate(menuBodySchema),
-    validateMenuId,
-    verifyAndAttachMenu,
-    updateMenu
-);
-
-router.delete(
-    "/:menu_id",
-    validateMenuId,
-    verifyAndAttachMenu,
-    deleteMenu
-);
+router.delete("/:menu_id", validateMenuId, verifyAndAttachMenu, deleteMenu);
 
 export default router;

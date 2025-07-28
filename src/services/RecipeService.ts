@@ -1,6 +1,11 @@
 import HppModel from "../models/recipe.model";
 import { ApiError } from "../exceptions/ApiError";
-import { RecipeRequest, RecipeUpdateRequest, RecipeResponse, RecipeData } from "../types/recipe.type";
+import {
+  RecipeRequest,
+  RecipeUpdateRequest,
+  RecipeResponse,
+  RecipeData,
+} from "../types/recipe.type";
 import { calculateHpp } from "../utils/hppCalculate.util";
 import MenuModel from "../models/menu.model";
 
@@ -10,22 +15,27 @@ import MenuModel from "../models/menu.model";
 export const updateTotalHPPService = async (menuId: string): Promise<void> => {
   const menuBahanItems = await HppModel.getMenuBahanCosts(menuId);
   const totalHpp = Math.round(
-    menuBahanItems.reduce((acc: number, item: { biaya: number | null }) => acc + (item.biaya ?? 0), 0)
+    menuBahanItems.reduce(
+      (acc: number, item: { biaya: number | null }) => acc + (item.biaya ?? 0),
+      0
+    )
   );
 
   const menu = await MenuModel.findMenuById(menuId);
   if (!menu) {
-    console.error(`Menu dengan ID ${menuId} tidak ditemukan saat mencoba update HPP.`);
+    console.error(
+      `Menu dengan ID ${menuId} tidak ditemukan saat mencoba update HPP.`
+    );
     return;
   }
 
   let hargaJualBaru: number | null = menu.harga_jual ?? null;
-  if (typeof menu.keuntungan === 'number' && menu.keuntungan >= 0) {
-    hargaJualBaru = Math.round(totalHpp + (menu.keuntungan / 100) * totalHpp)
+  if (typeof menu.keuntungan === "number" && menu.keuntungan >= 0) {
+    hargaJualBaru = Math.round(totalHpp + (menu.keuntungan / 100) * totalHpp);
   }
 
   await HppModel.saveMenuCostAndPrive(menuId, totalHpp, hargaJualBaru);
-}
+};
 
 /**
  * Service untuk menambah resep ke menu
@@ -35,26 +45,33 @@ export const createRecipeService = async (
   menuId: string,
   bahanData: RecipeRequest
 ): Promise<RecipeResponse> => {
-  const existingResep = await HppModel.existingResep(menuId, bahanData.nama_bahan);
+  const existingResep = await HppModel.existingResep(
+    menuId,
+    bahanData.nama_bahan
+  );
   if (existingResep) {
     throw new ApiError("Resep sudah ada", 409);
   }
 
   const biaya = Math.round(
-    calculateHpp(bahanData.harga_beli, bahanData.jumlah_beli, bahanData.jumlah_digunakan)
-  )
+    calculateHpp(
+      bahanData.harga_beli,
+      bahanData.jumlah_beli,
+      bahanData.jumlah_digunakan
+    )
+  );
 
   await HppModel.createBahanWithMenuLink({
     userId,
     menuId,
     ...bahanData,
-    biaya
+    biaya,
   });
 
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil ditambahkan"
+    message: "Bahan berhasil ditambahkan",
   };
 };
 
@@ -96,7 +113,7 @@ export const updateRecipeService = async (
 
   const updated = await HppModel.updateMenuResep(userId, menuId, bahanId, {
     ...bahan,
-    biayaBaru
+    biayaBaru,
   });
 
   if (!updated) {
@@ -106,7 +123,7 @@ export const updateRecipeService = async (
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil diperbarui"
+    message: "Bahan berhasil diperbarui",
   };
 };
 
@@ -121,11 +138,11 @@ export const deleteRecipeService = async (
   const deleted = await HppModel.deleteMenuResep(userId, menuId, bahanId);
   if (!deleted) {
     throw ApiError.badRequest("Bahan gagal dihapus");
-  };
+  }
 
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil dihapus"
+    message: "Bahan berhasil dihapus",
   };
 };

@@ -1,44 +1,44 @@
 import { Menu, Bahan, MenuBahan } from "@prisma/client";
 
 export interface CreateSalesRequest {
-    nama_menu: string;
-    tanggal: string | Date;
-    jumlah_laku: number;
-    keterangan?: string;
+  nama_menu: string;
+  tanggal: string | Date;
+  jumlah_laku: number;
+  keterangan?: string;
 }
 
 export interface SalesResponse {
-    message: string;
-    data?: object;
+  message: string;
+  data?: object;
 }
 
 export interface SummaryResponse {
-    totalPenjualan: number;
-    totalKeuntungan: number;
+  totalPenjualan: number;
+  totalKeuntungan: number;
 }
 
 export interface SalesSummaryResponse {
-    id: string;
-    userId: string;
-    nama_menu: string;
-    laku: number;
-    income: number;
-    profit: number;
-    createdAt?: string;
-    updatedAt?: string;
+  id: string;
+  userId: string;
+  nama_menu: string;
+  laku: number;
+  income: number;
+  profit: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SalesData {
-    id: string;
-    userId: string;
-    nama_menu: string;
-    laku: number;
-    income: number;
-    profit: number;
-    createdAt?: string;
-    updatedAt?: string;
+  id: string;
+  userId: string;
+  nama_menu: string;
+  laku: number;
+  income: number;
+  profit: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type MenuWithRecipe = Menu & {
-    bahanList: (MenuBahan & { bahan: Bahan })[];
+  bahanList: (MenuBahan & { bahan: Bahan })[];
 };

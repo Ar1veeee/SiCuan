@@ -3,15 +3,17 @@ import { apiResponse } from "../../utils/apiResponse.util";
 
 /**
  * Controller untuk mendapatkan detail menu berdasarkan ID
- * @param req 
- * @param res 
+ * @param req
+ * @param res
  * @returns
  */
-export const getMenuDetailController = () => async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getMenuDetailController =
+  () =>
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const menuDetail = req.menu;
-        apiResponse.success(res, { menu: menuDetail });
+      const menuDetail = req.menu;
+      apiResponse.success(res, { menu: menuDetail });
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };

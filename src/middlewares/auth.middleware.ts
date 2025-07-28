@@ -34,8 +34,8 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
       throw ApiError.forbidden("Token tidak berisi informasi ID pengguna");
     }
   } catch (error) {
-    next(error)
-  };
-}
+    next(error);
+  }
+};
 
 export default verifyToken;

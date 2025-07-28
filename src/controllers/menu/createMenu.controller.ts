@@ -4,20 +4,26 @@ import { MenuResponse } from "../../types/menu.type";
 
 /**
  * Controller untuk menambah menu
- * @param req 
- * @param res 
- * @returns 
+ * @param req
+ * @param res
+ * @returns
  */
-export const createMenuController = (
-    { createMenuService }: {
-        createMenuService: (userId: string, nama_menu: string) => Promise<MenuResponse>
-    }) => async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const createMenuController =
+  ({
+    createMenuService,
+  }: {
+    createMenuService: (
+      userId: string,
+      nama_menu: string
+    ) => Promise<MenuResponse>;
+  }) =>
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userId = req.userId!;
+      const userId = req.userId!;
 
-        const result = await createMenuService(userId, req.body.nama_menu);
-        apiResponse.created(res, result);
+      const result = await createMenuService(userId, req.body.nama_menu);
+      apiResponse.created(res, result);
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };

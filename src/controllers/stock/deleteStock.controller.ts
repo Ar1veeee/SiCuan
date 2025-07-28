@@ -4,19 +4,22 @@ import { DefaultStockResponse } from "../../types/stock.type";
 
 /**
  * Controller untuk menghapus transaksi stok
- * @param req 
- * @param res 
- * @param next 
- * @returns 
+ * @param req
+ * @param res
+ * @param next
+ * @returns
  */
-export const deleteStockController = (
-    { deleteStockService }: {
-        deleteStockService: (bahanId: string) => Promise<DefaultStockResponse>
-    }) => async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const deleteStockController =
+  ({
+    deleteStockService,
+  }: {
+    deleteStockService: (bahanId: string) => Promise<DefaultStockResponse>;
+  }) =>
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const result = await deleteStockService(req.bahanId!);
-        apiResponse.success(res, result);
+      const result = await deleteStockService(req.bahanId!);
+      apiResponse.success(res, result);
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };

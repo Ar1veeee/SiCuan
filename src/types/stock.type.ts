@@ -1,45 +1,45 @@
-import { Bahan, StockTransaction } from '@prisma/client';
+import { Bahan, StockTransaction } from "@prisma/client";
 
 export interface CreateStockTransactionRequest {
-    nama_bahan: string;
-    minimum_stock: number;
-    jumlah: number;
-    jenis_transaksi: 'PEMBELIAN' | 'PENJUALAN' | 'PENYESUAIAN';
-    keterangan?: string;
+  nama_bahan: string;
+  minimum_stock: number;
+  jumlah: number;
+  jenis_transaksi: "PEMBELIAN" | "PENJUALAN" | "PENYESUAIAN";
+  keterangan?: string;
 }
 
 export interface SummaryResponse {
-    totalBahan: number;
-    hampirHabis: number;
+  totalBahan: number;
+  hampirHabis: number;
 }
 
 export interface StockSummaryResponse {
-    id: string;
-    userId: string;
-    nama_bahan: string;
-    jumlah: number;
-    satuan: string | null;
-    minimum_stock: number | null;
-    createdAt?: string;
-    updatedAt?: string;
+  id: string;
+  userId: string;
+  nama_bahan: string;
+  jumlah: number;
+  satuan: string | null;
+  minimum_stock: number | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface StockTransactionInfo {
-    jenis_transaksi: string;
-    jumlah: number; 
-    keterangan: string | null;
-    createdAt: string;
+  jenis_transaksi: string;
+  jumlah: number;
+  keterangan: string | null;
+  createdAt: string;
 }
 
 export interface StockDetailResponse extends StockSummaryResponse {
-    transactions: StockTransactionInfo[];
+  transactions: StockTransactionInfo[];
 }
 
 export type BahanWithTransactions = Bahan & {
-    stockTransactions: StockTransaction[];
+  stockTransactions: StockTransaction[];
 };
 
 export interface DefaultStockResponse {
-    message: string;
-    data?: object;
+  message: string;
+  data?: object;
 }

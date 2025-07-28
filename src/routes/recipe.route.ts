@@ -5,8 +5,15 @@ const router = Router();
 
 // Import middlewares
 import verifyToken from "../middlewares/auth.middleware";
-import { validateBahanId, validateRecipeId, verifyAndAttachRecipeItem } from '../middlewares/recipe.middleware';
-import { validateMenuId, verifyAndAttachMenu } from "../middlewares/menu.middleware";
+import {
+  validateBahanId,
+  validateRecipeId,
+  verifyAndAttachRecipeItem,
+} from "../middlewares/recipe.middleware";
+import {
+  validateMenuId,
+  verifyAndAttachMenu,
+} from "../middlewares/menu.middleware";
 import { validate } from "../middlewares/validate.middleware";
 
 // Import validation
@@ -14,50 +21,45 @@ import { bahanSchema, updateBahanSchema } from "../validators/hpp.validator";
 
 const getRecipes = container.resolve("getRecipes");
 const getRecipeDetail = container.resolve("getRecipeDetail");
-const createRecipe = container.resolve("createRecipe")
+const createRecipe = container.resolve("createRecipe");
 const updateRecipe = container.resolve("updateRecipe");
 const deleteRecipe = container.resolve("deleteRecipe");
 
 router.use(verifyToken);
-router.get(
-    "/:menu_id",
-    validateMenuId,
-    verifyAndAttachMenu,
-    getRecipes
-);
+router.get("/:menu_id", validateMenuId, verifyAndAttachMenu, getRecipes);
 
 router.get(
-    "/:menu_id/:recipe_id",
-    validateMenuId,
-    validateRecipeId,
-    verifyAndAttachMenu,
-    verifyAndAttachRecipeItem,
-    getRecipeDetail
+  "/:menu_id/:recipe_id",
+  validateMenuId,
+  validateRecipeId,
+  verifyAndAttachMenu,
+  verifyAndAttachRecipeItem,
+  getRecipeDetail
 );
 
 router.post(
-    "/:menu_id",
-    validate(bahanSchema),
-    validateMenuId,
-    verifyAndAttachMenu,
-    createRecipe
+  "/:menu_id",
+  validate(bahanSchema),
+  validateMenuId,
+  verifyAndAttachMenu,
+  createRecipe
 );
 
 router.put(
-    "/:menu_id/:bahan_id",
-    validate(updateBahanSchema),
-    validateMenuId,
-    validateBahanId,
-    verifyAndAttachMenu,
-    updateRecipe
+  "/:menu_id/:bahan_id",
+  validate(updateBahanSchema),
+  validateMenuId,
+  validateBahanId,
+  verifyAndAttachMenu,
+  updateRecipe
 );
 
 router.delete(
-    "/:menu_id/:bahan_id",
-    validateMenuId,
-    validateBahanId,
-    verifyAndAttachMenu,
-    deleteRecipe
+  "/:menu_id/:bahan_id",
+  validateMenuId,
+  validateBahanId,
+  verifyAndAttachMenu,
+  deleteRecipe
 );
 
 export default router;
