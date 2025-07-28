@@ -9,7 +9,7 @@ export const getSalesSummaryService = async (userId: string) => {
     return summaryData;
 }
 
-export const getSalesService = async (userId: string, startDate: string, endDate: string): Promise<SalesSummaryResponse[]> => {
+export const getSalesCustomService = async (userId: string, startDate: string, endDate: string): Promise<SalesSummaryResponse[]> => {
     const today = new Date();
     const defaultStart = new Date(today.setHours(0, 0, 0, 0));
     const defaultEnd = new Date(today.setHours(23, 59, 59, 999));
