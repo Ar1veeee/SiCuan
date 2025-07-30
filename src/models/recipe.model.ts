@@ -131,11 +131,11 @@ const HppModel = {
     });
   },
 
-  deleteMenuResep: async (userId: string, menuId: string, bahanId: string) => {
+  deleteMenuResep: async (userId: string, menuId: string, recipeId: string) => {
     const menuBahan = await prisma.menuBahan.findFirst({
       where: {
+        id: recipeId,
         menuId,
-        bahanId,
         menu: {
           userId,
         },
@@ -146,17 +146,14 @@ const HppModel = {
     });
 
     if (!menuBahan) {
-      throw new ApiError("Bahan untuk menu ini tidak ditemukan", 400);
+      throw new ApiError("Resep untuk menu ini tidak ditemukan", 400);
     }
 
     const hppPerBahan = menuBahan.biaya ?? 0;
 
     await prisma.menuBahan.delete({
       where: {
-        menuId_bahanId: {
-          menuId,
-          bahanId,
-        },
+        id: recipeId,
       },
     });
     await prisma.menu.update({
@@ -175,7 +172,7 @@ const HppModel = {
   updateMenuResep: async (
     userId: string,
     menuId: string,
-    bahanId: string,
+    recipeId: string,
     data: {
       harga_beli: number;
       jumlah_beli: number;
@@ -186,7 +183,7 @@ const HppModel = {
     const menuBahan = await prisma.menuBahan.findFirst({
       where: {
         menuId,
-        bahanId,
+        id: recipeId,
         menu: {
           userId,
         },
@@ -197,15 +194,12 @@ const HppModel = {
     });
 
     if (!menuBahan) {
-      throw new ApiError("Bahan untuk menu ini tidak ditemukan", 400);
+      throw new ApiError("Resep untuk menu ini tidak ditemukan", 400);
     }
 
     await prisma.menuBahan.update({
       where: {
-        menuId_bahanId: {
-          menuId: menuId,
-          bahanId: bahanId,
-        },
+        id: recipeId,
       },
       data: {
         harga_beli: data.harga_beli,

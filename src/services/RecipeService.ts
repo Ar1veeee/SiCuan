@@ -71,7 +71,7 @@ export const createRecipeService = async (
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil ditambahkan",
+    message: "Resep berhasil ditambahkan",
   };
 };
 
@@ -104,14 +104,14 @@ export const getRecipesService = async (
 export const updateRecipeService = async (
   userId: string,
   menuId: string,
-  bahanId: string,
+  recipeId: string,
   bahan: RecipeUpdateRequest
 ): Promise<RecipeResponse> => {
   const biayaBaru = Math.round(
     calculateHpp(bahan.harga_beli, bahan.jumlah_beli, bahan.jumlah_digunakan)
   );
 
-  const updated = await HppModel.updateMenuResep(userId, menuId, bahanId, {
+  const updated = await HppModel.updateMenuResep(userId, menuId, recipeId, {
     ...bahan,
     biayaBaru,
   });
@@ -123,7 +123,7 @@ export const updateRecipeService = async (
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil diperbarui",
+    message: "Resep berhasil diperbarui",
   };
 };
 
@@ -133,16 +133,16 @@ export const updateRecipeService = async (
 export const deleteRecipeService = async (
   userId: string,
   menuId: string,
-  bahanId: string
+  recipeId: string,
 ): Promise<RecipeResponse> => {
-  const deleted = await HppModel.deleteMenuResep(userId, menuId, bahanId);
+  const deleted = await HppModel.deleteMenuResep(userId, menuId, recipeId);
   if (!deleted) {
-    throw ApiError.badRequest("Bahan gagal dihapus");
+    throw ApiError.badRequest("Resep gagal dihapus");
   }
 
   await updateTotalHPPService(menuId);
 
   return {
-    message: "Bahan berhasil dihapus",
+    message: "Resep berhasil dihapus",
   };
 };

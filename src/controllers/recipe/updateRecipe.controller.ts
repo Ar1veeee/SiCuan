@@ -15,7 +15,7 @@ export const updateRecipeController =
     updateRecipeService: (
       userId: string,
       menuId: string,
-      bahanId: string,
+      recipeId: string,
       bahan: RecipeUpdateRequest
     ) => Promise<RecipeResponse>;
   }) =>
@@ -23,12 +23,12 @@ export const updateRecipeController =
     try {
       const userId = req.userId!;
       const menuId = req.menuId!;
-      const bahanId = req.bahanId!;
+      const recipeId = req.recipeId!;
 
       const result = await updateRecipeService(
         userId,
         menuId,
-        bahanId,
+        recipeId,
         req.body
       );
       apiResponse.success(res, result);

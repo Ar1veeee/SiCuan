@@ -46,18 +46,18 @@ router.post(
 );
 
 router.put(
-  "/:menu_id/:bahan_id",
+  "/:menu_id/:recipe_id",
   validate(updateBahanSchema),
   validateMenuId,
-  validateBahanId,
+  validateRecipeId,
   verifyAndAttachMenu,
   updateRecipe
 );
 
 router.delete(
-  "/:menu_id/:bahan_id",
+  "/:menu_id/:recipe_id",
   validateMenuId,
-  validateBahanId,
+  validateRecipeId,
   verifyAndAttachMenu,
   deleteRecipe
 );
