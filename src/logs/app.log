@@ -1,0 +1,88 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 11552","timestamp":"2025-07-30T13:55:53.431Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.19","timestamp":"2025-07-30T13:55:53.433Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-30T13:55:53.433Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-30T13:55:53.457Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.19","timestamp":"2025-07-30T13:55:53.462Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-30T13:55:53.462Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-30T13:55:53.462Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-30T13:55:53.463Z"}
+{"level":"\u001b[31merror\u001b[39m","message":"Unhandled Rejection at:","timestamp":"2025-07-30T13:57:03.503Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Received UNHANDLED_REJECTION, shutting down gracefully...","timestamp":"2025-07-30T13:57:03.505Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"HTTP server closed - no longer accepting new connections","timestamp":"2025-07-30T13:57:03.506Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Disconnecting from database...","timestamp":"2025-07-30T13:57:03.506Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database disconnected successfully","timestamp":"2025-07-30T13:57:03.525Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 17552","timestamp":"2025-07-30T13:58:23.031Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.19","timestamp":"2025-07-30T13:58:23.033Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-30T13:58:23.033Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-30T13:58:23.058Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.19","timestamp":"2025-07-30T13:58:23.064Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-30T13:58:23.065Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-30T13:58:23.065Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-30T13:58:23.065Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Email sudah terdaftar - URL: /auth/register","timestamp":"2025-07-30T13:58:26.515Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/register\",\"status\":\"400\",\"contentLength\":\"51\",\"responseTime\":\"19.693 ms\"}","timestamp":"2025-07-30T13:58:26.519Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/auth/login\",\"status\":\"200\",\"contentLength\":\"383\",\"responseTime\":\"94.756 ms\"}","timestamp":"2025-07-30T13:59:40.934Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/profiles/\",\"status\":\"200\",\"contentLength\":\"170\",\"responseTime\":\"4.412 ms\"}","timestamp":"2025-07-30T14:00:04.196Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/profiles/password\",\"status\":\"200\",\"contentLength\":\"86\",\"responseTime\":\"76.142 ms\"}","timestamp":"2025-07-30T14:00:42.173Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"56\",\"responseTime\":\"2.564 ms\"}","timestamp":"2025-07-30T14:01:21.872Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/menus\",\"status\":\"201\",\"contentLength\":\"105\",\"responseTime\":\"13.631 ms\"}","timestamp":"2025-07-30T14:01:32.796Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"277\",\"responseTime\":\"1.643 ms\"}","timestamp":"2025-07-30T14:01:34.955Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/01JYY8G9HTD4EFQ27H453WVEZC\",\"status\":\"200\",\"contentLength\":\"82\",\"responseTime\":\"15.819 ms\"}","timestamp":"2025-07-30T14:02:00.607Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"277\",\"responseTime\":\"1.676 ms\"}","timestamp":"2025-07-30T14:02:03.834Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"277\",\"responseTime\":\"1.705 ms\"}","timestamp":"2025-07-30T14:02:07.925Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 403 - Menu tidak ditemukan atau Anda tidak memiliki akses. - URL: /menus/01K1DT6TBJYXH3BE6DT5Q50ZT2","timestamp":"2025-07-30T14:02:24.220Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"403\",\"contentLength\":\"82\",\"responseTime\":\"3.653 ms\"}","timestamp":"2025-07-30T14:02:24.221Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"277\",\"responseTime\":\"3.029 ms\"}","timestamp":"2025-07-30T14:02:31.700Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 403 - Menu tidak ditemukan atau Anda tidak memiliki akses. - URL: /menus/01K1DT6TBJYXH3BE6DT5Q50ZT2","timestamp":"2025-07-30T14:02:37.990Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"403\",\"contentLength\":\"82\",\"responseTime\":\"2.383 ms\"}","timestamp":"2025-07-30T14:02:37.990Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"82\",\"responseTime\":\"14.026 ms\"}","timestamp":"2025-07-30T14:02:49.216Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"275\",\"responseTime\":\"1.953 ms\"}","timestamp":"2025-07-30T14:02:51.559Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/menus\",\"status\":\"201\",\"contentLength\":\"105\",\"responseTime\":\"11.309 ms\"}","timestamp":"2025-07-30T14:02:58.304Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"497\",\"responseTime\":\"1.681 ms\"}","timestamp":"2025-07-30T14:03:00.982Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"DELETE\",\"url\":\"/menus/01K1DT9DVP2F49Y4JW7XD1F4DQ\",\"status\":\"200\",\"contentLength\":\"79\",\"responseTime\":\"17.393 ms\"}","timestamp":"2025-07-30T14:03:12.718Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"275\",\"responseTime\":\"2.748 ms\"}","timestamp":"2025-07-30T14:03:21.905Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"58\",\"responseTime\":\"8.023 ms\"}","timestamp":"2025-07-30T14:04:24.959Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"201\",\"contentLength\":\"106\",\"responseTime\":\"23.276 ms\"}","timestamp":"2025-07-30T14:04:31.934Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"201\",\"contentLength\":\"106\",\"responseTime\":\"17.986 ms\"}","timestamp":"2025-07-30T14:04:41.108Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"499\",\"responseTime\":\"3.214 ms\"}","timestamp":"2025-07-30T14:04:44.353Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2/01K1DTCJ8884D9TA6DXTH75PJM\",\"status\":\"200\",\"contentLength\":\"283\",\"responseTime\":\"4.515 ms\"}","timestamp":"2025-07-30T14:04:52.138Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PUT\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2/01K1DTCJ8884D9TA6DXTH75PJM\",\"status\":\"200\",\"contentLength\":\"83\",\"responseTime\":\"14.027 ms\"}","timestamp":"2025-07-30T14:05:04.807Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"498\",\"responseTime\":\"2.855 ms\"}","timestamp":"2025-07-30T14:05:09.286Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"DELETE\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2/01K1DTCJ8884D9TA6DXTH75PJM\",\"status\":\"200\",\"contentLength\":\"80\",\"responseTime\":\"19.304 ms\"}","timestamp":"2025-07-30T14:05:13.347Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"280\",\"responseTime\":\"2.433 ms\"}","timestamp":"2025-07-30T14:05:15.961Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2/01K1DTC99NYTG25VXGVN45MG4M\",\"status\":\"200\",\"contentLength\":\"287\",\"responseTime\":\"2.369 ms\"}","timestamp":"2025-07-30T14:05:28.138Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/selling-price\",\"status\":\"200\",\"contentLength\":\"143\",\"responseTime\":\"5.877 ms\"}","timestamp":"2025-07-30T14:05:33.629Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/menus/\",\"status\":\"200\",\"contentLength\":\"271\",\"responseTime\":\"1.798 ms\"}","timestamp":"2025-07-30T14:05:40.679Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stocks/\",\"status\":\"200\",\"contentLength\":\"336\",\"responseTime\":\"2.615 ms\"}","timestamp":"2025-07-30T14:06:24.870Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stocks/01K1DTC99JXQPP3K5JAMX4DE57\",\"status\":\"200\",\"contentLength\":\"291\",\"responseTime\":\"32.497 ms\"}","timestamp":"2025-07-30T14:06:34.788Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/stocks/01K1DTC99JXQPP3K5JAMX4DE57\",\"status\":\"200\",\"contentLength\":\"89\",\"responseTime\":\"11.739 ms\"}","timestamp":"2025-07-30T14:07:15.622Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stocks/01K1DTC99JXQPP3K5JAMX4DE57\",\"status\":\"200\",\"contentLength\":\"413\",\"responseTime\":\"3.299 ms\"}","timestamp":"2025-07-30T14:07:18.440Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"DELETE\",\"url\":\"/stocks/01K1DTC99JXQPP3K5JAMX4DE57\",\"status\":\"200\",\"contentLength\":\"79\",\"responseTime\":\"23.694 ms\"}","timestamp":"2025-07-30T14:07:29.966Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/stocks/\",\"status\":\"200\",\"contentLength\":\"194\",\"responseTime\":\"1.704 ms\"}","timestamp":"2025-07-30T14:07:32.524Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"201\",\"contentLength\":\"107\",\"responseTime\":\"11.264 ms\"}","timestamp":"2025-07-30T14:08:41.493Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales\",\"status\":\"200\",\"contentLength\":\"181\",\"responseTime\":\"3.454 ms\"}","timestamp":"2025-07-30T14:08:45.354Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales/custom?startDate=2025-07-25&endDate=2025-07-30\",\"status\":\"200\",\"contentLength\":\"181\",\"responseTime\":\"2.579 ms\"}","timestamp":"2025-07-30T14:08:57.935Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🎯 Process started with PID: 8652","timestamp":"2025-07-30T14:09:35.197Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Bun version: 1.2.19","timestamp":"2025-07-30T14:09:35.199Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🛡️  Graceful shutdown handlers registered","timestamp":"2025-07-30T14:09:35.199Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-30T14:09:35.224Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🚀 Running in production mode with Bun 1.2.19","timestamp":"2025-07-30T14:09:35.234Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"🌐 Server running on port 8080","timestamp":"2025-07-30T14:09:35.234Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"💚 Health check: http://localhost:8080/health","timestamp":"2025-07-30T14:09:35.234Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"⚡ Runtime: Bun (win32)","timestamp":"2025-07-30T14:09:35.234Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/selling-price\",\"status\":\"200\",\"contentLength\":\"141\",\"responseTime\":\"25.576 ms\"}","timestamp":"2025-07-30T14:11:24.207Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"200\",\"contentLength\":\"58\",\"responseTime\":\"8.551 ms\"}","timestamp":"2025-07-30T14:11:35.488Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/recipes/01K1DT6TBJYXH3BE6DT5Q50ZT2\",\"status\":\"201\",\"contentLength\":\"106\",\"responseTime\":\"22.721 ms\"}","timestamp":"2025-07-30T14:11:46.794Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/menus/selling-price\",\"status\":\"200\",\"contentLength\":\"143\",\"responseTime\":\"12.060 ms\"}","timestamp":"2025-07-30T14:11:51.288Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales\",\"status\":\"200\",\"contentLength\":\"181\",\"responseTime\":\"5.038 ms\"}","timestamp":"2025-07-30T14:11:54.342Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Handled ApiError: 400 - Stok Teh tidak cukup. Dibutuhkan: 66, Tersedia: 0. - URL: /sales/","timestamp":"2025-07-30T14:12:03.903Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"400\",\"contentLength\":\"80\",\"responseTime\":\"4.912 ms\"}","timestamp":"2025-07-30T14:12:03.904Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"PATCH\",\"url\":\"/stocks/01K1DTCJ86XMK15DH1T5DAN3VK\",\"status\":\"200\",\"contentLength\":\"89\",\"responseTime\":\"17.809 ms\"}","timestamp":"2025-07-30T14:12:46.127Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"201\",\"contentLength\":\"107\",\"responseTime\":\"13.242 ms\"}","timestamp":"2025-07-30T14:12:48.857Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales\",\"status\":\"200\",\"contentLength\":\"310\",\"responseTime\":\"2.687 ms\"}","timestamp":"2025-07-30T14:12:52.632Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales/custom?startDate=2025-07-25&endDate=2025-07-30\",\"status\":\"200\",\"contentLength\":\"310\",\"responseTime\":\"3.109 ms\"}","timestamp":"2025-07-30T14:12:59.855Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"DELETE\",\"url\":\"/sales/01K1DTKX0EB2G2RQA1F2SH2C2X\",\"status\":\"200\",\"contentLength\":\"85\",\"responseTime\":\"14.117 ms\"}","timestamp":"2025-07-30T14:13:15.671Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/sales/custom?startDate=2025-07-25&endDate=2025-07-30\",\"status\":\"200\",\"contentLength\":\"184\",\"responseTime\":\"2.994 ms\"}","timestamp":"2025-07-30T14:13:18.737Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/sales/\",\"status\":\"201\",\"contentLength\":\"107\",\"responseTime\":\"10.088 ms\"}","timestamp":"2025-07-30T14:13:30.770Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/dashboard/stock-summary\",\"status\":\"200\",\"contentLength\":\"76\",\"responseTime\":\"10.402 ms\"}","timestamp":"2025-07-30T14:13:57.384Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/dashboard/sales-summary\",\"status\":\"200\",\"contentLength\":\"89\",\"responseTime\":\"3.530 ms\"}","timestamp":"2025-07-30T14:14:07.883Z"}

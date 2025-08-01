@@ -4,7 +4,7 @@ export const salesSchema = z.object({
   nama_menu: z.string().nonempty("Nama menu wajib diisi"),
   tanggal: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal mulai harus YYYY-MM-DD"),
+    .datetime("Format tanggal harus ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)"),
   jumlah_laku: z.number().positive("Jumlah yang digunakan harus angka positif"),
   keterangan: z.string().optional(),
 });
@@ -13,10 +13,11 @@ export const getSalesQuerySchema = z
   .object({
     startDate: z
       .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal mulai harus YYYY-MM-DD"),
+      .datetime("Format tanggal harus ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)"),
+
     endDate: z
       .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal akhir harus YYYY-MM-DD"),
+      .datetime("Format tanggal harus ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)"),
   })
   .refine(
     (data) => {
